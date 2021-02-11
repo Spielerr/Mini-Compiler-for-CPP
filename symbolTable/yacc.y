@@ -10,23 +10,21 @@
     int yylex();
     int yyerror(char *s);
 
-	typedef struct symbol_table
-	{
+	typedef struct symbol_table {
 		int line_number;
 		char name[MAX_IDENTIFIER_SIZE];
 		char type[MAX_IDENTIFIER_SIZE];
 		char value[MAX_IDENTIFIER_SIZE];
 		int size;
 		int scope;
-	}symbol_table;
+	} symbol_table;
 
-	typedef struct node
-	{
+	typedef struct node {
 		symbol_table *st;
 		struct node *next;
-	}node_t;
+	} node_t;
 
-	node_t* complete_symbol_table = (node_t*)malloc(sizeof(node_t)*SYMBOL_TABLE_SIZE);
+	node_t* complete_symbol_table = ( node_t* )malloc( sizeof(node_t) * SYMBOL_TABLE_SIZE );
 
     //lookup
 	//free
@@ -44,7 +42,7 @@
 // ---------------- TOKENS ------------------
 
 // Datatypes
-%token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_USER_DEFINED_TYPE T_TYPE_ARRAY T_NUMBER_LITERAL T_STRING_LITERAL T_CHAR_LITERAL T_IDENTIFIER
+%token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_TYPE_CLASS T_USER_DEFINED_TYPE T_TYPE_ARRAY T_NUMBER_LITERAL T_STRING_LITERAL T_CHAR_LITERAL T_IDENTIFIER
 
 // Required Construct Tokens
 %token T_CONSTRUCT_IF T_CONSTRUCT_ELSE T_CONSTRUCT_FOR
