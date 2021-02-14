@@ -25,15 +25,10 @@
 		struct node *next;
 	} node_t;
 
-	// node_t* complete_symbol_table = (node_t*)malloc(sizeof(node_t)* SYMBOL_TABLE_SIZE);
 	node_t* complete_symbol_table[SYMBOL_TABLE_SIZE];
 	unsigned int hash_function(char *name);
 	symbol_table* insert();
 	node_t *create_node(char *name);
-	// for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
-	// {
-	// 	complete_symbol_table[i]->st = NULL;
-	// }
 
 %}
 
@@ -57,16 +52,19 @@
 %token T_HEADER_INCLUDE T_HEADER_FILE
 
 // Relational Operator Tokens
-%token T_REL_OP_GREATER_THAN T_REL_OP_LESS_THAN T_REL_OP_GREATER_THAN_EQUAL T_REL_OP_LESS_THAN_EQUAL T_REL_OP_EQUAL
+%token T_REL_OP_GREATER_THAN T_REL_OP_LESS_THAN T_REL_OP_GREATER_THAN_EQUAL T_REL_OP_LESS_THAN_EQUAL T_REL_OP_EQUAL T_REL_OP_NOT_EQUAL
 
 // Logical Operators
 %token T_LOG_OP_OR T_LOG_OP_AND
 
 // Bitwise Operators
-%token T_BIT_OP_AND T_BIT_OP_OR T_BIT_OP_XOR T_BIT_OP_RIGHT_SHIFT T_BIT_OP_LEFT_SHIFT
+%token T_BIT_OP_AND T_BIT_OP_OR T_BIT_OP_XOR T_BIT_OP_RIGHT_SHIFT T_BIT_OP_LEFT_SHIFT T_BIT_OP_NOT
+
+// Assignment Operators
+%token T_OP_ASSIGNMENT T_OP_ADD_ASSIGNMENT T_OP_SUBTRACT_ASSIGNMENT T_OP_MULTIPLY_ASSIGNMENT T_OP_DIVIDE_ASSIGNMENT T_OP_MOD_ASSIGNMENT
 
 // Other Operators
-%token T_OP_ASSIGNMENT T_OP_ADD T_OP_SUBTRACT T_OP_MULTIPLY T_OP_DIVIDE T_OP_INCREMENT T_OP_DECREMENT
+%token T_OP_ADD T_OP_SUBTRACT T_OP_MULTIPLY T_OP_DIVIDE T_OP_MOD T_OP_INCREMENT T_OP_DECREMENT
 
 // Input Output Tokens
 // Insertion: >> for cin, Extraction: << for cout
@@ -77,7 +75,7 @@
 
 %right T_IO_EXTRACTION T_PARAN_OPEN T_PARAN_CLOSE
 
-%right T_OP_ASSIGNMENT
+%right T_OP_ASSIGNMENT T_OP_ADD_ASSIGNMENT T_OP_SUBTRACT_ASSIGNMENT T_OP_MULTIPLY_ASSIGNMENT T_OP_DIVIDE_ASSIGNMENT T_OP_MOD_ASSIGNMENT
 
 %right T_REL_OP_LESS_THAN T_REL_OP_GREATER_THAN T_REL_OP_GREATER_THAN_EQUAL T_REL_OP_LESS_THAN_EQUAL T_REL_OP_EQUAL
 
@@ -193,8 +191,17 @@ CONDITIONAL_EXPRESSION
 	;
 
 ASSIGNMENT
-	: T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION_GRAMMAR
-	| T_IDENTIFIER T_OP_ASSIGNMENT ASSIGNMENT
+	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT
+	;
+
+ASSIGNMENT_OPERATOR
+	: T_OP_ASSIGNMENT
+	| T_OP_ADD_ASSIGNMENT
+	| T_OP_SUBTRACT_ASSIGNMENT
+	| T_OP_MULTIPLY_ASSIGNMENT
+	| T_OP_DIVIDE_ASSIGNMENT
+	| T_OP_MOD_ASSIGNMENT
 	;
 
 EXPRESSION
@@ -212,7 +219,9 @@ EXPRESSION_GRAMMAR
 EXPRESSION_TERM
 	: EXPRESSION_TERM T_OP_MULTIPLY EXPRESSION_F
 	| EXPRESSION_TERM T_OP_DIVIDE EXPRESSION_F
+	| EXPRESSION_TERM T_OP_MOD EXPRESSION_F
 	| EXPRESSION_F
+	| T_BIT_OP_NOT EXPRESSION_F
 	;
 
 EXPRESSION_F
@@ -275,10 +284,13 @@ RELATIONAL_OPERATOR
 	| T_REL_OP_GREATER_THAN_EQUAL
 	| T_REL_OP_LESS_THAN
 	| T_REL_OP_LESS_THAN_EQUAL
+	| T_REL_OP_NOT_EQUAL
 	;
 
 IDENTIFIER_OR_LITERAL
 	: T_IDENTIFIER
+	| T_IDENTIFIER T_OP_INCREMENT
+	| T_OP_DECREMENT T_IDENTIFIER
 	| T_CHAR_LITERAL
 	| T_NUMBER_LITERAL
 	| T_STRING_LITERAL
@@ -354,7 +366,7 @@ node_t *create_node(char *name)
 	new_node->next = NULL;
 	return new_node;
 }
-symbol_table* insert()
+symbol_table* insert(char *name)
 {
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
@@ -364,12 +376,12 @@ symbol_table* insert()
 		{
 			temp = temp->next;
 		}
-		temp->next = create_node();
+		// temp->next = create_node();
 		temp = temp->next;
 	}
 	else
 	{
-		complete_symbol_table[hash_value] = create_node();
+		// complete_symbol_table[hash_value] = create_node();
 		temp = 	complete_symbol_table[hash_value];
 	}
 	return temp->st;
@@ -383,7 +395,7 @@ void display_symbol_table()
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			printf("%s\t%s\t%s\t")
+			printf("%s\t%s\t%s\t");
 		}
 	}
 }

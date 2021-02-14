@@ -36,7 +36,7 @@ int main() {
     for(;a==0;a=a-1)
         if (a == 5)
             for(;a==0;a=a-1)
-                cout << 5;
+                cout << 5 + (5 + (6 + 4) );
 
     cout << a << b == c;
     if ( (5+3) ) { cout << a; }
