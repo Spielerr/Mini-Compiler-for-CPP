@@ -11,7 +11,7 @@
 
 	extern FILE* yyin;
 
-	typedef struct symbol_table {
+	typedef struct symbol_table_ {
 		int line_number;
 		char name[MAX_IDENTIFIER_SIZE];
 		char type[MAX_IDENTIFIER_SIZE];
@@ -25,7 +25,15 @@
 		struct node *next;
 	} node_t;
 
-	node_t* complete_symbol_table = ( node_t * )malloc( sizeof( node_t ) * SYMBOL_TABLE_SIZE );
+	// node_t* complete_symbol_table = (node_t*)malloc(sizeof(node_t)* SYMBOL_TABLE_SIZE);
+	node_t* complete_symbol_table[SYMBOL_TABLE_SIZE];
+	unsigned int hash_function(char *name);
+	symbol_table* insert();
+	node_t *create_node(char *name);
+	// for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
+	// {
+	// 	complete_symbol_table[i]->st = NULL;
+	// }
 
 %}
 
@@ -306,18 +314,24 @@ int main(int argc, char *argv[]) {
     return 0;
 
 }
-
+void init_symbol_table()
+{
+	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
+	{
+		complete_symbol_table[i]->st = NULL;
+	}
+}
 unsigned int hash_function(char *name)
 {
 	unsigned int hash_value = 0;
-	for(;name!='\0';++name)
+	for(;*name!='\0';++name)
 	{
 		hash_value = hash_value +(int)(*name);
 	}
 	hash_value = hash_value % SYMBOL_TABLE_SIZE;
 	return hash_value;
 }
-symbol_table* lookup(char *s name)
+symbol_table* lookup(char *name)
 {
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
@@ -332,12 +346,12 @@ symbol_table* lookup(char *s name)
 	}
 	return NULL;
 }
-node_t *create_node()
+node_t *create_node(char *name)
 {
 	node_t *new_node = (node_t*)malloc(sizeof(node_t));
 	new_node->st = (symbol_table*)malloc(sizeof(symbol_table));
 	strcpy(new_node->st->name,name);
-	new_node->st->next = NULL;
+	new_node->next = NULL;
 	return new_node;
 }
 symbol_table* insert()
@@ -363,10 +377,10 @@ symbol_table* insert()
 void display_symbol_table()
 {
 	printf("---------SYMBOL TABLE---------\n");
-	printf("Token\tType\tScope\tLine Number\n")
+	printf("Token\tType\tScope\tLine Number\n");
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
-		node_t *temp = complete_symbol_table[i];
+		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
 			printf("%s\t%s\t%s\t")
