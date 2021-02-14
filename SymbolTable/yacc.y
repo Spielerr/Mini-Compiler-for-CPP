@@ -4,36 +4,9 @@
 	#include <stdlib.h>
 	#include <string.h>
 
-	#define SYMBOL_TABLE_SIZE 1000
-	#define MAX_IDENTIFIER_SIZE 32
-
     int yylex();
-    void yyerror(char *s);
 
-	typedef struct symbol_table {
-		int line_number;
-		char name[MAX_IDENTIFIER_SIZE];
-		char type[MAX_IDENTIFIER_SIZE];
-		char value[MAX_IDENTIFIER_SIZE];
-		int size;
-		int scope;
-	} symbol_table;
-
-	typedef struct node {
-		symbol_table *st;
-		struct node *next;
-	} node_t;
-
-	node_t* complete_symbol_table = ( node_t* )malloc( sizeof(node_t) * SYMBOL_TABLE_SIZE );
-
-    //lookup
-	//free
-	//allocate
-	//insert
-	//get_attribute
-	//set_attribute
-
-	// handle shift reduce conflicts
+	extern FILE* yyin;
 
 %}
 
@@ -75,26 +48,73 @@
 // Other Tokens
 %token T_PARAN_OPEN T_PARAN_CLOSE T_SEMI_COLON T_DOUBLE_QUOTES_OPEN T_DOUBLE_QUOTES_CLOSE T_COLON T_SCOPE_RESOLUTION T_SQ_OPEN T_SQ_CLOSE T_COMMA T_RETURN T_DOT
 
-%left T_REL_OP_LESS_THAN T_REL_OP_GREATER_THAN T_REL_OP_GREATER_THAN_EQUAL T_REL_OP_LESS_THAN_EQUAL T_REL_OP_EQUAL
+%right T_IO_EXTRACTION T_PARAN_OPEN T_PARAN_CLOSE
+
+%right T_OP_ASSIGNMENT
+
+%right T_REL_OP_LESS_THAN T_REL_OP_GREATER_THAN T_REL_OP_GREATER_THAN_EQUAL T_REL_OP_LESS_THAN_EQUAL T_REL_OP_EQUAL
+
 %left T_OP_ADD T_OP_SUBTRACT
+
 %left T_OP_MULTIPLY T_OP_DIVIDE
 
 %%
 
 START
-	: INCLUDE MAIN
+	: INCLUDE BODY
+	| BODY
+	| INCLUDE
 	;
 
 INCLUDE
 	: INCLUDE T_HEADER_INCLUDE T_REL_OP_LESS_THAN T_HEADER_FILE T_REL_OP_GREATER_THAN
 	| INCLUDE T_HEADER_INCLUDE T_STRING_LITERAL
 	| T_HEADER_INCLUDE T_REL_OP_LESS_THAN T_HEADER_FILE T_REL_OP_GREATER_THAN
-	| INCLUDE T_HEADER_INCLUDE T_STRING_LITERAL
+	| T_HEADER_INCLUDE T_STRING_LITERAL
 	;
 
-MAIN
-	: TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE BLOCK
+BODY
+	: BODY_BLOCK BODY
+	| BODY_BLOCK
 	;
+
+BODY_BLOCK
+	: FUNCTION
+	| BLOCK
+	;
+
+FUNCTION
+	: FUNCTION_PROTOTYPE
+	| FUNCTION_DEFINITION
+	| FUNCTION_DECLARATION
+	;
+
+FUNCTION_PROTOTYPE
+	: TYPE T_IDENTIFIER T_PARAN_OPEN TYPE_LIST T_PARAN_CLOSE T_SEMI_COLON
+	| TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE T_SEMI_COLON
+	;
+
+TYPE_LIST
+	: TYPE T_COMMA TYPE_LIST
+	| TYPE
+	;
+
+FUNCTION_DEFINITION
+	: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE T_SEMI_COLON
+	;
+
+FUNCTION_DECLARATION
+	: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE BLOCK
+	| TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE BLOCK
+	;
+
+FUNCTION_PARAMETER_LIST
+	: TYPE T_IDENTIFIER T_COMMA FUNCTION_PARAMETER_LIST
+	| TYPE T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION T_COMMA FUNCTION_PARAMETER_LIST
+	| TYPE T_IDENTIFIER
+	| TYPE T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION
+	;
+
 
 BLOCK
 	: BLOCK_START STATEMENTS BLOCK_END
@@ -114,6 +134,10 @@ STATEMENTS
 	| ELSE_BLOCK STATEMENTS
 	| FOR_BLOCK STATEMENTS
 	| BLOCK STATEMENTS
+	| IF_BLOCK
+	| ELSE_BLOCK
+	| FOR_BLOCK
+	| BLOCK
 	| STATEMENT T_SEMI_COLON
 	;
 
@@ -135,21 +159,25 @@ FOR_BLOCK
 
 
 CONDITIONAL_EXPRESSION
-	: CONDITIONAL_EXPRESSION LOGICAL_OPERATOR CONDITIONAL_EXPRESSION
-	| IDENTIFIER_OR_LITERAL RELATIONAL_OPERATOR IDENTIFIER_OR_LITERAL
-	| EXPRESSION RELATIONAL_OPERATOR EXPRESSION
-	| EXPRESSION RELATIONAL_OPERATOR IDENTIFIER_OR_LITERAL
-	| IDENTIFIER_OR_LITERAL RELATIONAL_OPERATOR EXPRESSION
-	| T_PARAN_OPEN CONDITIONAL_EXPRESSION T_PARAN_CLOSE
-	| ASSIGNMENT
+	: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+	| EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+	;
+
+ASSIGNMENT
+	: T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION_GRAMMAR
+	| T_IDENTIFIER T_OP_ASSIGNMENT ASSIGNMENT
 	;
 
 EXPRESSION
-	: EXPRESSION T_OP_ADD EXPRESSION_TERM
-	| EXPRESSION T_OP_SUBTRACT EXPRESSION_TERM
-	| EXPRESSION_TERM
+	: ASSIGNMENT
 	| CONDITIONAL_EXPRESSION
-	| ASSIGNMENT
+	| EXPRESSION_GRAMMAR
+	;
+
+EXPRESSION_GRAMMAR
+	: EXPRESSION_GRAMMAR T_OP_ADD EXPRESSION_TERM
+	| EXPRESSION_GRAMMAR T_OP_SUBTRACT EXPRESSION_TERM
+	| EXPRESSION_TERM
 	;
 
 EXPRESSION_TERM
@@ -165,7 +193,6 @@ EXPRESSION_F
 
 STATEMENT
 	: VARIABLE_DECLARATION
-	| ASSIGNMENT
 	| EXPRESSION
 	| COUT
 	| RETURN
@@ -176,30 +203,23 @@ VARIABLE_DECLARATION
 	;
 
 VARIABLE_LIST
-	: T_IDENTIFIER
-	| ASSIGNMENT
-	| T_IDENTIFIER T_COMMA VARIABLE_LIST
+	: T_IDENTIFIER T_COMMA VARIABLE_LIST
 	| ASSIGNMENT T_COMMA VARIABLE_LIST
-	;
-
-ASSIGNMENT
-	: T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION
+	| T_IDENTIFIER
+	| ASSIGNMENT
 	;
 
 COUT
-	: T_IO_COUT EXTRACTION_LIST
+	: T_IO_COUT T_IO_EXTRACTION EXTRACTION_LIST
 	;
 
 EXTRACTION_LIST
-	: T_IO_EXTRACTION IDENTIFIER_OR_LITERAL EXTRACTION_LIST
-	| T_IO_EXTRACTION EXPRESSION EXTRACTION_LIST
-	| T_IO_EXTRACTION IDENTIFIER_OR_LITERAL
-	| T_IO_EXTRACTION EXPRESSION
+	: EXPRESSION T_IO_EXTRACTION EXTRACTION_LIST
+	| EXPRESSION
 	;
 
 RETURN
 	: T_RETURN EXPRESSION
-	| T_RETURN IDENTIFIER_OR_LITERAL
 	;
 
 LOGICAL_OPERATOR
@@ -209,10 +229,10 @@ LOGICAL_OPERATOR
 
 RELATIONAL_OPERATOR
 	: T_REL_OP_EQUAL
-	: T_REL_OP_GREATER_THAN
-	: T_REL_OP_GREATER_THAN_EQUAL
-	: T_REL_OP_LESS_THAN
-	: T_REL_OP_LESS_THAN_EQUAL
+	| T_REL_OP_GREATER_THAN
+	| T_REL_OP_GREATER_THAN_EQUAL
+	| T_REL_OP_LESS_THAN
+	| T_REL_OP_LESS_THAN_EQUAL
 	;
 
 IDENTIFIER_OR_LITERAL
@@ -233,9 +253,20 @@ TYPE
 
 %%
 
+void print(char *s) {
+	printf("Exp Matched: %s\n", s);
+}
+
+int yyerror(){
+  printf("ERROR\n");
+}
+
 int main(int argc, char *argv[]) {
 
+	yyin = fopen("test.cpp","r");
+
     int isError = yyparse();
+
     if (isError) {
         printf("Error has Occured while parsing\n");
     }
@@ -245,75 +276,3 @@ int main(int argc, char *argv[]) {
     return 0;
 
 }
-
-unsigned int hash_function(char *name)
-{
-	unsigned int hash_value = 0;
-	for(;name!='\0';++name)
-	{
-		hash_value = hash_value +(int)(*name);
-	}
-	hash_value = hash_value % SYMBOL_TABLE_SIZE;
-	return hash_value;
-}
-symbol_table* lookup()
-{
-	unsigned int hash_value = hash_function(name);
-	node_t *temp = complete_symbol_table[hash_value];
-
-	while(temp!=NULL)
-	{
-		if(strcmp(temp->st->name,name)==0)
-		{
-			return temp->st;
-		}
-		temp = temp->next;
-	}
-	return NULL;
-}
-node_t *create_node()
-{
-	node_t *new_node = (node_t*)malloc(sizeof(node_t));
-	new_node->st = (symbol_table*)malloc(sizeof(symbol_table));
-	strcpy(new_node->st->name,name);
-	new_node->st->next = NULL;
-	return new_node;
-}
-symbol_table* insert()
-{
-	unsigned int hash_value = hash_function(name);
-	node_t *temp = complete_symbol_table[hash_value];
-	if(temp!=NULL)
-	{
-		while(temp->next!=NULL)
-		{
-			temp = temp->next;
-		}
-		temp->next = create_node();
-		temp = temp->next;
-	}
-	else
-	{
-		complete_symbol_table[hash_value] = create_node();
-		temp = 	complete_symbol_table[hash_value];
-	}
-	return temp->st;
-}
-void display_symbol_table()
-{
-	printf("---------SYMBOL TABLE---------\n");
-	printf("Token\tType\tScope\tLine Number\n")
-	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
-	{
-		node_t *temp = complete_symbol_table[i];
-		while(temp!=NULL)
-		{
-			printf("%s\t%s\t%s\t")
-		}
-	}
-}
-
-http://www.computing.surrey.ac.uk/research/dsrg/fog/CxxGrammar.y
-
-https://isocpp.org/wiki/faq/compiler-dependencies#yaccable-grammar
-
