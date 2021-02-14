@@ -34,9 +34,9 @@ int main() {
 
     }
     for(;a==0;a=a-1)
-    {
-        cout<<a<<endl;
-    }
+        if (a == 5)
+            for(;a==0;a=a-1)
+                cout << 5;
 
     cout << a << b == c;
     if ( (5+3) ) { cout << a; }

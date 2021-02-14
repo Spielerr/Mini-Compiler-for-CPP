@@ -24,6 +24,10 @@ int main() {
         cout << b;
     else { cout << c; }
     for(int i = 0; i == 5; i = i + 1) {
+
+        for (int j = 0; j == 5; j = j + 1) {
+            if (j) cout << 5;
+        }
         cout << 5;
     }
     cout << a << b == c;
