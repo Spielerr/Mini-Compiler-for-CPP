@@ -5,16 +5,11 @@ Terminals unused in grammar
     T_ACCESS_PUBLIC
     T_ACCESS_PRIVATE
     T_ACCESS_PROTECTED
-    T_BIT_OP_AND
-    T_BIT_OP_OR
-    T_BIT_OP_XOR
     T_BIT_OP_RIGHT_SHIFT
     T_BIT_OP_LEFT_SHIFT
-    T_IO_CIN
     T_IO_PRINTF
     T_IO_SCANF
     T_IO_GETLINE
-    T_IO_INSERTION
     T_DOUBLE_QUOTES_OPEN
     T_DOUBLE_QUOTES_CLOSE
     T_COLON
@@ -87,105 +82,116 @@ Grammar
    38 FOR_ACTION_STATEMENT: %empty
    39                     | LINE_STATEMENT
 
-   40 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   40 BITWISE_OPERATOR: T_BIT_OP_AND
+   41                 | T_BIT_OP_OR
+   42                 | T_BIT_OP_XOR
 
-   42 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
-   43           | T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT
+   43 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION BITWISE_OPERATOR EXPRESSION_GRAMMAR
 
-   44 ASSIGNMENT_OPERATOR: T_OP_ASSIGNMENT
-   45                    | T_OP_ADD_ASSIGNMENT
-   46                    | T_OP_SUBTRACT_ASSIGNMENT
-   47                    | T_OP_MULTIPLY_ASSIGNMENT
-   48                    | T_OP_DIVIDE_ASSIGNMENT
-   49                    | T_OP_MOD_ASSIGNMENT
+   46 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   47           | T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT
 
-   50 EXPRESSION: ASSIGNMENT
-   51           | CONDITIONAL_EXPRESSION
-   52           | EXPRESSION_GRAMMAR
+   48 ASSIGNMENT_OPERATOR: T_OP_ASSIGNMENT
+   49                    | T_OP_ADD_ASSIGNMENT
+   50                    | T_OP_SUBTRACT_ASSIGNMENT
+   51                    | T_OP_MULTIPLY_ASSIGNMENT
+   52                    | T_OP_DIVIDE_ASSIGNMENT
+   53                    | T_OP_MOD_ASSIGNMENT
 
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_ADD EXPRESSION_TERM
-   54                   | EXPRESSION_GRAMMAR T_OP_SUBTRACT EXPRESSION_TERM
-   55                   | EXPRESSION_TERM
+   54 EXPRESSION: ASSIGNMENT
+   55           | CONDITIONAL_EXPRESSION
+   56           | EXPRESSION_GRAMMAR
 
-   56 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MULTIPLY EXPRESSION_F
-   57                | EXPRESSION_TERM T_OP_DIVIDE EXPRESSION_F
-   58                | EXPRESSION_TERM T_OP_MOD EXPRESSION_F
-   59                | EXPRESSION_F
-   60                | T_BIT_OP_NOT EXPRESSION_F
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_ADD EXPRESSION_TERM
+   58                   | EXPRESSION_GRAMMAR T_OP_SUBTRACT EXPRESSION_TERM
+   59                   | EXPRESSION_TERM
 
-   61 EXPRESSION_F: IDENTIFIER_OR_LITERAL
-   62             | T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE
+   60 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MULTIPLY EXPRESSION_F
+   61                | EXPRESSION_TERM T_OP_DIVIDE EXPRESSION_F
+   62                | EXPRESSION_TERM T_OP_MOD EXPRESSION_F
+   63                | EXPRESSION_F
+   64                | T_BIT_OP_NOT EXPRESSION_F
 
-   63 BLOCK_STATEMENT: IF_BLOCK
-   64                | ELSE_BLOCK
-   65                | FOR_BLOCK
-   66                | BLOCK
+   65 EXPRESSION_F: IDENTIFIER_OR_LITERAL
+   66             | T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE
 
-   67 STATEMENT: LINE_STATEMENT T_SEMI_COLON
-   68          | BLOCK_STATEMENT
-   69          | T_SEMI_COLON
+   67 BLOCK_STATEMENT: IF_BLOCK
+   68                | ELSE_BLOCK
+   69                | FOR_BLOCK
+   70                | BLOCK
 
-   70 LINE_STATEMENT: VARIABLE_DECLARATION
-   71               | EXPRESSION
-   72               | COUT
-   73               | RETURN
+   71 STATEMENT: LINE_STATEMENT T_SEMI_COLON
+   72          | BLOCK_STATEMENT
+   73          | T_SEMI_COLON
 
-   74 VARIABLE_DECLARATION: TYPE VARIABLE_LIST
+   74 LINE_STATEMENT: VARIABLE_DECLARATION
+   75               | EXPRESSION
+   76               | COUT
+   77               | CIN
+   78               | RETURN
 
-   75 VARIABLE_LIST: T_IDENTIFIER T_COMMA VARIABLE_LIST
-   76              | ASSIGNMENT T_COMMA VARIABLE_LIST
-   77              | T_IDENTIFIER
-   78              | ASSIGNMENT
+   79 VARIABLE_DECLARATION: TYPE VARIABLE_LIST
 
-   79 COUT: T_IO_COUT T_IO_EXTRACTION EXTRACTION_LIST
+   80 VARIABLE_LIST: T_IDENTIFIER T_COMMA VARIABLE_LIST
+   81              | ASSIGNMENT T_COMMA VARIABLE_LIST
+   82              | T_IDENTIFIER
+   83              | ASSIGNMENT
 
-   80 EXTRACTION_LIST: EXPRESSION T_IO_EXTRACTION EXTRACTION_LIST
-   81                | EXPRESSION
+   84 COUT: T_IO_COUT T_IO_EXTRACTION EXTRACTION_LIST
 
-   82 RETURN: T_RETURN EXPRESSION
+   85 EXTRACTION_LIST: EXPRESSION T_IO_EXTRACTION EXTRACTION_LIST
+   86                | EXPRESSION
 
-   83 LOGICAL_OPERATOR: T_LOG_OP_AND
-   84                 | T_LOG_OP_OR
+   87 CIN: T_IO_CIN T_IO_INSERTION INSERTION_LIST
 
-   85 RELATIONAL_OPERATOR: T_REL_OP_EQUAL
-   86                    | T_REL_OP_GREATER_THAN
-   87                    | T_REL_OP_GREATER_THAN_EQUAL
-   88                    | T_REL_OP_LESS_THAN
-   89                    | T_REL_OP_LESS_THAN_EQUAL
-   90                    | T_REL_OP_NOT_EQUAL
+   88 INSERTION_LIST: T_IDENTIFIER T_IO_EXTRACTION INSERTION_LIST
+   89               | T_IDENTIFIER
 
-   91 IDENTIFIER_OR_LITERAL: T_IDENTIFIER
-   92                      | T_IDENTIFIER T_OP_INCREMENT
-   93                      | T_OP_DECREMENT T_IDENTIFIER
-   94                      | T_CHAR_LITERAL
-   95                      | T_NUMBER_LITERAL
-   96                      | T_STRING_LITERAL
+   90 RETURN: T_RETURN EXPRESSION
 
-   97 TYPE: T_TYPE_INT
-   98     | T_TYPE_DOUBLE
-   99     | T_TYPE_FLOAT
-  100     | T_TYPE_CHAR
-  101     | T_TYPE_STRING
-  102     | T_TYPE_VOID
+   91 LOGICAL_OPERATOR: T_LOG_OP_AND
+   92                 | T_LOG_OP_OR
+
+   93 RELATIONAL_OPERATOR: T_REL_OP_EQUAL
+   94                    | T_REL_OP_GREATER_THAN
+   95                    | T_REL_OP_GREATER_THAN_EQUAL
+   96                    | T_REL_OP_LESS_THAN
+   97                    | T_REL_OP_LESS_THAN_EQUAL
+   98                    | T_REL_OP_NOT_EQUAL
+
+   99 IDENTIFIER_OR_LITERAL: T_IDENTIFIER
+  100                      | T_IDENTIFIER T_OP_INCREMENT
+  101                      | T_OP_DECREMENT T_IDENTIFIER
+  102                      | T_CHAR_LITERAL
+  103                      | T_NUMBER_LITERAL
+  104                      | T_STRING_LITERAL
+
+  105 TYPE: T_TYPE_INT
+  106     | T_TYPE_DOUBLE
+  107     | T_TYPE_FLOAT
+  108     | T_TYPE_CHAR
+  109     | T_TYPE_STRING
+  110     | T_TYPE_VOID
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    T_TYPE_INT (258) 97
-    T_TYPE_FLOAT (259) 99
-    T_TYPE_DOUBLE (260) 98
-    T_TYPE_STRING (261) 101
-    T_TYPE_CHAR (262) 100
-    T_TYPE_VOID (263) 102
+    T_TYPE_INT (258) 105
+    T_TYPE_FLOAT (259) 107
+    T_TYPE_DOUBLE (260) 106
+    T_TYPE_STRING (261) 109
+    T_TYPE_CHAR (262) 108
+    T_TYPE_VOID (263) 110
     T_TYPE_CLASS (264)
     T_USER_DEFINED_TYPE (265)
-    T_NUMBER_LITERAL (266) 95
-    T_STRING_LITERAL (267) 5 7 96
-    T_CHAR_LITERAL (268) 94
-    T_IDENTIFIER (269) 15 16 19 20 21 22 23 24 25 42 43 75 77 91 92 93
+    T_NUMBER_LITERAL (266) 103
+    T_STRING_LITERAL (267) 5 7 104
+    T_CHAR_LITERAL (268) 102
+    T_IDENTIFIER (269) 15 16 19 20 21 22 23 24 25 46 47 80 82 88 89 99 100 101
     T_CONSTRUCT_IF (270) 31
     T_CONSTRUCT_ELSE (271) 32
     T_CONSTRUCT_FOR (272) 33
@@ -196,51 +202,51 @@ Terminals, with rules where they appear
     T_ACCESS_PROTECTED (277)
     T_HEADER_INCLUDE (278) 4 5 6 7
     T_HEADER_FILE (279) 4 6
-    T_REL_OP_GREATER_THAN (280) 4 6 86
-    T_REL_OP_LESS_THAN (281) 4 6 88
-    T_REL_OP_GREATER_THAN_EQUAL (282) 87
-    T_REL_OP_LESS_THAN_EQUAL (283) 89
-    T_REL_OP_EQUAL (284) 85
-    T_REL_OP_NOT_EQUAL (285) 90
-    T_LOG_OP_OR (286) 84
-    T_LOG_OP_AND (287) 83
-    T_BIT_OP_AND (288)
-    T_BIT_OP_OR (289)
-    T_BIT_OP_XOR (290)
+    T_REL_OP_GREATER_THAN (280) 4 6 94
+    T_REL_OP_LESS_THAN (281) 4 6 96
+    T_REL_OP_GREATER_THAN_EQUAL (282) 95
+    T_REL_OP_LESS_THAN_EQUAL (283) 97
+    T_REL_OP_EQUAL (284) 93
+    T_REL_OP_NOT_EQUAL (285) 98
+    T_LOG_OP_OR (286) 92
+    T_LOG_OP_AND (287) 91
+    T_BIT_OP_AND (288) 40
+    T_BIT_OP_OR (289) 41
+    T_BIT_OP_XOR (290) 42
     T_BIT_OP_RIGHT_SHIFT (291)
     T_BIT_OP_LEFT_SHIFT (292)
-    T_BIT_OP_NOT (293) 60
-    T_OP_ASSIGNMENT (294) 23 25 44
-    T_OP_ADD_ASSIGNMENT (295) 45
-    T_OP_SUBTRACT_ASSIGNMENT (296) 46
-    T_OP_MULTIPLY_ASSIGNMENT (297) 47
-    T_OP_DIVIDE_ASSIGNMENT (298) 48
-    T_OP_MOD_ASSIGNMENT (299) 49
-    T_OP_ADD (300) 53
-    T_OP_SUBTRACT (301) 54
-    T_OP_MULTIPLY (302) 56
-    T_OP_DIVIDE (303) 57
-    T_OP_MOD (304) 58
-    T_OP_INCREMENT (305) 92
-    T_OP_DECREMENT (306) 93
-    T_IO_COUT (307) 79
-    T_IO_CIN (308)
+    T_BIT_OP_NOT (293) 64
+    T_OP_ASSIGNMENT (294) 23 25 48
+    T_OP_ADD_ASSIGNMENT (295) 49
+    T_OP_SUBTRACT_ASSIGNMENT (296) 50
+    T_OP_MULTIPLY_ASSIGNMENT (297) 51
+    T_OP_DIVIDE_ASSIGNMENT (298) 52
+    T_OP_MOD_ASSIGNMENT (299) 53
+    T_OP_ADD (300) 57
+    T_OP_SUBTRACT (301) 58
+    T_OP_MULTIPLY (302) 60
+    T_OP_DIVIDE (303) 61
+    T_OP_MOD (304) 62
+    T_OP_INCREMENT (305) 100
+    T_OP_DECREMENT (306) 101
+    T_IO_COUT (307) 84
+    T_IO_CIN (308) 87
     T_IO_PRINTF (309)
     T_IO_SCANF (310)
     T_IO_GETLINE (311)
-    T_IO_INSERTION (312)
-    T_IO_EXTRACTION (313) 79 80
-    T_PARAN_OPEN (314) 15 16 19 20 21 31 33 62
-    T_PARAN_CLOSE (315) 15 16 19 20 21 31 33 62
-    T_SEMI_COLON (316) 15 16 19 33 67 69
+    T_IO_INSERTION (312) 87
+    T_IO_EXTRACTION (313) 84 85 88
+    T_PARAN_OPEN (314) 15 16 19 20 21 31 33 66
+    T_PARAN_CLOSE (315) 15 16 19 20 21 31 33 66
+    T_SEMI_COLON (316) 15 16 19 33 71 73
     T_DOUBLE_QUOTES_OPEN (317)
     T_DOUBLE_QUOTES_CLOSE (318)
     T_COLON (319)
     T_SCOPE_RESOLUTION (320)
     T_SQ_OPEN (321)
     T_SQ_CLOSE (322)
-    T_COMMA (323) 17 22 23 75 76
-    T_RETURN (324) 82
+    T_COMMA (323) 17 22 23 80 81
+    T_RETURN (324) 90
     T_DOT (325)
 
 
@@ -280,7 +286,7 @@ Nonterminals, with rules where they appear
         on right: 19 20 22 23
     BLOCK (82)
         on left: 26
-        on right: 11 20 21 66
+        on right: 11 20 21 70
     BLOCK_START (83)
         on left: 27
         on right: 26
@@ -292,13 +298,13 @@ Nonterminals, with rules where they appear
         on right: 26 29
     IF_BLOCK (86)
         on left: 31
-        on right: 63
+        on right: 67
     ELSE_BLOCK (87)
         on left: 32
-        on right: 64
+        on right: 68
     FOR_BLOCK (88)
         on left: 33
-        on right: 65
+        on right: 69
     FOR_INIT_STATEMENT (89)
         on left: 34 35
         on right: 33
@@ -308,63 +314,72 @@ Nonterminals, with rules where they appear
     FOR_ACTION_STATEMENT (91)
         on left: 38 39
         on right: 33
-    CONDITIONAL_EXPRESSION (92)
-        on left: 40 41
-        on right: 37 51
-    ASSIGNMENT (93)
-        on left: 42 43
-        on right: 43 50 76 78
-    ASSIGNMENT_OPERATOR (94)
-        on left: 44 45 46 47 48 49
-        on right: 42 43
-    EXPRESSION (95)
-        on left: 50 51 52
-        on right: 23 25 31 40 41 62 71 80 81 82
-    EXPRESSION_GRAMMAR (96)
-        on left: 53 54 55
-        on right: 40 41 42 52 53 54
-    EXPRESSION_TERM (97)
-        on left: 56 57 58 59 60
-        on right: 53 54 55 56 57 58
-    EXPRESSION_F (98)
-        on left: 61 62
-        on right: 56 57 58 59 60
-    BLOCK_STATEMENT (99)
-        on left: 63 64 65 66
-        on right: 68
-    STATEMENT (100)
-        on left: 67 68 69
-        on right: 29 30 31 32 33
-    LINE_STATEMENT (101)
-        on left: 70 71 72 73
-        on right: 35 39 67
-    VARIABLE_DECLARATION (102)
-        on left: 74
-        on right: 70
-    VARIABLE_LIST (103)
-        on left: 75 76 77 78
-        on right: 74 75 76
-    COUT (104)
-        on left: 79
+    BITWISE_OPERATOR (92)
+        on left: 40 41 42
+        on right: 45
+    CONDITIONAL_EXPRESSION (93)
+        on left: 43 44 45
+        on right: 37 55
+    ASSIGNMENT (94)
+        on left: 46 47
+        on right: 47 54 81 83
+    ASSIGNMENT_OPERATOR (95)
+        on left: 48 49 50 51 52 53
+        on right: 46 47
+    EXPRESSION (96)
+        on left: 54 55 56
+        on right: 23 25 31 43 44 45 66 75 85 86 90
+    EXPRESSION_GRAMMAR (97)
+        on left: 57 58 59
+        on right: 43 44 45 46 56 57 58
+    EXPRESSION_TERM (98)
+        on left: 60 61 62 63 64
+        on right: 57 58 59 60 61 62
+    EXPRESSION_F (99)
+        on left: 65 66
+        on right: 60 61 62 63 64
+    BLOCK_STATEMENT (100)
+        on left: 67 68 69 70
         on right: 72
-    EXTRACTION_LIST (105)
-        on left: 80 81
-        on right: 79 80
-    RETURN (106)
-        on left: 82
-        on right: 73
-    LOGICAL_OPERATOR (107)
-        on left: 83 84
-        on right: 40
-    RELATIONAL_OPERATOR (108)
-        on left: 85 86 87 88 89 90
-        on right: 41
-    IDENTIFIER_OR_LITERAL (109)
-        on left: 91 92 93 94 95 96
-        on right: 61
-    TYPE (110)
-        on left: 97 98 99 100 101 102
-        on right: 15 16 17 18 19 20 21 22 23 24 25 74
+    STATEMENT (101)
+        on left: 71 72 73
+        on right: 29 30 31 32 33
+    LINE_STATEMENT (102)
+        on left: 74 75 76 77 78
+        on right: 35 39 71
+    VARIABLE_DECLARATION (103)
+        on left: 79
+        on right: 74
+    VARIABLE_LIST (104)
+        on left: 80 81 82 83
+        on right: 79 80 81
+    COUT (105)
+        on left: 84
+        on right: 76
+    EXTRACTION_LIST (106)
+        on left: 85 86
+        on right: 84 85
+    CIN (107)
+        on left: 87
+        on right: 77
+    INSERTION_LIST (108)
+        on left: 88 89
+        on right: 87 88
+    RETURN (109)
+        on left: 90
+        on right: 78
+    LOGICAL_OPERATOR (110)
+        on left: 91 92
+        on right: 43
+    RELATIONAL_OPERATOR (111)
+        on left: 93 94 95 96 97 98
+        on right: 44
+    IDENTIFIER_OR_LITERAL (112)
+        on left: 99 100 101 102 103 104
+        on right: 65
+    TYPE (113)
+        on left: 105 106 107 108 109 110
+        on right: 15 16 17 18 19 20 21 22 23 24 25 79
 
 
 State 0
@@ -395,44 +410,44 @@ State 0
 
 State 1
 
-   97 TYPE: T_TYPE_INT .
+  105 TYPE: T_TYPE_INT .
 
-    $default  reduce using rule 97 (TYPE)
+    $default  reduce using rule 105 (TYPE)
 
 
 State 2
 
-   99 TYPE: T_TYPE_FLOAT .
+  107 TYPE: T_TYPE_FLOAT .
 
-    $default  reduce using rule 99 (TYPE)
+    $default  reduce using rule 107 (TYPE)
 
 
 State 3
 
-   98 TYPE: T_TYPE_DOUBLE .
+  106 TYPE: T_TYPE_DOUBLE .
 
-    $default  reduce using rule 98 (TYPE)
+    $default  reduce using rule 106 (TYPE)
 
 
 State 4
 
-  101 TYPE: T_TYPE_STRING .
+  109 TYPE: T_TYPE_STRING .
 
-    $default  reduce using rule 101 (TYPE)
+    $default  reduce using rule 109 (TYPE)
 
 
 State 5
 
-  100 TYPE: T_TYPE_CHAR .
+  108 TYPE: T_TYPE_CHAR .
 
-    $default  reduce using rule 100 (TYPE)
+    $default  reduce using rule 108 (TYPE)
 
 
 State 6
 
-  102 TYPE: T_TYPE_VOID .
+  110 TYPE: T_TYPE_VOID .
 
-    $default  reduce using rule 102 (TYPE)
+    $default  reduce using rule 110 (TYPE)
 
 
 State 7
@@ -576,30 +591,32 @@ State 18
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_SEMI_COLON      shift, and go to state 37
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_SEMI_COLON      shift, and go to state 38
+    T_RETURN          shift, and go to state 39
 
-    BLOCK                   go to state 39
+    BLOCK                   go to state 40
     BLOCK_START             go to state 18
-    STATEMENTS              go to state 40
-    IF_BLOCK                go to state 41
-    ELSE_BLOCK              go to state 42
-    FOR_BLOCK               go to state 43
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    BLOCK_STATEMENT         go to state 50
-    STATEMENT               go to state 51
-    LINE_STATEMENT          go to state 52
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
+    STATEMENTS              go to state 41
+    IF_BLOCK                go to state 42
+    ELSE_BLOCK              go to state 43
+    FOR_BLOCK               go to state 44
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    BLOCK_STATEMENT         go to state 51
+    STATEMENT               go to state 52
+    LINE_STATEMENT          go to state 53
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
 State 19
@@ -610,7 +627,7 @@ State 19
    20 FUNCTION_DECLARATION: TYPE . T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE BLOCK
    21                     | TYPE . T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE BLOCK
 
-    T_IDENTIFIER  shift, and go to state 58
+    T_IDENTIFIER  shift, and go to state 60
 
 
 State 20
@@ -624,7 +641,7 @@ State 21
 
     6 INCLUDE: T_HEADER_INCLUDE T_REL_OP_LESS_THAN . T_HEADER_FILE T_REL_OP_GREATER_THAN
 
-    T_HEADER_FILE  shift, and go to state 59
+    T_HEADER_FILE  shift, and go to state 61
 
 
 State 22
@@ -639,8 +656,8 @@ State 23
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE . T_REL_OP_LESS_THAN T_HEADER_FILE T_REL_OP_GREATER_THAN
     5        | INCLUDE T_HEADER_INCLUDE . T_STRING_LITERAL
 
-    T_STRING_LITERAL    shift, and go to state 60
-    T_REL_OP_LESS_THAN  shift, and go to state 61
+    T_STRING_LITERAL    shift, and go to state 62
+    T_REL_OP_LESS_THAN  shift, and go to state 63
 
 
 State 24
@@ -659,50 +676,50 @@ State 25
 
 State 26
 
-   95 IDENTIFIER_OR_LITERAL: T_NUMBER_LITERAL .
+  103 IDENTIFIER_OR_LITERAL: T_NUMBER_LITERAL .
 
-    $default  reduce using rule 95 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 103 (IDENTIFIER_OR_LITERAL)
 
 
 State 27
 
-   96 IDENTIFIER_OR_LITERAL: T_STRING_LITERAL .
+  104 IDENTIFIER_OR_LITERAL: T_STRING_LITERAL .
 
-    $default  reduce using rule 96 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 104 (IDENTIFIER_OR_LITERAL)
 
 
 State 28
 
-   94 IDENTIFIER_OR_LITERAL: T_CHAR_LITERAL .
+  102 IDENTIFIER_OR_LITERAL: T_CHAR_LITERAL .
 
-    $default  reduce using rule 94 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 102 (IDENTIFIER_OR_LITERAL)
 
 
 State 29
 
-   42 ASSIGNMENT: T_IDENTIFIER . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
-   43           | T_IDENTIFIER . ASSIGNMENT_OPERATOR ASSIGNMENT
-   91 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
-   92                      | T_IDENTIFIER . T_OP_INCREMENT
+   46 ASSIGNMENT: T_IDENTIFIER . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   47           | T_IDENTIFIER . ASSIGNMENT_OPERATOR ASSIGNMENT
+   99 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
+  100                      | T_IDENTIFIER . T_OP_INCREMENT
 
-    T_OP_ASSIGNMENT           shift, and go to state 62
-    T_OP_ADD_ASSIGNMENT       shift, and go to state 63
-    T_OP_SUBTRACT_ASSIGNMENT  shift, and go to state 64
-    T_OP_MULTIPLY_ASSIGNMENT  shift, and go to state 65
-    T_OP_DIVIDE_ASSIGNMENT    shift, and go to state 66
-    T_OP_MOD_ASSIGNMENT       shift, and go to state 67
-    T_OP_INCREMENT            shift, and go to state 68
+    T_OP_ASSIGNMENT           shift, and go to state 64
+    T_OP_ADD_ASSIGNMENT       shift, and go to state 65
+    T_OP_SUBTRACT_ASSIGNMENT  shift, and go to state 66
+    T_OP_MULTIPLY_ASSIGNMENT  shift, and go to state 67
+    T_OP_DIVIDE_ASSIGNMENT    shift, and go to state 68
+    T_OP_MOD_ASSIGNMENT       shift, and go to state 69
+    T_OP_INCREMENT            shift, and go to state 70
 
-    $default  reduce using rule 91 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 99 (IDENTIFIER_OR_LITERAL)
 
-    ASSIGNMENT_OPERATOR  go to state 69
+    ASSIGNMENT_OPERATOR  go to state 71
 
 
 State 30
 
    31 IF_BLOCK: T_CONSTRUCT_IF . T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE STATEMENT
 
-    T_PARAN_OPEN  shift, and go to state 70
+    T_PARAN_OPEN  shift, and go to state 72
 
 
 State 31
@@ -726,98 +743,79 @@ State 31
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_SEMI_COLON      shift, and go to state 37
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_SEMI_COLON      shift, and go to state 38
+    T_RETURN          shift, and go to state 39
 
-    BLOCK                   go to state 39
+    BLOCK                   go to state 40
     BLOCK_START             go to state 18
-    IF_BLOCK                go to state 41
-    ELSE_BLOCK              go to state 42
-    FOR_BLOCK               go to state 43
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    BLOCK_STATEMENT         go to state 50
-    STATEMENT               go to state 71
-    LINE_STATEMENT          go to state 52
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
+    IF_BLOCK                go to state 42
+    ELSE_BLOCK              go to state 43
+    FOR_BLOCK               go to state 44
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    BLOCK_STATEMENT         go to state 51
+    STATEMENT               go to state 73
+    LINE_STATEMENT          go to state 53
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
 State 32
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR . T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT
 
-    T_PARAN_OPEN  shift, and go to state 72
+    T_PARAN_OPEN  shift, and go to state 74
 
 
 State 33
 
-   60 EXPRESSION_TERM: T_BIT_OP_NOT . EXPRESSION_F
+   64 EXPRESSION_TERM: T_BIT_OP_NOT . EXPRESSION_F
 
     T_NUMBER_LITERAL  shift, and go to state 26
     T_STRING_LITERAL  shift, and go to state 27
     T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
+    T_IDENTIFIER      shift, and go to state 75
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    EXPRESSION_F           go to state 74
-    IDENTIFIER_OR_LITERAL  go to state 56
+    EXPRESSION_F           go to state 76
+    IDENTIFIER_OR_LITERAL  go to state 58
 
 
 State 34
 
-   93 IDENTIFIER_OR_LITERAL: T_OP_DECREMENT . T_IDENTIFIER
+  101 IDENTIFIER_OR_LITERAL: T_OP_DECREMENT . T_IDENTIFIER
 
-    T_IDENTIFIER  shift, and go to state 75
+    T_IDENTIFIER  shift, and go to state 77
 
 
 State 35
 
-   79 COUT: T_IO_COUT . T_IO_EXTRACTION EXTRACTION_LIST
+   84 COUT: T_IO_COUT . T_IO_EXTRACTION EXTRACTION_LIST
 
-    T_IO_EXTRACTION  shift, and go to state 76
+    T_IO_EXTRACTION  shift, and go to state 78
 
 
 State 36
 
-   62 EXPRESSION_F: T_PARAN_OPEN . EXPRESSION T_PARAN_CLOSE
+   87 CIN: T_IO_CIN . T_IO_INSERTION INSERTION_LIST
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 29
-    T_BIT_OP_NOT      shift, and go to state 33
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 77
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    IDENTIFIER_OR_LITERAL   go to state 56
+    T_IO_INSERTION  shift, and go to state 79
 
 
 State 37
 
-   69 STATEMENT: T_SEMI_COLON .
-
-    $default  reduce using rule 69 (STATEMENT)
-
-
-State 38
-
-   82 RETURN: T_RETURN . EXPRESSION
+   66 EXPRESSION_F: T_PARAN_OPEN . EXPRESSION T_PARAN_CLOSE
 
     T_NUMBER_LITERAL  shift, and go to state 26
     T_STRING_LITERAL  shift, and go to state 27
@@ -825,130 +823,163 @@ State 38
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 78
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    IDENTIFIER_OR_LITERAL   go to state 56
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 80
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    IDENTIFIER_OR_LITERAL   go to state 58
+
+
+State 38
+
+   73 STATEMENT: T_SEMI_COLON .
+
+    $default  reduce using rule 73 (STATEMENT)
 
 
 State 39
 
-   66 BLOCK_STATEMENT: BLOCK .
+   90 RETURN: T_RETURN . EXPRESSION
 
-    $default  reduce using rule 66 (BLOCK_STATEMENT)
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 29
+    T_BIT_OP_NOT      shift, and go to state 33
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 81
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    IDENTIFIER_OR_LITERAL   go to state 58
 
 
 State 40
 
-   26 BLOCK: BLOCK_START STATEMENTS . BLOCK_END
+   70 BLOCK_STATEMENT: BLOCK .
 
-    T_BLOCK_END  shift, and go to state 79
-
-    BLOCK_END  go to state 80
+    $default  reduce using rule 70 (BLOCK_STATEMENT)
 
 
 State 41
 
-   63 BLOCK_STATEMENT: IF_BLOCK .
+   26 BLOCK: BLOCK_START STATEMENTS . BLOCK_END
 
-    $default  reduce using rule 63 (BLOCK_STATEMENT)
+    T_BLOCK_END  shift, and go to state 82
+
+    BLOCK_END  go to state 83
 
 
 State 42
 
-   64 BLOCK_STATEMENT: ELSE_BLOCK .
+   67 BLOCK_STATEMENT: IF_BLOCK .
 
-    $default  reduce using rule 64 (BLOCK_STATEMENT)
+    $default  reduce using rule 67 (BLOCK_STATEMENT)
 
 
 State 43
 
-   65 BLOCK_STATEMENT: FOR_BLOCK .
+   68 BLOCK_STATEMENT: ELSE_BLOCK .
 
-    $default  reduce using rule 65 (BLOCK_STATEMENT)
+    $default  reduce using rule 68 (BLOCK_STATEMENT)
 
 
 State 44
 
-   51 EXPRESSION: CONDITIONAL_EXPRESSION .
+   69 BLOCK_STATEMENT: FOR_BLOCK .
 
-    $default  reduce using rule 51 (EXPRESSION)
+    $default  reduce using rule 69 (BLOCK_STATEMENT)
 
 
 State 45
 
-   50 EXPRESSION: ASSIGNMENT .
+   55 EXPRESSION: CONDITIONAL_EXPRESSION .
 
-    $default  reduce using rule 50 (EXPRESSION)
+    $default  reduce using rule 55 (EXPRESSION)
 
 
 State 46
 
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
-   71 LINE_STATEMENT: EXPRESSION .
+   54 EXPRESSION: ASSIGNMENT .
 
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
-
-    $default  reduce using rule 71 (LINE_STATEMENT)
-
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
+    $default  reduce using rule 54 (EXPRESSION)
 
 
 State 47
 
-   52 EXPRESSION: EXPRESSION_GRAMMAR .
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
-   54                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
+   75 LINE_STATEMENT: EXPRESSION .
 
-    T_OP_ADD       shift, and go to state 91
-    T_OP_SUBTRACT  shift, and go to state 92
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
 
-    $default  reduce using rule 52 (EXPRESSION)
+    $default  reduce using rule 75 (LINE_STATEMENT)
+
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
 
 
 State 48
 
-   55 EXPRESSION_GRAMMAR: EXPRESSION_TERM .
-   56 EXPRESSION_TERM: EXPRESSION_TERM . T_OP_MULTIPLY EXPRESSION_F
-   57                | EXPRESSION_TERM . T_OP_DIVIDE EXPRESSION_F
-   58                | EXPRESSION_TERM . T_OP_MOD EXPRESSION_F
+   56 EXPRESSION: EXPRESSION_GRAMMAR .
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
+   58                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
 
-    T_OP_MULTIPLY  shift, and go to state 93
-    T_OP_DIVIDE    shift, and go to state 94
-    T_OP_MOD       shift, and go to state 95
+    T_OP_ADD       shift, and go to state 98
+    T_OP_SUBTRACT  shift, and go to state 99
 
-    $default  reduce using rule 55 (EXPRESSION_GRAMMAR)
+    $default  reduce using rule 56 (EXPRESSION)
 
 
 State 49
 
-   59 EXPRESSION_TERM: EXPRESSION_F .
+   59 EXPRESSION_GRAMMAR: EXPRESSION_TERM .
+   60 EXPRESSION_TERM: EXPRESSION_TERM . T_OP_MULTIPLY EXPRESSION_F
+   61                | EXPRESSION_TERM . T_OP_DIVIDE EXPRESSION_F
+   62                | EXPRESSION_TERM . T_OP_MOD EXPRESSION_F
 
-    $default  reduce using rule 59 (EXPRESSION_TERM)
+    T_OP_MULTIPLY  shift, and go to state 100
+    T_OP_DIVIDE    shift, and go to state 101
+    T_OP_MOD       shift, and go to state 102
+
+    $default  reduce using rule 59 (EXPRESSION_GRAMMAR)
 
 
 State 50
 
-   68 STATEMENT: BLOCK_STATEMENT .
+   63 EXPRESSION_TERM: EXPRESSION_F .
 
-    $default  reduce using rule 68 (STATEMENT)
+    $default  reduce using rule 63 (EXPRESSION_TERM)
 
 
 State 51
+
+   72 STATEMENT: BLOCK_STATEMENT .
+
+    $default  reduce using rule 72 (STATEMENT)
+
+
+State 52
 
    29 STATEMENTS: STATEMENT . STATEMENTS
    30           | STATEMENT .
@@ -970,80 +1001,89 @@ State 51
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_SEMI_COLON      shift, and go to state 37
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_SEMI_COLON      shift, and go to state 38
+    T_RETURN          shift, and go to state 39
 
     $default  reduce using rule 30 (STATEMENTS)
 
-    BLOCK                   go to state 39
+    BLOCK                   go to state 40
     BLOCK_START             go to state 18
-    STATEMENTS              go to state 96
-    IF_BLOCK                go to state 41
-    ELSE_BLOCK              go to state 42
-    FOR_BLOCK               go to state 43
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    BLOCK_STATEMENT         go to state 50
-    STATEMENT               go to state 51
-    LINE_STATEMENT          go to state 52
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
-
-
-State 52
-
-   67 STATEMENT: LINE_STATEMENT . T_SEMI_COLON
-
-    T_SEMI_COLON  shift, and go to state 97
+    STATEMENTS              go to state 103
+    IF_BLOCK                go to state 42
+    ELSE_BLOCK              go to state 43
+    FOR_BLOCK               go to state 44
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    BLOCK_STATEMENT         go to state 51
+    STATEMENT               go to state 52
+    LINE_STATEMENT          go to state 53
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
 State 53
 
-   70 LINE_STATEMENT: VARIABLE_DECLARATION .
+   71 STATEMENT: LINE_STATEMENT . T_SEMI_COLON
 
-    $default  reduce using rule 70 (LINE_STATEMENT)
+    T_SEMI_COLON  shift, and go to state 104
 
 
 State 54
 
-   72 LINE_STATEMENT: COUT .
+   74 LINE_STATEMENT: VARIABLE_DECLARATION .
 
-    $default  reduce using rule 72 (LINE_STATEMENT)
+    $default  reduce using rule 74 (LINE_STATEMENT)
 
 
 State 55
 
-   73 LINE_STATEMENT: RETURN .
+   76 LINE_STATEMENT: COUT .
 
-    $default  reduce using rule 73 (LINE_STATEMENT)
+    $default  reduce using rule 76 (LINE_STATEMENT)
 
 
 State 56
 
-   61 EXPRESSION_F: IDENTIFIER_OR_LITERAL .
+   77 LINE_STATEMENT: CIN .
 
-    $default  reduce using rule 61 (EXPRESSION_F)
+    $default  reduce using rule 77 (LINE_STATEMENT)
 
 
 State 57
 
-   74 VARIABLE_DECLARATION: TYPE . VARIABLE_LIST
+   78 LINE_STATEMENT: RETURN .
 
-    T_IDENTIFIER  shift, and go to state 98
-
-    ASSIGNMENT     go to state 99
-    VARIABLE_LIST  go to state 100
+    $default  reduce using rule 78 (LINE_STATEMENT)
 
 
 State 58
+
+   65 EXPRESSION_F: IDENTIFIER_OR_LITERAL .
+
+    $default  reduce using rule 65 (EXPRESSION_F)
+
+
+State 59
+
+   79 VARIABLE_DECLARATION: TYPE . VARIABLE_LIST
+
+    T_IDENTIFIER  shift, and go to state 105
+
+    ASSIGNMENT     go to state 106
+    VARIABLE_LIST  go to state 107
+
+
+State 60
 
    15 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER . T_PARAN_OPEN TYPE_LIST T_PARAN_CLOSE T_SEMI_COLON
    16                   | TYPE T_IDENTIFIER . T_PARAN_OPEN T_PARAN_CLOSE T_SEMI_COLON
@@ -1051,83 +1091,83 @@ State 58
    20 FUNCTION_DECLARATION: TYPE T_IDENTIFIER . T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE BLOCK
    21                     | TYPE T_IDENTIFIER . T_PARAN_OPEN T_PARAN_CLOSE BLOCK
 
-    T_PARAN_OPEN  shift, and go to state 101
+    T_PARAN_OPEN  shift, and go to state 108
 
 
-State 59
+State 61
 
     6 INCLUDE: T_HEADER_INCLUDE T_REL_OP_LESS_THAN T_HEADER_FILE . T_REL_OP_GREATER_THAN
 
-    T_REL_OP_GREATER_THAN  shift, and go to state 102
+    T_REL_OP_GREATER_THAN  shift, and go to state 109
 
 
-State 60
+State 62
 
     5 INCLUDE: INCLUDE T_HEADER_INCLUDE T_STRING_LITERAL .
 
     $default  reduce using rule 5 (INCLUDE)
 
 
-State 61
+State 63
 
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE T_REL_OP_LESS_THAN . T_HEADER_FILE T_REL_OP_GREATER_THAN
 
-    T_HEADER_FILE  shift, and go to state 103
-
-
-State 62
-
-   44 ASSIGNMENT_OPERATOR: T_OP_ASSIGNMENT .
-
-    $default  reduce using rule 44 (ASSIGNMENT_OPERATOR)
-
-
-State 63
-
-   45 ASSIGNMENT_OPERATOR: T_OP_ADD_ASSIGNMENT .
-
-    $default  reduce using rule 45 (ASSIGNMENT_OPERATOR)
+    T_HEADER_FILE  shift, and go to state 110
 
 
 State 64
 
-   46 ASSIGNMENT_OPERATOR: T_OP_SUBTRACT_ASSIGNMENT .
-
-    $default  reduce using rule 46 (ASSIGNMENT_OPERATOR)
-
-
-State 65
-
-   47 ASSIGNMENT_OPERATOR: T_OP_MULTIPLY_ASSIGNMENT .
-
-    $default  reduce using rule 47 (ASSIGNMENT_OPERATOR)
-
-
-State 66
-
-   48 ASSIGNMENT_OPERATOR: T_OP_DIVIDE_ASSIGNMENT .
+   48 ASSIGNMENT_OPERATOR: T_OP_ASSIGNMENT .
 
     $default  reduce using rule 48 (ASSIGNMENT_OPERATOR)
 
 
-State 67
+State 65
 
-   49 ASSIGNMENT_OPERATOR: T_OP_MOD_ASSIGNMENT .
+   49 ASSIGNMENT_OPERATOR: T_OP_ADD_ASSIGNMENT .
 
     $default  reduce using rule 49 (ASSIGNMENT_OPERATOR)
 
 
+State 66
+
+   50 ASSIGNMENT_OPERATOR: T_OP_SUBTRACT_ASSIGNMENT .
+
+    $default  reduce using rule 50 (ASSIGNMENT_OPERATOR)
+
+
+State 67
+
+   51 ASSIGNMENT_OPERATOR: T_OP_MULTIPLY_ASSIGNMENT .
+
+    $default  reduce using rule 51 (ASSIGNMENT_OPERATOR)
+
+
 State 68
 
-   92 IDENTIFIER_OR_LITERAL: T_IDENTIFIER T_OP_INCREMENT .
+   52 ASSIGNMENT_OPERATOR: T_OP_DIVIDE_ASSIGNMENT .
 
-    $default  reduce using rule 92 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 52 (ASSIGNMENT_OPERATOR)
 
 
 State 69
 
-   42 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR . EXPRESSION_GRAMMAR
-   43           | T_IDENTIFIER ASSIGNMENT_OPERATOR . ASSIGNMENT
+   53 ASSIGNMENT_OPERATOR: T_OP_MOD_ASSIGNMENT .
+
+    $default  reduce using rule 53 (ASSIGNMENT_OPERATOR)
+
+
+State 70
+
+  100 IDENTIFIER_OR_LITERAL: T_IDENTIFIER T_OP_INCREMENT .
+
+    $default  reduce using rule 100 (IDENTIFIER_OR_LITERAL)
+
+
+State 71
+
+   46 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR . EXPRESSION_GRAMMAR
+   47           | T_IDENTIFIER ASSIGNMENT_OPERATOR . ASSIGNMENT
 
     T_NUMBER_LITERAL  shift, and go to state 26
     T_STRING_LITERAL  shift, and go to state 27
@@ -1135,16 +1175,16 @@ State 69
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    ASSIGNMENT             go to state 104
-    EXPRESSION_GRAMMAR     go to state 105
-    EXPRESSION_TERM        go to state 48
-    EXPRESSION_F           go to state 49
-    IDENTIFIER_OR_LITERAL  go to state 56
+    ASSIGNMENT             go to state 111
+    EXPRESSION_GRAMMAR     go to state 112
+    EXPRESSION_TERM        go to state 49
+    EXPRESSION_F           go to state 50
+    IDENTIFIER_OR_LITERAL  go to state 58
 
 
-State 70
+State 72
 
    31 IF_BLOCK: T_CONSTRUCT_IF T_PARAN_OPEN . EXPRESSION T_PARAN_CLOSE STATEMENT
 
@@ -1154,25 +1194,25 @@ State 70
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 106
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    IDENTIFIER_OR_LITERAL   go to state 56
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 113
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    IDENTIFIER_OR_LITERAL   go to state 58
 
 
-State 71
+State 73
 
    32 ELSE_BLOCK: T_CONSTRUCT_ELSE STATEMENT .
 
     $default  reduce using rule 32 (ELSE_BLOCK)
 
 
-State 72
+State 74
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN . FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT
 
@@ -1189,53 +1229,55 @@ State 72
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_RETURN          shift, and go to state 39
 
     $default  reduce using rule 34 (FOR_INIT_STATEMENT)
 
-    FOR_INIT_STATEMENT      go to state 107
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    LINE_STATEMENT          go to state 108
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
-
-
-State 73
-
-   91 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
-   92                      | T_IDENTIFIER . T_OP_INCREMENT
-
-    T_OP_INCREMENT  shift, and go to state 68
-
-    $default  reduce using rule 91 (IDENTIFIER_OR_LITERAL)
-
-
-State 74
-
-   60 EXPRESSION_TERM: T_BIT_OP_NOT EXPRESSION_F .
-
-    $default  reduce using rule 60 (EXPRESSION_TERM)
+    FOR_INIT_STATEMENT      go to state 114
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    LINE_STATEMENT          go to state 115
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
 State 75
 
-   93 IDENTIFIER_OR_LITERAL: T_OP_DECREMENT T_IDENTIFIER .
+   99 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
+  100                      | T_IDENTIFIER . T_OP_INCREMENT
 
-    $default  reduce using rule 93 (IDENTIFIER_OR_LITERAL)
+    T_OP_INCREMENT  shift, and go to state 70
+
+    $default  reduce using rule 99 (IDENTIFIER_OR_LITERAL)
 
 
 State 76
 
-   79 COUT: T_IO_COUT T_IO_EXTRACTION . EXTRACTION_LIST
+   64 EXPRESSION_TERM: T_BIT_OP_NOT EXPRESSION_F .
+
+    $default  reduce using rule 64 (EXPRESSION_TERM)
+
+
+State 77
+
+  101 IDENTIFIER_OR_LITERAL: T_OP_DECREMENT T_IDENTIFIER .
+
+    $default  reduce using rule 101 (IDENTIFIER_OR_LITERAL)
+
+
+State 78
+
+   84 COUT: T_IO_COUT T_IO_EXTRACTION . EXTRACTION_LIST
 
     T_NUMBER_LITERAL  shift, and go to state 26
     T_STRING_LITERAL  shift, and go to state 27
@@ -1243,296 +1285,354 @@ State 76
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 109
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    EXTRACTION_LIST         go to state 110
-    IDENTIFIER_OR_LITERAL   go to state 56
-
-
-State 77
-
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
-   62 EXPRESSION_F: T_PARAN_OPEN EXPRESSION . T_PARAN_CLOSE
-
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
-    T_PARAN_CLOSE                shift, and go to state 111
-
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
-
-
-State 78
-
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
-   82 RETURN: T_RETURN EXPRESSION .
-
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
-
-    $default  reduce using rule 82 (RETURN)
-
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 116
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    EXTRACTION_LIST         go to state 117
+    IDENTIFIER_OR_LITERAL   go to state 58
 
 
 State 79
+
+   87 CIN: T_IO_CIN T_IO_INSERTION . INSERTION_LIST
+
+    T_IDENTIFIER  shift, and go to state 118
+
+    INSERTION_LIST  go to state 119
+
+
+State 80
+
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
+   66 EXPRESSION_F: T_PARAN_OPEN EXPRESSION . T_PARAN_CLOSE
+
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
+    T_PARAN_CLOSE                shift, and go to state 120
+
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
+
+
+State 81
+
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
+   90 RETURN: T_RETURN EXPRESSION .
+
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
+
+    $default  reduce using rule 90 (RETURN)
+
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
+
+
+State 82
 
    28 BLOCK_END: T_BLOCK_END .
 
     $default  reduce using rule 28 (BLOCK_END)
 
 
-State 80
+State 83
 
    26 BLOCK: BLOCK_START STATEMENTS BLOCK_END .
 
     $default  reduce using rule 26 (BLOCK)
 
 
-State 81
-
-   86 RELATIONAL_OPERATOR: T_REL_OP_GREATER_THAN .
-
-    $default  reduce using rule 86 (RELATIONAL_OPERATOR)
-
-
-State 82
-
-   88 RELATIONAL_OPERATOR: T_REL_OP_LESS_THAN .
-
-    $default  reduce using rule 88 (RELATIONAL_OPERATOR)
-
-
-State 83
-
-   87 RELATIONAL_OPERATOR: T_REL_OP_GREATER_THAN_EQUAL .
-
-    $default  reduce using rule 87 (RELATIONAL_OPERATOR)
-
-
 State 84
 
-   89 RELATIONAL_OPERATOR: T_REL_OP_LESS_THAN_EQUAL .
+   94 RELATIONAL_OPERATOR: T_REL_OP_GREATER_THAN .
 
-    $default  reduce using rule 89 (RELATIONAL_OPERATOR)
+    $default  reduce using rule 94 (RELATIONAL_OPERATOR)
 
 
 State 85
 
-   85 RELATIONAL_OPERATOR: T_REL_OP_EQUAL .
+   96 RELATIONAL_OPERATOR: T_REL_OP_LESS_THAN .
 
-    $default  reduce using rule 85 (RELATIONAL_OPERATOR)
+    $default  reduce using rule 96 (RELATIONAL_OPERATOR)
 
 
 State 86
 
-   90 RELATIONAL_OPERATOR: T_REL_OP_NOT_EQUAL .
+   95 RELATIONAL_OPERATOR: T_REL_OP_GREATER_THAN_EQUAL .
 
-    $default  reduce using rule 90 (RELATIONAL_OPERATOR)
+    $default  reduce using rule 95 (RELATIONAL_OPERATOR)
 
 
 State 87
 
-   84 LOGICAL_OPERATOR: T_LOG_OP_OR .
+   97 RELATIONAL_OPERATOR: T_REL_OP_LESS_THAN_EQUAL .
 
-    $default  reduce using rule 84 (LOGICAL_OPERATOR)
+    $default  reduce using rule 97 (RELATIONAL_OPERATOR)
 
 
 State 88
 
-   83 LOGICAL_OPERATOR: T_LOG_OP_AND .
+   93 RELATIONAL_OPERATOR: T_REL_OP_EQUAL .
 
-    $default  reduce using rule 83 (LOGICAL_OPERATOR)
+    $default  reduce using rule 93 (RELATIONAL_OPERATOR)
 
 
 State 89
 
-   40 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR . EXPRESSION_GRAMMAR
+   98 RELATIONAL_OPERATOR: T_REL_OP_NOT_EQUAL .
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
-    T_BIT_OP_NOT      shift, and go to state 33
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    EXPRESSION_GRAMMAR     go to state 112
-    EXPRESSION_TERM        go to state 48
-    EXPRESSION_F           go to state 49
-    IDENTIFIER_OR_LITERAL  go to state 56
+    $default  reduce using rule 98 (RELATIONAL_OPERATOR)
 
 
 State 90
 
-   41 CONDITIONAL_EXPRESSION: EXPRESSION RELATIONAL_OPERATOR . EXPRESSION_GRAMMAR
+   92 LOGICAL_OPERATOR: T_LOG_OP_OR .
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
-    T_BIT_OP_NOT      shift, and go to state 33
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    EXPRESSION_GRAMMAR     go to state 113
-    EXPRESSION_TERM        go to state 48
-    EXPRESSION_F           go to state 49
-    IDENTIFIER_OR_LITERAL  go to state 56
+    $default  reduce using rule 92 (LOGICAL_OPERATOR)
 
 
 State 91
 
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_ADD . EXPRESSION_TERM
+   91 LOGICAL_OPERATOR: T_LOG_OP_AND .
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
-    T_BIT_OP_NOT      shift, and go to state 33
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    EXPRESSION_TERM        go to state 114
-    EXPRESSION_F           go to state 49
-    IDENTIFIER_OR_LITERAL  go to state 56
+    $default  reduce using rule 91 (LOGICAL_OPERATOR)
 
 
 State 92
 
-   54 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_SUBTRACT . EXPRESSION_TERM
+   40 BITWISE_OPERATOR: T_BIT_OP_AND .
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
-    T_BIT_OP_NOT      shift, and go to state 33
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    EXPRESSION_TERM        go to state 115
-    EXPRESSION_F           go to state 49
-    IDENTIFIER_OR_LITERAL  go to state 56
+    $default  reduce using rule 40 (BITWISE_OPERATOR)
 
 
 State 93
 
-   56 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MULTIPLY . EXPRESSION_F
+   41 BITWISE_OPERATOR: T_BIT_OP_OR .
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    EXPRESSION_F           go to state 116
-    IDENTIFIER_OR_LITERAL  go to state 56
+    $default  reduce using rule 41 (BITWISE_OPERATOR)
 
 
 State 94
 
-   57 EXPRESSION_TERM: EXPRESSION_TERM T_OP_DIVIDE . EXPRESSION_F
+   42 BITWISE_OPERATOR: T_BIT_OP_XOR .
 
-    T_NUMBER_LITERAL  shift, and go to state 26
-    T_STRING_LITERAL  shift, and go to state 27
-    T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
-    T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
-
-    EXPRESSION_F           go to state 117
-    IDENTIFIER_OR_LITERAL  go to state 56
+    $default  reduce using rule 42 (BITWISE_OPERATOR)
 
 
 State 95
 
-   58 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MOD . EXPRESSION_F
+   45 CONDITIONAL_EXPRESSION: EXPRESSION BITWISE_OPERATOR . EXPRESSION_GRAMMAR
 
     T_NUMBER_LITERAL  shift, and go to state 26
     T_STRING_LITERAL  shift, and go to state 27
     T_CHAR_LITERAL    shift, and go to state 28
-    T_IDENTIFIER      shift, and go to state 73
+    T_IDENTIFIER      shift, and go to state 75
+    T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    EXPRESSION_F           go to state 118
-    IDENTIFIER_OR_LITERAL  go to state 56
+    EXPRESSION_GRAMMAR     go to state 121
+    EXPRESSION_TERM        go to state 49
+    EXPRESSION_F           go to state 50
+    IDENTIFIER_OR_LITERAL  go to state 58
 
 
 State 96
+
+   43 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR . EXPRESSION_GRAMMAR
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_BIT_OP_NOT      shift, and go to state 33
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_GRAMMAR     go to state 122
+    EXPRESSION_TERM        go to state 49
+    EXPRESSION_F           go to state 50
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 97
+
+   44 CONDITIONAL_EXPRESSION: EXPRESSION RELATIONAL_OPERATOR . EXPRESSION_GRAMMAR
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_BIT_OP_NOT      shift, and go to state 33
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_GRAMMAR     go to state 123
+    EXPRESSION_TERM        go to state 49
+    EXPRESSION_F           go to state 50
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 98
+
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_ADD . EXPRESSION_TERM
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_BIT_OP_NOT      shift, and go to state 33
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_TERM        go to state 124
+    EXPRESSION_F           go to state 50
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 99
+
+   58 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_SUBTRACT . EXPRESSION_TERM
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_BIT_OP_NOT      shift, and go to state 33
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_TERM        go to state 125
+    EXPRESSION_F           go to state 50
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 100
+
+   60 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MULTIPLY . EXPRESSION_F
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_F           go to state 126
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 101
+
+   61 EXPRESSION_TERM: EXPRESSION_TERM T_OP_DIVIDE . EXPRESSION_F
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_F           go to state 127
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 102
+
+   62 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MOD . EXPRESSION_F
+
+    T_NUMBER_LITERAL  shift, and go to state 26
+    T_STRING_LITERAL  shift, and go to state 27
+    T_CHAR_LITERAL    shift, and go to state 28
+    T_IDENTIFIER      shift, and go to state 75
+    T_OP_DECREMENT    shift, and go to state 34
+    T_PARAN_OPEN      shift, and go to state 37
+
+    EXPRESSION_F           go to state 128
+    IDENTIFIER_OR_LITERAL  go to state 58
+
+
+State 103
 
    29 STATEMENTS: STATEMENT STATEMENTS .
 
     $default  reduce using rule 29 (STATEMENTS)
 
 
-State 97
+State 104
 
-   67 STATEMENT: LINE_STATEMENT T_SEMI_COLON .
+   71 STATEMENT: LINE_STATEMENT T_SEMI_COLON .
 
-    $default  reduce using rule 67 (STATEMENT)
-
-
-State 98
-
-   42 ASSIGNMENT: T_IDENTIFIER . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
-   43           | T_IDENTIFIER . ASSIGNMENT_OPERATOR ASSIGNMENT
-   75 VARIABLE_LIST: T_IDENTIFIER . T_COMMA VARIABLE_LIST
-   77              | T_IDENTIFIER .
-
-    T_OP_ASSIGNMENT           shift, and go to state 62
-    T_OP_ADD_ASSIGNMENT       shift, and go to state 63
-    T_OP_SUBTRACT_ASSIGNMENT  shift, and go to state 64
-    T_OP_MULTIPLY_ASSIGNMENT  shift, and go to state 65
-    T_OP_DIVIDE_ASSIGNMENT    shift, and go to state 66
-    T_OP_MOD_ASSIGNMENT       shift, and go to state 67
-    T_COMMA                   shift, and go to state 119
-
-    $default  reduce using rule 77 (VARIABLE_LIST)
-
-    ASSIGNMENT_OPERATOR  go to state 69
+    $default  reduce using rule 71 (STATEMENT)
 
 
-State 99
+State 105
 
-   76 VARIABLE_LIST: ASSIGNMENT . T_COMMA VARIABLE_LIST
-   78              | ASSIGNMENT .
+   46 ASSIGNMENT: T_IDENTIFIER . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   47           | T_IDENTIFIER . ASSIGNMENT_OPERATOR ASSIGNMENT
+   80 VARIABLE_LIST: T_IDENTIFIER . T_COMMA VARIABLE_LIST
+   82              | T_IDENTIFIER .
 
-    T_COMMA  shift, and go to state 120
+    T_OP_ASSIGNMENT           shift, and go to state 64
+    T_OP_ADD_ASSIGNMENT       shift, and go to state 65
+    T_OP_SUBTRACT_ASSIGNMENT  shift, and go to state 66
+    T_OP_MULTIPLY_ASSIGNMENT  shift, and go to state 67
+    T_OP_DIVIDE_ASSIGNMENT    shift, and go to state 68
+    T_OP_MOD_ASSIGNMENT       shift, and go to state 69
+    T_COMMA                   shift, and go to state 129
 
-    $default  reduce using rule 78 (VARIABLE_LIST)
+    $default  reduce using rule 82 (VARIABLE_LIST)
+
+    ASSIGNMENT_OPERATOR  go to state 71
 
 
-State 100
+State 106
 
-   74 VARIABLE_DECLARATION: TYPE VARIABLE_LIST .
+   81 VARIABLE_LIST: ASSIGNMENT . T_COMMA VARIABLE_LIST
+   83              | ASSIGNMENT .
 
-    $default  reduce using rule 74 (VARIABLE_DECLARATION)
+    T_COMMA  shift, and go to state 130
+
+    $default  reduce using rule 83 (VARIABLE_LIST)
 
 
-State 101
+State 107
+
+   79 VARIABLE_DECLARATION: TYPE VARIABLE_LIST .
+
+    $default  reduce using rule 79 (VARIABLE_DECLARATION)
+
+
+State 108
 
    15 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER T_PARAN_OPEN . TYPE_LIST T_PARAN_CLOSE T_SEMI_COLON
    16                   | TYPE T_IDENTIFIER T_PARAN_OPEN . T_PARAN_CLOSE T_SEMI_COLON
@@ -1546,238 +1646,277 @@ State 101
     T_TYPE_STRING  shift, and go to state 4
     T_TYPE_CHAR    shift, and go to state 5
     T_TYPE_VOID    shift, and go to state 6
-    T_PARAN_CLOSE  shift, and go to state 121
+    T_PARAN_CLOSE  shift, and go to state 131
 
-    TYPE_LIST                go to state 122
-    FUNCTION_PARAMETER_LIST  go to state 123
-    TYPE                     go to state 124
+    TYPE_LIST                go to state 132
+    FUNCTION_PARAMETER_LIST  go to state 133
+    TYPE                     go to state 134
 
 
-State 102
+State 109
 
     6 INCLUDE: T_HEADER_INCLUDE T_REL_OP_LESS_THAN T_HEADER_FILE T_REL_OP_GREATER_THAN .
 
     $default  reduce using rule 6 (INCLUDE)
 
 
-State 103
+State 110
 
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE T_REL_OP_LESS_THAN T_HEADER_FILE . T_REL_OP_GREATER_THAN
 
-    T_REL_OP_GREATER_THAN  shift, and go to state 125
+    T_REL_OP_GREATER_THAN  shift, and go to state 135
 
 
-State 104
+State 111
 
-   43 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT .
+   47 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT .
 
-    $default  reduce using rule 43 (ASSIGNMENT)
-
-
-State 105
-
-   42 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR .
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
-   54                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
-
-    T_OP_ADD       shift, and go to state 91
-    T_OP_SUBTRACT  shift, and go to state 92
-
-    $default  reduce using rule 42 (ASSIGNMENT)
+    $default  reduce using rule 47 (ASSIGNMENT)
 
 
-State 106
+State 112
+
+   46 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR .
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
+   58                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
+
+    T_OP_ADD       shift, and go to state 98
+    T_OP_SUBTRACT  shift, and go to state 99
+
+    $default  reduce using rule 46 (ASSIGNMENT)
+
+
+State 113
 
    31 IF_BLOCK: T_CONSTRUCT_IF T_PARAN_OPEN EXPRESSION . T_PARAN_CLOSE STATEMENT
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
 
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
-    T_PARAN_CLOSE                shift, and go to state 126
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
+    T_PARAN_CLOSE                shift, and go to state 136
 
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
 
 
-State 107
+State 114
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT . T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT
 
-    T_SEMI_COLON  shift, and go to state 127
+    T_SEMI_COLON  shift, and go to state 137
 
 
-State 108
+State 115
 
    35 FOR_INIT_STATEMENT: LINE_STATEMENT .
 
     $default  reduce using rule 35 (FOR_INIT_STATEMENT)
 
 
-State 109
-
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
-   80 EXTRACTION_LIST: EXPRESSION . T_IO_EXTRACTION EXTRACTION_LIST
-   81                | EXPRESSION .
-
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
-    T_IO_EXTRACTION              shift, and go to state 128
-
-    $default  reduce using rule 81 (EXTRACTION_LIST)
-
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
-
-
-State 110
-
-   79 COUT: T_IO_COUT T_IO_EXTRACTION EXTRACTION_LIST .
-
-    $default  reduce using rule 79 (COUT)
-
-
-State 111
-
-   62 EXPRESSION_F: T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE .
-
-    $default  reduce using rule 62 (EXPRESSION_F)
-
-
-State 112
-
-   40 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR .
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
-   54                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
-
-    T_OP_ADD       shift, and go to state 91
-    T_OP_SUBTRACT  shift, and go to state 92
-
-    $default  reduce using rule 40 (CONDITIONAL_EXPRESSION)
-
-
-State 113
-
-   41 CONDITIONAL_EXPRESSION: EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR .
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
-   54                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
-
-    T_OP_ADD       shift, and go to state 91
-    T_OP_SUBTRACT  shift, and go to state 92
-
-    $default  reduce using rule 41 (CONDITIONAL_EXPRESSION)
-
-
-State 114
-
-   53 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_ADD EXPRESSION_TERM .
-   56 EXPRESSION_TERM: EXPRESSION_TERM . T_OP_MULTIPLY EXPRESSION_F
-   57                | EXPRESSION_TERM . T_OP_DIVIDE EXPRESSION_F
-   58                | EXPRESSION_TERM . T_OP_MOD EXPRESSION_F
-
-    T_OP_MULTIPLY  shift, and go to state 93
-    T_OP_DIVIDE    shift, and go to state 94
-    T_OP_MOD       shift, and go to state 95
-
-    $default  reduce using rule 53 (EXPRESSION_GRAMMAR)
-
-
-State 115
-
-   54 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_SUBTRACT EXPRESSION_TERM .
-   56 EXPRESSION_TERM: EXPRESSION_TERM . T_OP_MULTIPLY EXPRESSION_F
-   57                | EXPRESSION_TERM . T_OP_DIVIDE EXPRESSION_F
-   58                | EXPRESSION_TERM . T_OP_MOD EXPRESSION_F
-
-    T_OP_MULTIPLY  shift, and go to state 93
-    T_OP_DIVIDE    shift, and go to state 94
-    T_OP_MOD       shift, and go to state 95
-
-    $default  reduce using rule 54 (EXPRESSION_GRAMMAR)
-
-
 State 116
 
-   56 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MULTIPLY EXPRESSION_F .
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
+   85 EXTRACTION_LIST: EXPRESSION . T_IO_EXTRACTION EXTRACTION_LIST
+   86                | EXPRESSION .
 
-    $default  reduce using rule 56 (EXPRESSION_TERM)
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
+    T_IO_EXTRACTION              shift, and go to state 138
+
+    $default  reduce using rule 86 (EXTRACTION_LIST)
+
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
 
 
 State 117
 
-   57 EXPRESSION_TERM: EXPRESSION_TERM T_OP_DIVIDE EXPRESSION_F .
+   84 COUT: T_IO_COUT T_IO_EXTRACTION EXTRACTION_LIST .
 
-    $default  reduce using rule 57 (EXPRESSION_TERM)
+    $default  reduce using rule 84 (COUT)
 
 
 State 118
 
-   58 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MOD EXPRESSION_F .
+   88 INSERTION_LIST: T_IDENTIFIER . T_IO_EXTRACTION INSERTION_LIST
+   89               | T_IDENTIFIER .
 
-    $default  reduce using rule 58 (EXPRESSION_TERM)
+    T_IO_EXTRACTION  shift, and go to state 139
+
+    $default  reduce using rule 89 (INSERTION_LIST)
 
 
 State 119
 
-   75 VARIABLE_LIST: T_IDENTIFIER T_COMMA . VARIABLE_LIST
+   87 CIN: T_IO_CIN T_IO_INSERTION INSERTION_LIST .
 
-    T_IDENTIFIER  shift, and go to state 98
-
-    ASSIGNMENT     go to state 99
-    VARIABLE_LIST  go to state 129
+    $default  reduce using rule 87 (CIN)
 
 
 State 120
 
-   76 VARIABLE_LIST: ASSIGNMENT T_COMMA . VARIABLE_LIST
+   66 EXPRESSION_F: T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE .
 
-    T_IDENTIFIER  shift, and go to state 98
-
-    ASSIGNMENT     go to state 99
-    VARIABLE_LIST  go to state 130
+    $default  reduce using rule 66 (EXPRESSION_F)
 
 
 State 121
+
+   45 CONDITIONAL_EXPRESSION: EXPRESSION BITWISE_OPERATOR EXPRESSION_GRAMMAR .
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
+   58                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
+
+    T_OP_ADD       shift, and go to state 98
+    T_OP_SUBTRACT  shift, and go to state 99
+
+    $default  reduce using rule 45 (CONDITIONAL_EXPRESSION)
+
+
+State 122
+
+   43 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR .
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
+   58                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
+
+    T_OP_ADD       shift, and go to state 98
+    T_OP_SUBTRACT  shift, and go to state 99
+
+    $default  reduce using rule 43 (CONDITIONAL_EXPRESSION)
+
+
+State 123
+
+   44 CONDITIONAL_EXPRESSION: EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR .
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . T_OP_ADD EXPRESSION_TERM
+   58                   | EXPRESSION_GRAMMAR . T_OP_SUBTRACT EXPRESSION_TERM
+
+    T_OP_ADD       shift, and go to state 98
+    T_OP_SUBTRACT  shift, and go to state 99
+
+    $default  reduce using rule 44 (CONDITIONAL_EXPRESSION)
+
+
+State 124
+
+   57 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_ADD EXPRESSION_TERM .
+   60 EXPRESSION_TERM: EXPRESSION_TERM . T_OP_MULTIPLY EXPRESSION_F
+   61                | EXPRESSION_TERM . T_OP_DIVIDE EXPRESSION_F
+   62                | EXPRESSION_TERM . T_OP_MOD EXPRESSION_F
+
+    T_OP_MULTIPLY  shift, and go to state 100
+    T_OP_DIVIDE    shift, and go to state 101
+    T_OP_MOD       shift, and go to state 102
+
+    $default  reduce using rule 57 (EXPRESSION_GRAMMAR)
+
+
+State 125
+
+   58 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR T_OP_SUBTRACT EXPRESSION_TERM .
+   60 EXPRESSION_TERM: EXPRESSION_TERM . T_OP_MULTIPLY EXPRESSION_F
+   61                | EXPRESSION_TERM . T_OP_DIVIDE EXPRESSION_F
+   62                | EXPRESSION_TERM . T_OP_MOD EXPRESSION_F
+
+    T_OP_MULTIPLY  shift, and go to state 100
+    T_OP_DIVIDE    shift, and go to state 101
+    T_OP_MOD       shift, and go to state 102
+
+    $default  reduce using rule 58 (EXPRESSION_GRAMMAR)
+
+
+State 126
+
+   60 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MULTIPLY EXPRESSION_F .
+
+    $default  reduce using rule 60 (EXPRESSION_TERM)
+
+
+State 127
+
+   61 EXPRESSION_TERM: EXPRESSION_TERM T_OP_DIVIDE EXPRESSION_F .
+
+    $default  reduce using rule 61 (EXPRESSION_TERM)
+
+
+State 128
+
+   62 EXPRESSION_TERM: EXPRESSION_TERM T_OP_MOD EXPRESSION_F .
+
+    $default  reduce using rule 62 (EXPRESSION_TERM)
+
+
+State 129
+
+   80 VARIABLE_LIST: T_IDENTIFIER T_COMMA . VARIABLE_LIST
+
+    T_IDENTIFIER  shift, and go to state 105
+
+    ASSIGNMENT     go to state 106
+    VARIABLE_LIST  go to state 140
+
+
+State 130
+
+   81 VARIABLE_LIST: ASSIGNMENT T_COMMA . VARIABLE_LIST
+
+    T_IDENTIFIER  shift, and go to state 105
+
+    ASSIGNMENT     go to state 106
+    VARIABLE_LIST  go to state 141
+
+
+State 131
 
    16 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE . T_SEMI_COLON
    21 FUNCTION_DECLARATION: TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE . BLOCK
 
     T_BLOCK_START  shift, and go to state 7
-    T_SEMI_COLON   shift, and go to state 131
+    T_SEMI_COLON   shift, and go to state 142
 
-    BLOCK        go to state 132
+    BLOCK        go to state 143
     BLOCK_START  go to state 18
 
 
-State 122
+State 132
 
    15 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER T_PARAN_OPEN TYPE_LIST . T_PARAN_CLOSE T_SEMI_COLON
 
-    T_PARAN_CLOSE  shift, and go to state 133
+    T_PARAN_CLOSE  shift, and go to state 144
 
 
-State 123
+State 133
 
    19 FUNCTION_DEFINITION: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST . T_PARAN_CLOSE T_SEMI_COLON
    20 FUNCTION_DECLARATION: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST . T_PARAN_CLOSE BLOCK
 
-    T_PARAN_CLOSE  shift, and go to state 134
+    T_PARAN_CLOSE  shift, and go to state 145
 
 
-State 124
+State 134
 
    17 TYPE_LIST: TYPE . T_COMMA TYPE_LIST
    18          | TYPE .
@@ -1786,20 +1925,20 @@ State 124
    24                        | TYPE . T_IDENTIFIER
    25                        | TYPE . T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION
 
-    T_IDENTIFIER  shift, and go to state 135
-    T_COMMA       shift, and go to state 136
+    T_IDENTIFIER  shift, and go to state 146
+    T_COMMA       shift, and go to state 147
 
     $default  reduce using rule 18 (TYPE_LIST)
 
 
-State 125
+State 135
 
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE T_REL_OP_LESS_THAN T_HEADER_FILE T_REL_OP_GREATER_THAN .
 
     $default  reduce using rule 4 (INCLUDE)
 
 
-State 126
+State 136
 
    31 IF_BLOCK: T_CONSTRUCT_IF T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE . STATEMENT
 
@@ -1820,32 +1959,34 @@ State 126
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_SEMI_COLON      shift, and go to state 37
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_SEMI_COLON      shift, and go to state 38
+    T_RETURN          shift, and go to state 39
 
-    BLOCK                   go to state 39
+    BLOCK                   go to state 40
     BLOCK_START             go to state 18
-    IF_BLOCK                go to state 41
-    ELSE_BLOCK              go to state 42
-    FOR_BLOCK               go to state 43
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    BLOCK_STATEMENT         go to state 50
-    STATEMENT               go to state 137
-    LINE_STATEMENT          go to state 52
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
+    IF_BLOCK                go to state 42
+    ELSE_BLOCK              go to state 43
+    FOR_BLOCK               go to state 44
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    BLOCK_STATEMENT         go to state 51
+    STATEMENT               go to state 148
+    LINE_STATEMENT          go to state 53
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
-State 127
+State 137
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON . FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT
 
@@ -1855,23 +1996,23 @@ State 127
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
     $default  reduce using rule 36 (FOR_CONDITION_STATEMENT)
 
-    FOR_CONDITION_STATEMENT  go to state 138
-    CONDITIONAL_EXPRESSION   go to state 139
-    ASSIGNMENT               go to state 45
-    EXPRESSION               go to state 140
-    EXPRESSION_GRAMMAR       go to state 47
-    EXPRESSION_TERM          go to state 48
-    EXPRESSION_F             go to state 49
-    IDENTIFIER_OR_LITERAL    go to state 56
+    FOR_CONDITION_STATEMENT  go to state 149
+    CONDITIONAL_EXPRESSION   go to state 150
+    ASSIGNMENT               go to state 46
+    EXPRESSION               go to state 151
+    EXPRESSION_GRAMMAR       go to state 48
+    EXPRESSION_TERM          go to state 49
+    EXPRESSION_F             go to state 50
+    IDENTIFIER_OR_LITERAL    go to state 58
 
 
-State 128
+State 138
 
-   80 EXTRACTION_LIST: EXPRESSION T_IO_EXTRACTION . EXTRACTION_LIST
+   85 EXTRACTION_LIST: EXPRESSION T_IO_EXTRACTION . EXTRACTION_LIST
 
     T_NUMBER_LITERAL  shift, and go to state 26
     T_STRING_LITERAL  shift, and go to state 27
@@ -1879,79 +2020,88 @@ State 128
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 109
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    EXTRACTION_LIST         go to state 141
-    IDENTIFIER_OR_LITERAL   go to state 56
-
-
-State 129
-
-   75 VARIABLE_LIST: T_IDENTIFIER T_COMMA VARIABLE_LIST .
-
-    $default  reduce using rule 75 (VARIABLE_LIST)
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 116
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    EXTRACTION_LIST         go to state 152
+    IDENTIFIER_OR_LITERAL   go to state 58
 
 
-State 130
+State 139
 
-   76 VARIABLE_LIST: ASSIGNMENT T_COMMA VARIABLE_LIST .
+   88 INSERTION_LIST: T_IDENTIFIER T_IO_EXTRACTION . INSERTION_LIST
 
-    $default  reduce using rule 76 (VARIABLE_LIST)
+    T_IDENTIFIER  shift, and go to state 118
+
+    INSERTION_LIST  go to state 153
 
 
-State 131
+State 140
+
+   80 VARIABLE_LIST: T_IDENTIFIER T_COMMA VARIABLE_LIST .
+
+    $default  reduce using rule 80 (VARIABLE_LIST)
+
+
+State 141
+
+   81 VARIABLE_LIST: ASSIGNMENT T_COMMA VARIABLE_LIST .
+
+    $default  reduce using rule 81 (VARIABLE_LIST)
+
+
+State 142
 
    16 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE T_SEMI_COLON .
 
     $default  reduce using rule 16 (FUNCTION_PROTOTYPE)
 
 
-State 132
+State 143
 
    21 FUNCTION_DECLARATION: TYPE T_IDENTIFIER T_PARAN_OPEN T_PARAN_CLOSE BLOCK .
 
     $default  reduce using rule 21 (FUNCTION_DECLARATION)
 
 
-State 133
+State 144
 
    15 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER T_PARAN_OPEN TYPE_LIST T_PARAN_CLOSE . T_SEMI_COLON
 
-    T_SEMI_COLON  shift, and go to state 142
+    T_SEMI_COLON  shift, and go to state 154
 
 
-State 134
+State 145
 
    19 FUNCTION_DEFINITION: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE . T_SEMI_COLON
    20 FUNCTION_DECLARATION: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE . BLOCK
 
     T_BLOCK_START  shift, and go to state 7
-    T_SEMI_COLON   shift, and go to state 143
+    T_SEMI_COLON   shift, and go to state 155
 
-    BLOCK        go to state 144
+    BLOCK        go to state 156
     BLOCK_START  go to state 18
 
 
-State 135
+State 146
 
    22 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER . T_COMMA FUNCTION_PARAMETER_LIST
    23                        | TYPE T_IDENTIFIER . T_OP_ASSIGNMENT EXPRESSION T_COMMA FUNCTION_PARAMETER_LIST
    24                        | TYPE T_IDENTIFIER .
    25                        | TYPE T_IDENTIFIER . T_OP_ASSIGNMENT EXPRESSION
 
-    T_OP_ASSIGNMENT  shift, and go to state 145
-    T_COMMA          shift, and go to state 146
+    T_OP_ASSIGNMENT  shift, and go to state 157
+    T_COMMA          shift, and go to state 158
 
     $default  reduce using rule 24 (FUNCTION_PARAMETER_LIST)
 
 
-State 136
+State 147
 
    17 TYPE_LIST: TYPE T_COMMA . TYPE_LIST
 
@@ -1962,80 +2112,92 @@ State 136
     T_TYPE_CHAR    shift, and go to state 5
     T_TYPE_VOID    shift, and go to state 6
 
-    TYPE_LIST  go to state 147
-    TYPE       go to state 148
+    TYPE_LIST  go to state 159
+    TYPE       go to state 160
 
 
-State 137
+State 148
 
    31 IF_BLOCK: T_CONSTRUCT_IF T_PARAN_OPEN EXPRESSION T_PARAN_CLOSE STATEMENT .
 
     $default  reduce using rule 31 (IF_BLOCK)
 
 
-State 138
+State 149
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT . T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT
 
-    T_SEMI_COLON  shift, and go to state 149
+    T_SEMI_COLON  shift, and go to state 161
 
 
-State 139
+State 150
 
    37 FOR_CONDITION_STATEMENT: CONDITIONAL_EXPRESSION .
-   51 EXPRESSION: CONDITIONAL_EXPRESSION .
+   55 EXPRESSION: CONDITIONAL_EXPRESSION .
 
     T_SEMI_COLON  reduce using rule 37 (FOR_CONDITION_STATEMENT)
-    $default      reduce using rule 51 (EXPRESSION)
+    $default      reduce using rule 55 (EXPRESSION)
 
 
-State 140
+State 151
 
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
 
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
 
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
-
-
-State 141
-
-   80 EXTRACTION_LIST: EXPRESSION T_IO_EXTRACTION EXTRACTION_LIST .
-
-    $default  reduce using rule 80 (EXTRACTION_LIST)
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
 
 
-State 142
+State 152
+
+   85 EXTRACTION_LIST: EXPRESSION T_IO_EXTRACTION EXTRACTION_LIST .
+
+    $default  reduce using rule 85 (EXTRACTION_LIST)
+
+
+State 153
+
+   88 INSERTION_LIST: T_IDENTIFIER T_IO_EXTRACTION INSERTION_LIST .
+
+    $default  reduce using rule 88 (INSERTION_LIST)
+
+
+State 154
 
    15 FUNCTION_PROTOTYPE: TYPE T_IDENTIFIER T_PARAN_OPEN TYPE_LIST T_PARAN_CLOSE T_SEMI_COLON .
 
     $default  reduce using rule 15 (FUNCTION_PROTOTYPE)
 
 
-State 143
+State 155
 
    19 FUNCTION_DEFINITION: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE T_SEMI_COLON .
 
     $default  reduce using rule 19 (FUNCTION_DEFINITION)
 
 
-State 144
+State 156
 
    20 FUNCTION_DECLARATION: TYPE T_IDENTIFIER T_PARAN_OPEN FUNCTION_PARAMETER_LIST T_PARAN_CLOSE BLOCK .
 
     $default  reduce using rule 20 (FUNCTION_DECLARATION)
 
 
-State 145
+State 157
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER T_OP_ASSIGNMENT . EXPRESSION T_COMMA FUNCTION_PARAMETER_LIST
    25                        | TYPE T_IDENTIFIER T_OP_ASSIGNMENT . EXPRESSION
@@ -2046,18 +2208,18 @@ State 145
     T_IDENTIFIER      shift, and go to state 29
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
-    T_PARAN_OPEN      shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
 
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 150
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    IDENTIFIER_OR_LITERAL   go to state 56
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 162
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    IDENTIFIER_OR_LITERAL   go to state 58
 
 
-State 146
+State 158
 
    22 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER T_COMMA . FUNCTION_PARAMETER_LIST
 
@@ -2068,28 +2230,28 @@ State 146
     T_TYPE_CHAR    shift, and go to state 5
     T_TYPE_VOID    shift, and go to state 6
 
-    FUNCTION_PARAMETER_LIST  go to state 151
-    TYPE                     go to state 152
+    FUNCTION_PARAMETER_LIST  go to state 163
+    TYPE                     go to state 164
 
 
-State 147
+State 159
 
    17 TYPE_LIST: TYPE T_COMMA TYPE_LIST .
 
     $default  reduce using rule 17 (TYPE_LIST)
 
 
-State 148
+State 160
 
    17 TYPE_LIST: TYPE . T_COMMA TYPE_LIST
    18          | TYPE .
 
-    T_COMMA  shift, and go to state 136
+    T_COMMA  shift, and go to state 147
 
     $default  reduce using rule 18 (TYPE_LIST)
 
 
-State 149
+State 161
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON . FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT
 
@@ -2106,81 +2268,88 @@ State 149
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_RETURN          shift, and go to state 39
 
     $default  reduce using rule 38 (FOR_ACTION_STATEMENT)
 
-    FOR_ACTION_STATEMENT    go to state 153
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    LINE_STATEMENT          go to state 154
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
+    FOR_ACTION_STATEMENT    go to state 165
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    LINE_STATEMENT          go to state 166
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
-State 150
+State 162
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION . T_COMMA FUNCTION_PARAMETER_LIST
    25                        | TYPE T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION .
-   40 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   41                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   43 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   44                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   45                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
 
-    T_REL_OP_GREATER_THAN        shift, and go to state 81
-    T_REL_OP_LESS_THAN           shift, and go to state 82
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 83
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 84
-    T_REL_OP_EQUAL               shift, and go to state 85
-    T_REL_OP_NOT_EQUAL           shift, and go to state 86
-    T_LOG_OP_OR                  shift, and go to state 87
-    T_LOG_OP_AND                 shift, and go to state 88
-    T_COMMA                      shift, and go to state 155
+    T_REL_OP_GREATER_THAN        shift, and go to state 84
+    T_REL_OP_LESS_THAN           shift, and go to state 85
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 86
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 87
+    T_REL_OP_EQUAL               shift, and go to state 88
+    T_REL_OP_NOT_EQUAL           shift, and go to state 89
+    T_LOG_OP_OR                  shift, and go to state 90
+    T_LOG_OP_AND                 shift, and go to state 91
+    T_BIT_OP_AND                 shift, and go to state 92
+    T_BIT_OP_OR                  shift, and go to state 93
+    T_BIT_OP_XOR                 shift, and go to state 94
+    T_COMMA                      shift, and go to state 167
 
     $default  reduce using rule 25 (FUNCTION_PARAMETER_LIST)
 
-    LOGICAL_OPERATOR     go to state 89
-    RELATIONAL_OPERATOR  go to state 90
+    BITWISE_OPERATOR     go to state 95
+    LOGICAL_OPERATOR     go to state 96
+    RELATIONAL_OPERATOR  go to state 97
 
 
-State 151
+State 163
 
    22 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER T_COMMA FUNCTION_PARAMETER_LIST .
 
     $default  reduce using rule 22 (FUNCTION_PARAMETER_LIST)
 
 
-State 152
+State 164
 
    22 FUNCTION_PARAMETER_LIST: TYPE . T_IDENTIFIER T_COMMA FUNCTION_PARAMETER_LIST
    23                        | TYPE . T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION T_COMMA FUNCTION_PARAMETER_LIST
    24                        | TYPE . T_IDENTIFIER
    25                        | TYPE . T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION
 
-    T_IDENTIFIER  shift, and go to state 135
+    T_IDENTIFIER  shift, and go to state 146
 
 
-State 153
+State 165
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT . T_PARAN_CLOSE STATEMENT
 
-    T_PARAN_CLOSE  shift, and go to state 156
+    T_PARAN_CLOSE  shift, and go to state 168
 
 
-State 154
+State 166
 
    39 FOR_ACTION_STATEMENT: LINE_STATEMENT .
 
     $default  reduce using rule 39 (FOR_ACTION_STATEMENT)
 
 
-State 155
+State 167
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION T_COMMA . FUNCTION_PARAMETER_LIST
 
@@ -2191,11 +2360,11 @@ State 155
     T_TYPE_CHAR    shift, and go to state 5
     T_TYPE_VOID    shift, and go to state 6
 
-    FUNCTION_PARAMETER_LIST  go to state 157
-    TYPE                     go to state 152
+    FUNCTION_PARAMETER_LIST  go to state 169
+    TYPE                     go to state 164
 
 
-State 156
+State 168
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE . STATEMENT
 
@@ -2216,39 +2385,41 @@ State 156
     T_BIT_OP_NOT      shift, and go to state 33
     T_OP_DECREMENT    shift, and go to state 34
     T_IO_COUT         shift, and go to state 35
-    T_PARAN_OPEN      shift, and go to state 36
-    T_SEMI_COLON      shift, and go to state 37
-    T_RETURN          shift, and go to state 38
+    T_IO_CIN          shift, and go to state 36
+    T_PARAN_OPEN      shift, and go to state 37
+    T_SEMI_COLON      shift, and go to state 38
+    T_RETURN          shift, and go to state 39
 
-    BLOCK                   go to state 39
+    BLOCK                   go to state 40
     BLOCK_START             go to state 18
-    IF_BLOCK                go to state 41
-    ELSE_BLOCK              go to state 42
-    FOR_BLOCK               go to state 43
-    CONDITIONAL_EXPRESSION  go to state 44
-    ASSIGNMENT              go to state 45
-    EXPRESSION              go to state 46
-    EXPRESSION_GRAMMAR      go to state 47
-    EXPRESSION_TERM         go to state 48
-    EXPRESSION_F            go to state 49
-    BLOCK_STATEMENT         go to state 50
-    STATEMENT               go to state 158
-    LINE_STATEMENT          go to state 52
-    VARIABLE_DECLARATION    go to state 53
-    COUT                    go to state 54
-    RETURN                  go to state 55
-    IDENTIFIER_OR_LITERAL   go to state 56
-    TYPE                    go to state 57
+    IF_BLOCK                go to state 42
+    ELSE_BLOCK              go to state 43
+    FOR_BLOCK               go to state 44
+    CONDITIONAL_EXPRESSION  go to state 45
+    ASSIGNMENT              go to state 46
+    EXPRESSION              go to state 47
+    EXPRESSION_GRAMMAR      go to state 48
+    EXPRESSION_TERM         go to state 49
+    EXPRESSION_F            go to state 50
+    BLOCK_STATEMENT         go to state 51
+    STATEMENT               go to state 170
+    LINE_STATEMENT          go to state 53
+    VARIABLE_DECLARATION    go to state 54
+    COUT                    go to state 55
+    CIN                     go to state 56
+    RETURN                  go to state 57
+    IDENTIFIER_OR_LITERAL   go to state 58
+    TYPE                    go to state 59
 
 
-State 157
+State 169
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER T_OP_ASSIGNMENT EXPRESSION T_COMMA FUNCTION_PARAMETER_LIST .
 
     $default  reduce using rule 23 (FUNCTION_PARAMETER_LIST)
 
 
-State 158
+State 170
 
    33 FOR_BLOCK: T_CONSTRUCT_FOR T_PARAN_OPEN FOR_INIT_STATEMENT T_SEMI_COLON FOR_CONDITION_STATEMENT T_SEMI_COLON FOR_ACTION_STATEMENT T_PARAN_CLOSE STATEMENT .
 
