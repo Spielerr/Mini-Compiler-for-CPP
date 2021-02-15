@@ -38,6 +38,7 @@
 	symbol_table* lookup(char *name);
 	void scope_enter();
 	void scope_leave();
+	void display_symbol_table();
 
 	int yyerror(char *s);
 
@@ -52,9 +53,9 @@
 %start START
 
 // ---------------- TOKENS ------------------
-%token T_BOOL_LITERAL T_TYPE_BOOL T_COMMENT
+
 // Datatypes
-%token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_TYPE_CLASS T_USER_DEFINED_TYPE T_NUMBER_LITERAL T_STRING_LITERAL T_CHAR_LITERAL T_IDENTIFIER
+%token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_BOOL T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_TYPE_CLASS T_USER_DEFINED_TYPE T_NUMBER_LITERAL T_STRING_LITERAL T_CHAR_LITERAL T_BOOL_LITERAL T_IDENTIFIER
 
 // Required Construct Tokens
 %token T_CONSTRUCT_IF T_CONSTRUCT_ELSE T_CONSTRUCT_FOR
@@ -91,7 +92,7 @@
 %token T_JUMP_BREAK T_JUMP_EXIT T_JUMP_CONTINUE
 
 // Other Tokens
-%token '(' ')' ';' T_DOUBLE_QUOTES_OPEN T_DOUBLE_QUOTES_CLOSE T_COLON T_SCOPE_RESOLUTION '[' ']' ',' T_RETURN '.' T_SQ_BRACKET
+%token '(' ')' ';' T_DOUBLE_QUOTES_OPEN T_DOUBLE_QUOTES_CLOSE T_COLON T_SCOPE_RESOLUTION '[' ']' ',' T_RETURN '.' T_SQ_BRACKET T_COMMENT
 
 %right T_IO_EXTRACTION T_IO_INSERTION
 
@@ -149,10 +150,8 @@ FUNCTION_PROTOTYPE
 	;
 
 TYPE_LIST
-	: TYPE ',' TYPE_LIST {
-	}
-	| TYPE {
-	}
+	: TYPE ',' TYPE_LIST 
+	| TYPE
 	;
 
 FUNCTION_DEFINITION
@@ -204,7 +203,7 @@ STATEMENTS
 	;
 
 IF_BLOCK
-	: IF_HEADER LINE_STATEMENT {
+	: IF_HEADER LINE_STATEMENT ';' {
 		scope_leave();
 	}
 	| T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK_STATEMENT
@@ -253,7 +252,6 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
-		
 		if (variable_declaration_type[0] != '\0')
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		lookup($1);
@@ -329,20 +327,18 @@ LINE_STATEMENT
 
 VARIABLE_DECLARATION
 	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST {
+		strcpy(variable_declaration_type, "\0");
 	}
 	;
 
 VARIABLE_DECLARATION_TYPE
 	: TYPE {
-			
 		strcpy(variable_declaration_type, $1);
 	}
 	;
 
 VARIABLE_LIST
-	: T_IDENTIFIER ',' VARIABLE_LIST {
-		insert($1, "Identifier", variable_declaration_type, @1.last_line);
-	}
+	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
 	| ASSIGNMENT ',' VARIABLE_LIST
 	| T_IDENTIFIER {
 		insert($1, "Identifier", variable_declaration_type, @1.last_line);
@@ -350,8 +346,13 @@ VARIABLE_LIST
 		$$ = $1;
 	}
 	| ASSIGNMENT {
-		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		strcpy(variable_declaration_type, "\0");
+	}
+	;
+
+VARIABLE_DECLARATION_IDENTIFIER
+	: T_IDENTIFIER {
+		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 	}
 	;
 
@@ -410,15 +411,19 @@ IDENTIFIER_OR_LITERAL
 		$$ = $2;
 	}
 	| T_CHAR_LITERAL {
-		insert($1, "Constant", NULL, @1.last_line);
+		insert($1, "Constant", "Character", @1.last_line);
 		$$ = $1;
 	}
 	| T_NUMBER_LITERAL {
-		insert($1, "Constant", NULL, @1.last_line);
+		insert($1, "Constant", "Number", @1.last_line);
 		$$ = $1;
 	}
 	| T_STRING_LITERAL {
-		insert($1, "Constant", NULL, @1.last_line);
+		insert($1, "Constant", "String", @1.last_line);
+		$$ = $1;
+	}
+	| T_TYPE_BOOL {
+		insert($1, "Constant", "Boolean", @1.last_line);
 		$$ = $1;
 	}
 	;
@@ -440,6 +445,9 @@ TYPE
 		$$ = $1;
 	}
 	| T_TYPE_VOID {
+		$$ = $1;
+	}
+	| T_TYPE_BOOL {
 		$$ = $1;
 	}
 	;
@@ -504,7 +512,7 @@ unsigned int hash_function(char *name)
 }
 symbol_table* lookup(char *name)
 {
-	printf("Look Up Function called with %s\n",name);
+	// printf("Look Up Function called with %s\n",name);
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	// check in parent scope
@@ -520,7 +528,7 @@ symbol_table* lookup(char *name)
 		}
 		temp = temp->next;
 	}
-	printf("ERROR!!!\n");
+	// printf("ERROR!!!\n");
 	return looked_up;
 }
 node_t *create_node(char *name, char *category, char *type, int line_number)
@@ -546,7 +554,7 @@ node_t *create_node(char *name, char *category, char *type, int line_number)
 symbol_table* insert(char *name, char *category, char *type, int line_number)
 {
 	// only in current scope
-	printf("Insert Function called with %s\n",name);
+	// printf("Insert Function called with %s\n",name);
 
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
@@ -556,7 +564,7 @@ symbol_table* insert(char *name, char *category, char *type, int line_number)
 		{
 			if((temp->st->scope==current_scope)&&(strcmp(temp->st->name,name)==0))
 			{
-				printf("Already Exists! ERROR!!!!\n");
+				// printf("Already Exists! ERROR!!!!\n");
 				return NULL;
 			}
 			temp = temp->next;

@@ -14,7 +14,7 @@ float add(int a = 5 + 3, int b = 5, int c) {
     return 5 + 4 == a;
 }
 
-int main() {
+void main() {
 
     int a = 5;
     int b = 4;
@@ -31,13 +31,12 @@ int main() {
         {
             a = a - 1;
         }
-
     }
     for(;a==0;a = a - 1 )
         if (a == 5)
             for(;a==0;a = a - 1)
                 cout << 5 + (5 +(6 + 4) );
-
+    int e;
     cout << a << b == c;
     if ( (5 + 3) ) { cout << a; }
     int a = 6, b = 4, c = 6;
