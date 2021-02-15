@@ -1,5 +1,6 @@
 #!/bin/bash
-lex lex.l
+rm -f lex.yy.c
+lex basic.l
 yacc -d -v yacc.y
-gcc lex.yy.c y.tab.c
+gcc -g lex.yy.c y.tab.c
 ./a.out

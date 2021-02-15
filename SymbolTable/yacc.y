@@ -52,7 +52,7 @@
 %start START
 
 // ---------------- TOKENS ------------------
-
+%token T_BOOL_LITERAL T_TYPE_BOOL T_COMMENT
 // Datatypes
 %token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_TYPE_CLASS T_USER_DEFINED_TYPE T_NUMBER_LITERAL T_STRING_LITERAL T_CHAR_LITERAL T_IDENTIFIER
 
@@ -108,6 +108,7 @@
 %left '&' '|' '^'
 
 %%
+
 
 START
 	: INCLUDE BODY
@@ -252,7 +253,7 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
-		printf("Assignment\n");
+		
 		if (variable_declaration_type[0] != '\0')
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		lookup($1);
@@ -265,12 +266,12 @@ ASSIGNMENT
 	;
 
 ASSIGNMENT_OPERATOR
-	: '='
+	: '='	
 	| T_OP_ADD_ASSIGNMENT
 	| T_OP_SUBTRACT_ASSIGNMENT
 	| T_OP_MULTIPLY_ASSIGNMENT
 	| T_OP_DIVIDE_ASSIGNMENT
-	| T_OP_MOD_ASSIGNMENT
+	| T_OP_MOD_ASSIGNMENT	
 	;
 
 EXPRESSION
@@ -333,7 +334,7 @@ VARIABLE_DECLARATION
 
 VARIABLE_DECLARATION_TYPE
 	: TYPE {
-		printf("variable declared\n");
+			
 		strcpy(variable_declaration_type, $1);
 	}
 	;
@@ -423,7 +424,7 @@ IDENTIFIER_OR_LITERAL
 	;
 
 TYPE
-	: T_TYPE_INT {
+	: T_TYPE_INT {  
 		$$ = $1;
 	}
 	| T_TYPE_DOUBLE {
@@ -451,10 +452,10 @@ int yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test2.cpp","r");
-	printf("Starting!!!!\n");
+	yyin = fopen("test1.cpp","r");
+	
 	init_symbol_table();
-	printf("Symbol Table Initialized\n");
+	
 	// char *variable_declaration_type = (char *)malloc(20 * sizeof(char));
 	// strcpy(variable_declaration_type, "\0");
     int isError = yyparse();
@@ -464,6 +465,7 @@ int main(int argc, char *argv[]) {
     }
     else {
         printf("Parsing successful!!!\n");
+		display_symbol_table();
     }
     return 0;
 
@@ -527,7 +529,15 @@ node_t *create_node(char *name, char *category, char *type, int line_number)
 	new_node->st = (symbol_table*)malloc(sizeof(symbol_table));
 	strcpy(new_node->st->name,name);
 	strcpy(new_node->st->category,category);
-	strcpy(new_node->st->type,type);
+	if(type != NULL)
+	{
+		strcpy(new_node->st->type,type);
+	}
+	else
+	{
+		char dummy[] = "dummy";
+		strcpy(new_node->st->type, dummy);
+	}
 	new_node->st->line_number = line_number;
 	new_node->st->scope = current_scope;
 	new_node->next = NULL;
@@ -565,13 +575,13 @@ symbol_table* insert(char *name, char *category, char *type, int line_number)
 void display_symbol_table()
 {
 	printf("---------SYMBOL TABLE---------\n");
-	printf("Token\tType\tScope\tLine Number\n");
+	printf("Token\tCategory\tType\tLine Number\tScope\n");
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			printf("%s\t%s\t%s\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number);
+			printf("%s\t%s\t%s\t%d\t\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
 			temp = temp->next;
 		}
 	}
