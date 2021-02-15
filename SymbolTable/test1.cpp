@@ -7,7 +7,7 @@ int y(int a, float b);
 int z(int, float);
 int t(int a = 5 + 3, int b = 5, int c);
 
-float add(int a = 5+3, int b = 5, int c) {
+float add(int a = 5 + 3, int b = 5, int c) {
     int a = 5;
     int c = 5;
     b = 6 + 5;
@@ -29,18 +29,17 @@ int main() {
     {
         if(a==0)
         {
-            a=a-1;
+            a = a - 1;
         }
 
     }
-    for(;a==0;a=a-1)
+    for(;a==0;a = a - 1 )
         if (a == 5)
-            for(;a==0;a=a-1)
-                cout << 5 + (5 + (6 + 4) );
+            for(;a==0;a = a - 1)
+                cout << 5 + (5 +(6 + 4) );
 
     cout << a << b == c;
-    if ( (5+3) ) { cout << a; }
+    if ( (5 + 3) ) { cout << a; }
     int a = 6, b = 4, c = 6;
     cout << (a = b == c) << endl;
-
 }

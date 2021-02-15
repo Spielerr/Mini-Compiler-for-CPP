@@ -116,18 +116,18 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 
 %%
 
-int yywrap(void)
-{
-	return 1;
-}
+	int yywrap(void)
+	{
+		return 1;
+	}
 
-/* int main()
-{
-	yyin = fopen("test_basic.cpp","r");
-	yylex();
-} */
+	/* int main()
+	{
+		yyin = fopen("test_basic.cpp","r");
+		yylex();
+	} */
 
 
-/* 
-check if [] in arrays is being handled properly : treating [, ] as single char operators and whats inside as identifier or literal
- */
+	/* 
+	check if [] in arrays is being handled properly : treating [, ] as single char operators and whats inside as identifier or literal
+	*/
