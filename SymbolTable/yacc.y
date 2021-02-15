@@ -47,6 +47,8 @@
 	int scope_counter = 0;
 
 	char variable_declaration_type[20] = "\0";
+	int construct_nesting_level = 0;
+	int encountered_construct_nesting_level = 0;
 
 %}
 
@@ -202,11 +204,22 @@ STATEMENTS
 	| STATEMENT
 	;
 
-IF_BLOCK
+SINGLE_LINE_IF
 	: IF_HEADER LINE_STATEMENT ';' {
 		scope_leave();
 	}
-	| T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK_STATEMENT
+	| IF_HEADER ';' {
+		scope_leave();
+	}
+	| IF_HEADER CONSTRUCT {
+		printf("if_header_construct:%d scope:%d \n", @1.last_line, current_scope);
+		scope_leave();
+		printf("if_header_construct:%d scope:%d \n", @1.last_line, current_scope);
+	}
+	;
+
+BLOCK_IF
+	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK
 	;
 
 IF_HEADER
@@ -215,12 +228,50 @@ IF_HEADER
 	}
 	;
 
-ELSE_BLOCK
-	: T_CONSTRUCT_ELSE STATEMENT
+SINGLE_LINE_ELSE
+	: ELSE_HEADER LINE_STATEMENT ';'{
+		scope_leave();
+	}
+	| ELSE_HEADER ';'{
+		scope_leave();
+	}
+	| ELSE_HEADER CONSTRUCT {
+		scope_leave();
+	}
 	;
 
-FOR_BLOCK
-	: T_CONSTRUCT_FOR '(' FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' STATEMENT
+BLOCK_ELSE
+	: T_CONSTRUCT_ELSE BLOCK
+	;
+
+ELSE_HEADER
+	: T_CONSTRUCT_ELSE {
+		scope_enter();
+	}
+	;
+
+SINGLE_LINE_FOR
+	: FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'{
+		scope_leave();
+	}
+	| FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';'{
+		scope_leave();
+	}
+	| FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT{
+		scope_leave();
+	}
+	;
+
+BLOCK_FOR
+	: FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'{
+		scope_leave();
+	}
+	;
+
+FOR_HEADER
+	: T_CONSTRUCT_FOR '(' {
+		scope_enter();
+	}
 	;
 
 FOR_INIT_STATEMENT
@@ -297,16 +348,27 @@ EXPRESSION_F
 	| '(' EXPRESSION ')'
 	;
 
-BLOCK_STATEMENT
-	: IF_BLOCK
-	| ELSE_BLOCK
-	| FOR_BLOCK
-	| BLOCK
+CONSTRUCT
+	: SINGLE_LINE_CONSTRUCT
+	| BLOCK_CONSTRUCT
+	;
+
+BLOCK_CONSTRUCT
+	: BLOCK_FOR
+	| BLOCK_IF
+	| BLOCK_ELSE
+	;
+
+SINGLE_LINE_CONSTRUCT
+	: SINGLE_LINE_FOR
+	| SINGLE_LINE_IF
+	| SINGLE_LINE_ELSE
 	;
 
 STATEMENT
 	: LINE_STATEMENT ';'
-	| BLOCK_STATEMENT
+	| CONSTRUCT
+	| BLOCK
 	| ';'
 	;
 
@@ -485,8 +547,8 @@ void scope_enter()
 	current_scope = scope_counter;
 }
 void scope_leave()
-{
-	current_scope = scopes[scope_counter];
+{	
+	current_scope = scopes[current_scope];
 }
 void init_symbol_table()
 {
