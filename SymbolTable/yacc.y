@@ -252,6 +252,7 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
+		printf("Assignment\n");
 		if (variable_declaration_type[0] != '\0')
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		lookup($1);
@@ -332,6 +333,7 @@ VARIABLE_DECLARATION
 
 VARIABLE_DECLARATION_TYPE
 	: TYPE {
+		printf("variable declared\n");
 		strcpy(variable_declaration_type, $1);
 	}
 	;
@@ -449,8 +451,10 @@ int yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test1.cpp","r");
+	yyin = fopen("test2.cpp","r");
+	printf("Starting!!!!\n");
 	init_symbol_table();
+	printf("Symbol Table Initialized\n");
 	// char *variable_declaration_type = (char *)malloc(20 * sizeof(char));
 	// strcpy(variable_declaration_type, "\0");
     int isError = yyparse();
@@ -476,9 +480,14 @@ void scope_leave()
 }
 void init_symbol_table()
 {
+	// node_t** complete_symbol_table = (node_t**)malloc(sizeof(node_t*)*SYMBOL_TABLE_SIZE);
+
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
-		complete_symbol_table[i]->st = NULL;
+		// printf("complete symbol table -> i\n");
+		// complete_symbol_table[i]->st = (symbol_table*)(malloc(sizeof(symbol_table)));
+		// printf("complete symbol table -> i\n");
+		complete_symbol_table[i] = NULL;
 	}
 }
 unsigned int hash_function(char *name)
@@ -493,6 +502,7 @@ unsigned int hash_function(char *name)
 }
 symbol_table* lookup(char *name)
 {
+	printf("Look Up Function called with %s\n",name);
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	// check in parent scope
@@ -526,6 +536,8 @@ node_t *create_node(char *name, char *category, char *type, int line_number)
 symbol_table* insert(char *name, char *category, char *type, int line_number)
 {
 	// only in current scope
+	printf("Insert Function called with %s\n",name);
+
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	if(temp!=NULL)
@@ -559,7 +571,8 @@ void display_symbol_table()
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			// printf("%s\t%s\t%s\t");
+			printf("%s\t%s\t%s\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number);
+			temp = temp->next;
 		}
 	}
 }

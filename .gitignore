@@ -1,4 +1,6 @@
 *.tab.c
 *.tab.h
 *.out
+a.out
+y.output
 *.yy.c
