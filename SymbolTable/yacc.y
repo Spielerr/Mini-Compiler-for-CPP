@@ -459,7 +459,7 @@ symbol_table* lookup(char *name)
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	// check in parent scope
-	node_t* looked_up = NULL;
+	symbol_table* looked_up = NULL;
 	while(temp!=NULL)
 	{
 		if((strcmp(temp->st->name,name)==0))
