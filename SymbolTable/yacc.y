@@ -28,17 +28,19 @@
 
 	node_t* complete_symbol_table[SYMBOL_TABLE_SIZE];
 	unsigned int hash_function(char *name);
-	symbol_table* insert();
-	node_t *create_node(char *name);
+	// node_t *create_node(char *name, char *category, char *type, int line_number);
 
 	symbol_table* insert(char *name, char *category, char *type, int line_number);
-	symbol_table* lookup_and_insert(char *name, char *category, char *type, int line_number);
+	// symbol_table* lookup_and_insert(char *name, char *category, char *type, int line_number);
 	symbol_table* lookup(char *name);
 	void scope_enter();
 	void scope_leave();
 
-	char *variable_declaration_type = (char *)malloc(20 * sizeof(char));
-	strcpy(variable_declaration_type, "\0");
+	int current_scope = 0;
+	int scopes[SYMBOL_TABLE_SIZE];
+	int scope_counter = 0;
+
+	char variable_declaration_type[20] = "\0";
 
 %}
 
@@ -133,57 +135,46 @@ FUNCTION
 
 FUNCTION_PROTOTYPE
 	: TYPE T_IDENTIFIER '(' TYPE_LIST ')' ';' {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Identifier', $1, @1.last_line );
 	}
 	| TYPE T_IDENTIFIER '(' ')' ';' {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Identifier', $1, @1.last_line );
 	}
 	;
 
 TYPE_LIST
 	: TYPE ',' TYPE_LIST {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	| TYPE {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	;
 
 FUNCTION_DEFINITION
 	: TYPE T_IDENTIFIER '(' FUNCTION_PARAMETER_LIST ')' ';' {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Function', $1, @1.last_line);
 	}
 	;
 
 FUNCTION_DECLARATION
 	: TYPE T_IDENTIFIER '(' FUNCTION_PARAMETER_LIST ')' BLOCK {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Function', $1, @1.last_line);
 	}
 	| TYPE T_IDENTIFIER '(' ')' BLOCK {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Function', $1, @1.last_line);
 	}
 	;
 
 FUNCTION_PARAMETER_LIST
 	: TYPE T_IDENTIFIER ',' FUNCTION_PARAMETER_LIST {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Identifier', $1, @1.last_line);
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Identifier', $1, @1.last_line);
 	}
 	| TYPE T_IDENTIFIER {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Identifier', $1, @1.last_line);
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		insert($2, 'Identifier', $1, @1.last_line);
 	}
 	;
@@ -257,12 +248,20 @@ CONDITIONAL_EXPRESSION
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
 		if (variable_declaration_type[0] != '\0')
+<<<<<<< HEAD
 			insert($1, 'Identifier', variable_declaration_type, @1.last_line);
+=======
+			insert($1, "Identifier", variable_declaration_type, @1.last_line);
+>>>>>>> b38f5cfe1885f41d7dd119fd18ba218b7b29dbea
 		lookup($1);
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
 		if (variable_declaration_type[0] != '\0')
+<<<<<<< HEAD
 			insert($1, 'Identifier', variable_declaration_type, @1.last_line);
+=======
+			insert($1, "Identifier", variable_declaration_type, @1.last_line);
+>>>>>>> b38f5cfe1885f41d7dd119fd18ba218b7b29dbea
 		lookup($1);
 	}
 	;
@@ -330,7 +329,12 @@ LINE_STATEMENT
 	;
 
 VARIABLE_DECLARATION
+<<<<<<< HEAD
 	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST
+=======
+	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST {
+	}
+>>>>>>> b38f5cfe1885f41d7dd119fd18ba218b7b29dbea
 	;
 
 VARIABLE_DECLARATION_TYPE
@@ -342,15 +346,15 @@ VARIABLE_DECLARATION_TYPE
 
 VARIABLE_LIST
 	: T_IDENTIFIER ',' VARIABLE_LIST {
-		insert($1, 'Identifier', variable_declaration_type, @1.last_line);
+		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 	}
 	| ASSIGNMENT ',' VARIABLE_LIST
 	| T_IDENTIFIER {
-		insert($1, 'Identifier', variable_declaration_type, @1.last_line);
+		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		strcpy(variable_declaration_type, "\0");
 	}
 	| ASSIGNMENT {
-		insert($1, 'Identifier', variable_declaration_type, @1.last_line);
+		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		strcpy(variable_declaration_type, "\0");
 	}
 	;
@@ -402,34 +406,25 @@ IDENTIFIER_OR_LITERAL
 		lookup($2);
 	}
 	| T_CHAR_LITERAL {
-		lookup_and_insert($1, 'Constant', NULL, @1.last_line);
 	}
 	| T_NUMBER_LITERAL {
-		lookup_and_insert($1, 'Constant', NULL, @1.last_line);
 	}
 	| T_STRING_LITERAL {
-		lookup_and_insert($1, 'Constant', NULL, @1.last_line);
 	}
 	;
 
 TYPE
 	: T_TYPE_INT {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	| T_TYPE_DOUBLE {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	| T_TYPE_FLOAT {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	| T_TYPE_CHAR {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	| T_TYPE_STRING {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	| T_TYPE_VOID {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 	}
 	;
 
@@ -442,7 +437,9 @@ int yyerror(){
 int main(int argc, char *argv[]) {
 
 	yyin = fopen("test1.cpp","r");
-
+	init_symbol_table();
+	// char *variable_declaration_type = (char *)malloc(20 * sizeof(char));
+	// strcpy(variable_declaration_type, "\0");
     int isError = yyparse();
 
     if (isError) {
@@ -454,76 +451,102 @@ int main(int argc, char *argv[]) {
     return 0;
 
 }
-// void init_symbol_table()
-// {
-// 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
-// 	{
-// 		complete_symbol_table[i]->st = NULL;
-// 	}
-// }
-// unsigned int hash_function(char *name)
-// {
-// 	unsigned int hash_value = 0;
-// 	for(;*name!='\0';++name)
-// 	{
-// 		hash_value = hash_value +(int)(*name);
-// 	}
-// 	hash_value = hash_value % SYMBOL_TABLE_SIZE;
-// 	return hash_value;
-// }
-// symbol_table* lookup(char *name)
-// {
-// 	unsigned int hash_value = hash_function(name);
-// 	node_t *temp = complete_symbol_table[hash_value];
+void scope_enter()
+{
+	scope_counter+=1;
+	scopes[scope_counter] = current_scope;
+	current_scope = scope_counter;
+}
+void scope_leave()
+{
+	current_scope = scopes[scope_counter];
+}
+void init_symbol_table()
+{
+	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
+	{
+		complete_symbol_table[i]->st = NULL;
+	}
+}
+unsigned int hash_function(char *name)
+{
+	unsigned int hash_value = 0;
+	for(;*name!='\0';++name)
+	{
+		hash_value = hash_value +(int)(*name);
+	}
+	hash_value = hash_value % SYMBOL_TABLE_SIZE;
+	return hash_value;
+}
+symbol_table* lookup(char *name)
+{
+	unsigned int hash_value = hash_function(name);
+	node_t *temp = complete_symbol_table[hash_value];
+	// check in parent scope
+	symbol_table* looked_up = NULL;
+	while(temp!=NULL)
+	{
+		if((strcmp(temp->st->name,name)==0))
+		{
+			if(temp->st->scope==current_scope)
+				return temp->st;
+			if(temp->st->scope==scopes[current_scope])
+				looked_up = temp->st;
+		}
+		temp = temp->next;
+	}
+	printf("ERROR!!!\n");
+	return looked_up;
+}
+node_t *create_node(char *name, char *category, char *type, int line_number)
+{
+	node_t *new_node = (node_t*)malloc(sizeof(node_t));
+	new_node->st = (symbol_table*)malloc(sizeof(symbol_table));
+	strcpy(new_node->st->name,name);
+	strcpy(new_node->st->category,category);
+	strcpy(new_node->st->type,type);
+	new_node->st->line_number = line_number;
+	new_node->st->scope = current_scope;
+	new_node->next = NULL;
+	return new_node;
+}
+symbol_table* insert(char *name, char *category, char *type, int line_number)
+{
+	// only in current scope
+	unsigned int hash_value = hash_function(name);
+	node_t *temp = complete_symbol_table[hash_value];
+	if(temp!=NULL)
+	{
+		while(temp->next!=NULL)
+		{
+			if((temp->st->scope==current_scope)&&(strcmp(temp->st->name,name)==0))
+			{
+				printf("Already Exists! ERROR!!!!\n");
+				return NULL;
+			}
+			temp = temp->next;
+		}
 
-// 	while(temp!=NULL)
-// 	{
-// 		if(strcmp(temp->st->name,name)==0)
-// 		{
-// 			return temp->st;
-// 		}
-// 		temp = temp->next;
-// 	}
-// 	return NULL;
-// }
-// node_t *create_node(char *name)
-// {
-// 	node_t *new_node = (node_t*)malloc(sizeof(node_t));
-// 	new_node->st = (symbol_table*)malloc(sizeof(symbol_table));
-// 	strcpy(new_node->st->name,name);
-// 	new_node->next = NULL;
-// 	return new_node;
-// }
-// symbol_table* insert(char *name)
-// {
-// 	unsigned int hash_value = hash_function(name);
-// 	node_t *temp = complete_symbol_table[hash_value];
-// 	if(temp!=NULL)
-// 	{
-// 		while(temp->next!=NULL)
-// 		{
-// 			temp = temp->next;
-// 		}
-// 		// temp->next = create_node();
-// 		temp = temp->next;
-// 	}
-// 	else
-// 	{
-// 		// complete_symbol_table[hash_value] = create_node();
-// 		temp = 	complete_symbol_table[hash_value];
-// 	}
-// 	return temp->st;
-// }
-// void display_symbol_table()
-// {
-// 	printf("---------SYMBOL TABLE---------\n");
-// 	printf("Token\tType\tScope\tLine Number\n");
-// 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
-// 	{
-// 		node_t* temp = complete_symbol_table[i];
-// 		while(temp!=NULL)
-// 		{
-// 			printf("%s\t%s\t%s\t");
-// 		}
-// 	}
-// }
+		temp->next = create_node(name,category,type,line_number);
+		temp = temp->next;
+	}
+	else
+	{
+		complete_symbol_table[hash_value] = create_node(name,category,type,line_number);
+		temp = 	complete_symbol_table[hash_value];
+	}
+	return temp->st;
+}
+void display_symbol_table()
+{
+	printf("---------SYMBOL TABLE---------\n");
+	printf("Token\tType\tScope\tLine Number\n");
+	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
+	{
+		node_t* temp = complete_symbol_table[i];
+		while(temp!=NULL)
+		{
+			printf("%s\t%s\t%s\t");
+		}
+	}
+}
