@@ -143,12 +143,8 @@ FUNCTION
 	;
 
 FUNCTION_PROTOTYPE
-	: TYPE T_IDENTIFIER '(' TYPE_LIST ')' ';' {
-		insert($2, "Identifier", $1, @2.last_line );
-	}
-	| TYPE T_IDENTIFIER '(' ')' ';' {
-		insert($2, "Identifier", $1, @2.last_line );
-	}
+	: FUNCTION_PREFIX TYPE_LIST ')' ';'
+	| FUNCTION_PREFIX ')' ';'
 	;
 
 TYPE_LIST
@@ -157,17 +153,17 @@ TYPE_LIST
 	;
 
 FUNCTION_DEFINITION
-	: TYPE T_IDENTIFIER '(' FUNCTION_PARAMETER_LIST ')' ';' {
-		insert($2, "Function", $1, @2.last_line);
+	: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' ';' {
+		scope_leave();
 	}
 	;
 
 FUNCTION_DECLARATION
-	: TYPE T_IDENTIFIER '(' FUNCTION_PARAMETER_LIST ')' BLOCK {
-		insert($2, "Function", $1, @2.last_line);
+	: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' '{' STATEMENTS '}' {
+		scope_leave();
 	}
-	| TYPE T_IDENTIFIER '(' ')' BLOCK {
-		insert($2, "Function", $1, @2.last_line);
+	| FUNCTION_PREFIX ')' '{' STATEMENTS '}' {
+		scope_leave();
 	}
 	;
 
@@ -186,6 +182,12 @@ FUNCTION_PARAMETER_LIST
 	}
 	;
 
+FUNCTION_PREFIX
+	: TYPE T_IDENTIFIER '(' {
+		insert($2, "Identifier", $1, @2.last_line );
+		scope_enter();
+	}
+	;
 
 BLOCK
 	: BLOCK_START STATEMENTS BLOCK_END
@@ -205,16 +207,14 @@ STATEMENTS
 	;
 
 SINGLE_LINE_IF
-	: IF_HEADER LINE_STATEMENT ';' {
+	: IF_PREFIX LINE_STATEMENT ';' {
 		scope_leave();
 	}
-	| IF_HEADER ';' {
+	| IF_PREFIX ';' {
 		scope_leave();
 	}
-	| IF_HEADER CONSTRUCT {
-		printf("if_header_construct:%d scope:%d \n", @1.last_line, current_scope);
+	| IF_PREFIX CONSTRUCT {
 		scope_leave();
-		printf("if_header_construct:%d scope:%d \n", @1.last_line, current_scope);
 	}
 	;
 
@@ -222,20 +222,20 @@ BLOCK_IF
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK
 	;
 
-IF_HEADER
+IF_PREFIX
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' {
 		scope_enter();
 	}
 	;
 
 SINGLE_LINE_ELSE
-	: ELSE_HEADER LINE_STATEMENT ';'{
+	: ELSE_PREFIX LINE_STATEMENT ';'{
 		scope_leave();
 	}
-	| ELSE_HEADER ';'{
+	| ELSE_PREFIX ';'{
 		scope_leave();
 	}
-	| ELSE_HEADER CONSTRUCT {
+	| ELSE_PREFIX CONSTRUCT {
 		scope_leave();
 	}
 	;
@@ -244,31 +244,31 @@ BLOCK_ELSE
 	: T_CONSTRUCT_ELSE BLOCK
 	;
 
-ELSE_HEADER
+ELSE_PREFIX
 	: T_CONSTRUCT_ELSE {
 		scope_enter();
 	}
 	;
 
 SINGLE_LINE_FOR
-	: FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'{
+	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'{
 		scope_leave();
 	}
-	| FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';'{
+	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';'{
 		scope_leave();
 	}
-	| FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT{
+	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT{
 		scope_leave();
 	}
 	;
 
 BLOCK_FOR
-	: FOR_HEADER FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'{
+	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'{
 		scope_leave();
 	}
 	;
 
-FOR_HEADER
+FOR_PREFIX
 	: T_CONSTRUCT_FOR '(' {
 		scope_enter();
 	}
@@ -645,13 +645,13 @@ symbol_table* insert(char *name, char *category, char *type, int line_number)
 void display_symbol_table()
 {
 	printf("---------SYMBOL TABLE---------\n");
-	printf("Token\tCategory\tType\tLine Number\tScope\n");
+	printf("Token\t\tCategory\t\tType\t\tLine Number\t\tScope\n");
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			printf("%s\t%s\t%s\t%d\t\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
+			printf("%s\t\t%s\t\t%s\t\t%d\t\t\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
 			temp = temp->next;
 		}
 	}
