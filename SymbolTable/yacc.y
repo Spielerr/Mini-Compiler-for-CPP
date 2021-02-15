@@ -207,7 +207,16 @@ STATEMENTS
 	;
 
 IF_BLOCK
-	: T_CONSTRUCT_IF '(' EXPRESSION ')' STATEMENT
+	: IF_HEADER LINE_STATEMENT {
+		scope_leave();
+	}
+	| T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK_STATEMENT
+	;
+
+IF_HEADER
+	: T_CONSTRUCT_IF '(' EXPRESSION ')' {
+		scope_enter();
+	}
 	;
 
 ELSE_BLOCK
@@ -247,12 +256,12 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
-		if (variable_declaration_type[0] != '\0)
+		if (variable_declaration_type[0] != '\0')
 			insert($1, 'Identifier', variable_declaration_type, @1.last_line);
 		lookup($1);
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
-		if (variable_declaration_type[0] != '\0)
+		if (variable_declaration_type[0] != '\0')
 			insert($1, 'Identifier', variable_declaration_type, @1.last_line);
 		lookup($1);
 	}
@@ -321,14 +330,14 @@ LINE_STATEMENT
 	;
 
 VARIABLE_DECLARATION
-	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
-		strcpy(variable_declaration_type, $1);
-	}
+	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST
 	;
 
 VARIABLE_DECLARATION_TYPE
-	: TYPE
+	: TYPE {
+		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
+		strcpy(variable_declaration_type, $1);
+	}
 	;
 
 VARIABLE_LIST
