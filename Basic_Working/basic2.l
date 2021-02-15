@@ -39,28 +39,9 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 
 ^"using namespace std;"				{ ; }
 
-	/* doc says to return ASCII values of single char operators - means no tokens, so how to use in yacc? */
-	/* "+"								{ return (T_OP_ADD);  }
-	"-"								{ return (T_OP_SUBTRACT);  }
-	"*"								{ return (T_OP_MULTIPLY);  }
-	"/"								{ return (T_OP_SUBTRACT);  }
-	"%"								{ return (T_OP_MODULUS);  }
-	"<"								{ return (T_REL_OP_LESSER_THAN);  }
-	">"								{ return (T_REL_OP_GREATER_THAN);  }
-	"("								{ return (T_PAREN_OPEN);  }
-	")"								{ return (T_PAREN_CLOSE);  }
-	";"								{ return (T_SEMI_COLON);  }
-	"{"								{ return (T_BLOCK_START);  }
-	"}"								{ return (T_BLOCK_END);  }
-	","								{ return (T_COMMA);  }
-	"="								{ return (T_OP_ASSIGNMENT);}
-	"!"								{ return (T_LOG_OP_NOT);}
-	"."								{ return (T_DOT);}
-	"["								{ return (T_SQ_OPEN);}
-	"]"								{ return (T_SQ_CLOSE);} */
-
 	/* for all single characters - including operators */
-"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"{"|"}"|")"|"("		{ yylval = yytext[0]; return (int)yytext[0]; }
+"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"{"|"}"|")"|"("|"|"|"&"|"^"	{ yylval = yytext[0]; return (int)yytext[0]; }
+{ws}+							{ /* Throw away whitespace */ }
 .								{ printf("Invalid character\n"); }
 
 	/* for all multiple characters operators */
@@ -93,6 +74,9 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 "cout"							{ yylval = strdup(yytext); return (T_IO_CIN); }
 "printf"						{ yylval = strdup(yytext); return (T_IO_PRINTF); }
 "scanf"							{ yylval = strdup(yytext); return (T_IO_SCANF); }
+"break"							{ yylval = strdup(yytext); return (T_JUMP_BREAK); }
+"continue"						{ yylval = strdup(yytext); return (T_JUMP_CONTINUE); }
+"exit"							{ yylval = strdup(yytext); return (T_JUMP_EXIT); }
 
 
 	/* for all literals */
@@ -127,8 +111,6 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 									}
 									return T_IDENTIFIER; 
 								}
-
-{ws}+							{ /* Throw away whitespace */ }
 
 {exp_number}					{ yylval = atof(yytext); return T_TYPE_DOUBLE; }
 
