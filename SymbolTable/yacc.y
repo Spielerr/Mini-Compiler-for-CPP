@@ -4,6 +4,8 @@
 	#include <stdlib.h>
 	#include <string.h>
 
+	#define YYSTYPE char *
+
 	#define SYMBOL_TABLE_SIZE 1000
 	#define MAX_IDENTIFIER_SIZE 32
 
@@ -32,9 +34,12 @@
 
 	symbol_table* insert(char *name, char *category, char *type, int line_number);
 	// symbol_table* lookup_and_insert(char *name, char *category, char *type, int line_number);
+	void init_symbol_table();
 	symbol_table* lookup(char *name);
 	void scope_enter();
 	void scope_leave();
+
+	int yyerror(char *s);
 
 	int current_scope = 0;
 	int scopes[SYMBOL_TABLE_SIZE];
@@ -70,7 +75,7 @@
 %token T_LOG_OP_OR T_LOG_OP_AND
 
 // Bitwise Operators
-%token T_BIT_OP_AND T_BIT_OP_OR T_BIT_OP_XOR T_BIT_OP_RIGHT_SHIFT T_BIT_OP_LEFT_SHIFT '!'
+%token '&' '|' '^' T_BIT_OP_RIGHT_SHIFT T_BIT_OP_LEFT_SHIFT '!'
 
 // Assignment Operators
 %token '=' T_OP_ADD_ASSIGNMENT T_OP_SUBTRACT_ASSIGNMENT T_OP_MULTIPLY_ASSIGNMENT T_OP_DIVIDE_ASSIGNMENT T_OP_MOD_ASSIGNMENT
@@ -79,14 +84,14 @@
 %token '+' '-' '*' '/' '%' T_OP_INCREMENT T_OP_DECREMENT
 
 // Input Output Tokens
-// Insertion: >> for cin, Extraction: << for cout
+// Insertion: << for cin, Extraction: >> for cout
 %token T_IO_COUT T_IO_CIN T_IO_PRINTF T_IO_SCANF T_IO_GETLINE T_IO_INSERTION T_IO_EXTRACTION
 
 // Jump Tokens
 %token T_JUMP_BREAK T_JUMP_EXIT T_JUMP_CONTINUE
 
 // Other Tokens
-%token '(' ')' ';' T_DOUBLE_QUOTES_OPEN T_DOUBLE_QUOTES_CLOSE T_COLON T_SCOPE_RESOLUTION '[' ']' ',' T_RETURN '.'
+%token '(' ')' ';' T_DOUBLE_QUOTES_OPEN T_DOUBLE_QUOTES_CLOSE T_COLON T_SCOPE_RESOLUTION '[' ']' ',' T_RETURN '.' T_SQ_BRACKET
 
 %right T_IO_EXTRACTION T_IO_INSERTION
 
@@ -100,7 +105,7 @@
 
 %left '*' '/'
 
-%left T_BIT_OP_AND T_BIT_OP_OR T_BIT_OP_XOR
+%left '&' '|' '^'
 
 %%
 
@@ -135,10 +140,10 @@ FUNCTION
 
 FUNCTION_PROTOTYPE
 	: TYPE T_IDENTIFIER '(' TYPE_LIST ')' ';' {
-		insert($2, 'Identifier', $1, @1.last_line );
+		insert($2, "Identifier", $1, @2.last_line );
 	}
 	| TYPE T_IDENTIFIER '(' ')' ';' {
-		insert($2, 'Identifier', $1, @1.last_line );
+		insert($2, "Identifier", $1, @2.last_line );
 	}
 	;
 
@@ -151,31 +156,31 @@ TYPE_LIST
 
 FUNCTION_DEFINITION
 	: TYPE T_IDENTIFIER '(' FUNCTION_PARAMETER_LIST ')' ';' {
-		insert($2, 'Function', $1, @1.last_line);
+		insert($2, "Function", $1, @2.last_line);
 	}
 	;
 
 FUNCTION_DECLARATION
 	: TYPE T_IDENTIFIER '(' FUNCTION_PARAMETER_LIST ')' BLOCK {
-		insert($2, 'Function', $1, @1.last_line);
+		insert($2, "Function", $1, @2.last_line);
 	}
 	| TYPE T_IDENTIFIER '(' ')' BLOCK {
-		insert($2, 'Function', $1, @1.last_line);
+		insert($2, "Function", $1, @2.last_line);
 	}
 	;
 
 FUNCTION_PARAMETER_LIST
 	: TYPE T_IDENTIFIER ',' FUNCTION_PARAMETER_LIST {
-		insert($2, 'Identifier', $1, @1.last_line);
+		insert($2, "Identifier", $1, @2.last_line);
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST {
-		insert($2, 'Identifier', $1, @1.last_line);
+		insert($2, "Identifier", $1, @2.last_line);
 	}
 	| TYPE T_IDENTIFIER {
-		insert($2, 'Identifier', $1, @1.last_line);
+		insert($2, "Identifier", $1, @2.last_line);
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION {
-		insert($2, 'Identifier', $1, @1.last_line);
+		insert($2, "Identifier", $1, @2.last_line);
 	}
 	;
 
@@ -234,9 +239,9 @@ FOR_ACTION_STATEMENT
 	;
 
 BITWISE_OPERATOR
-	: T_BIT_OP_AND
-	| T_BIT_OP_OR
-	| T_BIT_OP_XOR
+	: '&'
+	| '|'
+	| '^'
 	;
 
 CONDITIONAL_EXPRESSION
@@ -248,20 +253,12 @@ CONDITIONAL_EXPRESSION
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
 		if (variable_declaration_type[0] != '\0')
-<<<<<<< HEAD
-			insert($1, 'Identifier', variable_declaration_type, @1.last_line);
-=======
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
->>>>>>> b38f5cfe1885f41d7dd119fd18ba218b7b29dbea
 		lookup($1);
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
 		if (variable_declaration_type[0] != '\0')
-<<<<<<< HEAD
-			insert($1, 'Identifier', variable_declaration_type, @1.last_line);
-=======
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
->>>>>>> b38f5cfe1885f41d7dd119fd18ba218b7b29dbea
 		lookup($1);
 	}
 	;
@@ -329,17 +326,12 @@ LINE_STATEMENT
 	;
 
 VARIABLE_DECLARATION
-<<<<<<< HEAD
-	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST
-=======
 	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST {
 	}
->>>>>>> b38f5cfe1885f41d7dd119fd18ba218b7b29dbea
 	;
 
 VARIABLE_DECLARATION_TYPE
 	: TYPE {
-		lookup_and_insert($1, 'Datatype', NULL, @1.last_line);
 		strcpy(variable_declaration_type, $1);
 	}
 	;
@@ -352,6 +344,7 @@ VARIABLE_LIST
 	| T_IDENTIFIER {
 		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 		strcpy(variable_declaration_type, "\0");
+		$$ = $1;
 	}
 	| ASSIGNMENT {
 		insert($1, "Identifier", variable_declaration_type, @1.last_line);
@@ -360,21 +353,26 @@ VARIABLE_LIST
 	;
 
 COUT
-	: T_IO_COUT T_IO_EXTRACTION EXTRACTION_LIST
+	: T_IO_COUT T_IO_INSERTION INSERTION_LIST
 	;
 
-EXTRACTION_LIST
-	: EXPRESSION T_IO_EXTRACTION EXTRACTION_LIST
+INSERTION_LIST
+	: EXPRESSION T_IO_INSERTION INSERTION_LIST
 	| EXPRESSION
 	;
 
 CIN
-	: T_IO_CIN T_IO_INSERTION INSERTION_LIST
+	: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST
 	;
 
-INSERTION_LIST
-	: T_IDENTIFIER T_IO_EXTRACTION INSERTION_LIST
-	| T_IDENTIFIER
+EXTRACTION_LIST
+	: T_IDENTIFIER T_IO_EXTRACTION EXTRACTION_LIST {
+		lookup($1);
+	}
+	| T_IDENTIFIER {
+		lookup($1);
+		$$ = $1;
+	}
 	;
 
 RETURN
@@ -398,39 +396,54 @@ RELATIONAL_OPERATOR
 IDENTIFIER_OR_LITERAL
 	: T_IDENTIFIER {
 		lookup($1);
+		$$ = $1;
 	}
 	| T_IDENTIFIER T_OP_INCREMENT {
 		lookup($1);
+		$$ = $1;
 	}
 	| T_OP_DECREMENT T_IDENTIFIER {
 		lookup($2);
+		$$ = $2;
 	}
 	| T_CHAR_LITERAL {
+		insert($1, "Constant", NULL, @1.last_line);
+		$$ = $1;
 	}
 	| T_NUMBER_LITERAL {
+		insert($1, "Constant", NULL, @1.last_line);
+		$$ = $1;
 	}
 	| T_STRING_LITERAL {
+		insert($1, "Constant", NULL, @1.last_line);
+		$$ = $1;
 	}
 	;
 
 TYPE
 	: T_TYPE_INT {
+		$$ = $1;
 	}
 	| T_TYPE_DOUBLE {
+		$$ = $1;
 	}
 	| T_TYPE_FLOAT {
+		$$ = $1;
 	}
 	| T_TYPE_CHAR {
+		$$ = $1;
 	}
 	| T_TYPE_STRING {
+		$$ = $1;
 	}
 	| T_TYPE_VOID {
+		$$ = $1;
 	}
 	;
 
 %%
 
-int yyerror(){
+int yyerror(char *s){
   printf("ERROR\n");
 }
 
@@ -546,7 +559,7 @@ void display_symbol_table()
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			printf("%s\t%s\t%s\t");
+			// printf("%s\t%s\t%s\t");
 		}
 	}
 }

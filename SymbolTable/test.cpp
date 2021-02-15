@@ -35,9 +35,6 @@ int main() {
     // int a = 6, b = 4, c = 6;
     // cout << (a = b == c) << endl;
 
-    int a = 5;
-    if (true)
-        int a = 10;
-    cout << a << endl;
+    int;
 
 }
