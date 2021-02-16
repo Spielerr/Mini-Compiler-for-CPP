@@ -47,6 +47,8 @@
 	int scope_counter = 0;
 
 	char variable_declaration_type[20] = "\0";
+	int is_declaration_assignment = 0;
+
 	int construct_nesting_level = 0;
 	int encountered_construct_nesting_level = 0;
 
@@ -303,13 +305,15 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
-		if (variable_declaration_type[0] != '\0')
+		if (variable_declaration_type[0] != '\0' && is_declaration_assignment == 0) {
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
+		}
 		lookup($1);
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
-		if (variable_declaration_type[0] != '\0')
+		if (variable_declaration_type[0] != '\0' && is_declaration_assignment == 0) {
 			insert($1, "Identifier", variable_declaration_type, @1.last_line);
+		}
 		lookup($1);
 	}
 	;
