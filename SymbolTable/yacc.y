@@ -464,11 +464,11 @@ IDENTIFIER_OR_LITERAL
 		lookup($1);
 		$$ = $1;
 	}
-	| T_IDENTIFIER T_OP_INCREMENT {
+	| T_IDENTIFIER UNARY_OPERATOR {
 		lookup($1);
 		$$ = $1;
 	}
-	| T_OP_DECREMENT T_IDENTIFIER {
+	| UNARY_OPERATOR T_IDENTIFIER {
 		lookup($2);
 		$$ = $2;
 	}
@@ -484,10 +484,15 @@ IDENTIFIER_OR_LITERAL
 		insert($1, "Constant", "String", @1.last_line);
 		$$ = $1;
 	}
-	| T_TYPE_BOOL {
+	| T_BOOL_LITERAL {
 		insert($1, "Constant", "Boolean", @1.last_line);
 		$$ = $1;
 	}
+	;
+
+UNARY_OPERATOR
+	: T_OP_INCREMENT
+	| T_OP_DECREMENT
 	;
 
 TYPE
@@ -522,7 +527,7 @@ int yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test1.cpp","r");
+	yyin = fopen("test2.cpp","r");
 	
 	init_symbol_table();
 	

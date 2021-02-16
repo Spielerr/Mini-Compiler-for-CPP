@@ -19,7 +19,7 @@ float add(int a = 5 + 3, int b = 5, int c) {
 }
 
 int main() {
-
+    bool a = true;
     int a = 5;
     int b = 4;
     int c, d, e = 5, f;
@@ -35,7 +35,7 @@ int main() {
     {
         if(a==0)
         {
-            a = a - 1;
+            a = a;
         }
     }
 

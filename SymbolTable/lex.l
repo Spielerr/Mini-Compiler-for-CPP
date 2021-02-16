@@ -55,7 +55,8 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 "<<"							{ yylval = strdup(yytext); return (T_IO_INSERTION);  }
 ">>"							{ yylval = strdup(yytext); return (T_IO_EXTRACTION);  }
 "::"							{ yylval = strdup(yytext); return (T_SCOPE_RESOLUTION); }
-
+"++"							{ yylval = strdup(yytext); return (T_OP_INCREMENT); }
+"--"							{ yylval = strdup(yytext); return (T_OP_DECREMENT); }
 
 	/* for all keywords */
 "return"						{ yylval = strdup(yytext); return (T_RETURN);  }

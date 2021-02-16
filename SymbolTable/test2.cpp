@@ -3,6 +3,8 @@
 using namespace std;
 
 int main() {
-    int a;
+    int b;
+    int a = 3;
+    a--;
     return 0;
 }
