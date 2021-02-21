@@ -253,11 +253,11 @@ Terminals, with rules where they appear
     T_TYPE_VOID (264) 137
     T_TYPE_CLASS (265)
     T_USER_DEFINED_TYPE (266)
-    T_NUMBER_LITERAL (267) 127
-    T_STRING_LITERAL (268) 5 7 128
-    T_CHAR_LITERAL (269) 126
-    T_BOOL_LITERAL (270) 129
-    T_IDENTIFIER (271) 22 23 24 25 26 59 60 105 107 112 113 123 124 125
+    T_IDENTIFIER (267) 22 23 24 25 26 59 60 105 107 112 113 123 124 125
+    T_CHAR_LITERAL (268) 126
+    T_STRING_LITERAL (269) 5 7 128
+    T_NUMBER_LITERAL (270) 127
+    T_BOOL_LITERAL (271) 129
     T_CONSTRUCT_IF (272) 35 36
     T_CONSTRUCT_ELSE (273) 40 41
     T_CONSTRUCT_FOR (274) 46
@@ -705,11 +705,11 @@ State 20
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -852,34 +852,6 @@ State 31
 
 State 32
 
-  127 IDENTIFIER_OR_LITERAL: T_NUMBER_LITERAL .
-
-    $default  reduce using rule 127 (IDENTIFIER_OR_LITERAL)
-
-
-State 33
-
-  128 IDENTIFIER_OR_LITERAL: T_STRING_LITERAL .
-
-    $default  reduce using rule 128 (IDENTIFIER_OR_LITERAL)
-
-
-State 34
-
-  126 IDENTIFIER_OR_LITERAL: T_CHAR_LITERAL .
-
-    $default  reduce using rule 126 (IDENTIFIER_OR_LITERAL)
-
-
-State 35
-
-  129 IDENTIFIER_OR_LITERAL: T_BOOL_LITERAL .
-
-    $default  reduce using rule 129 (IDENTIFIER_OR_LITERAL)
-
-
-State 36
-
    59 ASSIGNMENT: T_IDENTIFIER . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
    60           | T_IDENTIFIER . ASSIGNMENT_OPERATOR ASSIGNMENT
   123 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
@@ -898,6 +870,34 @@ State 36
 
     ASSIGNMENT_OPERATOR  go to state 98
     UNARY_OPERATOR       go to state 99
+
+
+State 33
+
+  126 IDENTIFIER_OR_LITERAL: T_CHAR_LITERAL .
+
+    $default  reduce using rule 126 (IDENTIFIER_OR_LITERAL)
+
+
+State 34
+
+  128 IDENTIFIER_OR_LITERAL: T_STRING_LITERAL .
+
+    $default  reduce using rule 128 (IDENTIFIER_OR_LITERAL)
+
+
+State 35
+
+  127 IDENTIFIER_OR_LITERAL: T_NUMBER_LITERAL .
+
+    $default  reduce using rule 127 (IDENTIFIER_OR_LITERAL)
+
+
+State 36
+
+  129 IDENTIFIER_OR_LITERAL: T_BOOL_LITERAL .
+
+    $default  reduce using rule 129 (IDENTIFIER_OR_LITERAL)
 
 
 State 37
@@ -932,11 +932,11 @@ State 40
 
    77 EXPRESSION_TERM: '!' . EXPRESSION_F
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
     '('               shift, and go to state 48
@@ -999,11 +999,11 @@ State 48
 
    79 EXPRESSION_F: '(' . EXPRESSION ')'
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -1030,11 +1030,11 @@ State 50
 
   114 RETURN: T_RETURN . EXPRESSION
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -1093,11 +1093,11 @@ State 55
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -1170,11 +1170,11 @@ State 58
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -1248,11 +1248,11 @@ State 61
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -1391,11 +1391,11 @@ State 71
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -1561,11 +1561,11 @@ State 86
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -1715,11 +1715,11 @@ State 98
    59 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR . EXPRESSION_GRAMMAR
    60           | T_IDENTIFIER ASSIGNMENT_OPERATOR . ASSIGNMENT
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -1745,11 +1745,11 @@ State 100
    35 BLOCK_IF: T_CONSTRUCT_IF '(' . EXPRESSION ')' BLOCK
    36 IF_PREFIX: T_CONSTRUCT_IF '(' . EXPRESSION ')'
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -1803,11 +1803,11 @@ State 105
 
   108 COUT: T_IO_COUT T_IO_INSERTION . INSERTION_LIST
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2038,11 +2038,11 @@ State 130
 
    58 CONDITIONAL_EXPRESSION: EXPRESSION BITWISE_OPERATOR . EXPRESSION_GRAMMAR
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2059,11 +2059,11 @@ State 131
 
    56 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR . EXPRESSION_GRAMMAR
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2080,11 +2080,11 @@ State 132
 
    57 CONDITIONAL_EXPRESSION: EXPRESSION RELATIONAL_OPERATOR . EXPRESSION_GRAMMAR
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2101,11 +2101,11 @@ State 133
 
    70 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' . EXPRESSION_TERM
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2121,11 +2121,11 @@ State 134
 
    71 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '-' . EXPRESSION_TERM
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2141,11 +2141,11 @@ State 135
 
    73 EXPRESSION_TERM: EXPRESSION_TERM '*' . EXPRESSION_F
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
     '('               shift, and go to state 48
@@ -2159,11 +2159,11 @@ State 136
 
    74 EXPRESSION_TERM: EXPRESSION_TERM '/' . EXPRESSION_F
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
     '('               shift, and go to state 48
@@ -2177,11 +2177,11 @@ State 137
 
    75 EXPRESSION_TERM: EXPRESSION_TERM '%' . EXPRESSION_F
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
     T_IDENTIFIER      shift, and go to state 103
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
     '('               shift, and go to state 48
@@ -2302,11 +2302,11 @@ State 150
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -2369,11 +2369,11 @@ State 152
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER '=' . EXPRESSION ',' FUNCTION_PARAMETER_LIST
    25                        | TYPE T_IDENTIFIER '=' . EXPRESSION
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2547,11 +2547,11 @@ State 166
    44                | FOR_PREFIX FOR_INIT_STATEMENT ';' . FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' . FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2760,11 +2760,11 @@ State 184
 
   109 INSERTION_LIST: EXPRESSION T_IO_INSERTION . INSERTION_LIST
 
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2904,11 +2904,11 @@ State 196
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
     T_OP_INCREMENT    shift, and go to state 41
     T_OP_DECREMENT    shift, and go to state 42
@@ -2979,11 +2979,11 @@ State 200
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
@@ -3041,11 +3041,11 @@ State 201
     T_TYPE_STRING     shift, and go to state 5
     T_TYPE_CHAR       shift, and go to state 6
     T_TYPE_VOID       shift, and go to state 7
-    T_NUMBER_LITERAL  shift, and go to state 32
-    T_STRING_LITERAL  shift, and go to state 33
-    T_CHAR_LITERAL    shift, and go to state 34
-    T_BOOL_LITERAL    shift, and go to state 35
-    T_IDENTIFIER      shift, and go to state 36
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39

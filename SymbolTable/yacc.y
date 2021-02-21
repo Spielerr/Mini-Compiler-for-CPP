@@ -40,7 +40,7 @@
 	void scope_leave();
 	void display_symbol_table();
 
-	int yyerror(char *s);
+	void yyerror(char *s);
 
 	int current_scope = 0;
 	int scopes[SYMBOL_TABLE_SIZE];
@@ -54,12 +54,22 @@
 
 %}
 
+	/* %union {
+		int int_val;
+		double double_val;
+		char char_val;
+		char* string_val;
+	}; */
+
 %start START
 
 // ---------------- TOKENS ------------------
 
 // Datatypes
-%token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_BOOL T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_TYPE_CLASS T_USER_DEFINED_TYPE T_NUMBER_LITERAL T_STRING_LITERAL T_CHAR_LITERAL T_BOOL_LITERAL T_IDENTIFIER
+%token T_TYPE_INT T_TYPE_FLOAT T_TYPE_DOUBLE T_TYPE_BOOL T_TYPE_STRING T_TYPE_CHAR T_TYPE_VOID T_TYPE_CLASS T_USER_DEFINED_TYPE T_IDENTIFIER
+
+// Literals
+%token  T_CHAR_LITERAL T_STRING_LITERAL T_NUMBER_LITERAL T_BOOL_LITERAL
 
 // Required Construct Tokens
 %token T_CONSTRUCT_IF T_CONSTRUCT_ELSE T_CONSTRUCT_FOR
@@ -525,8 +535,8 @@ TYPE
 
 %%
 
-int yyerror(char *s){
-  printf("ERROR\n");
+void yyerror(char *s){
+	printf("ERROR\n");
 }
 
 int main(int argc, char *argv[]) {

@@ -27,10 +27,9 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#define YYSTYPE char*
+	#define YYSTYPE char *
 	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
-	#include "y.tab.h"
-	
+	#include "y.tab.h"	
 %}
 
 %option yylineno
@@ -41,51 +40,65 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 ^"using namespace std;"				{ ; }
 
 	/* for all single characters - including operators */
-"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"{"|"}"|")"|"("|"|"|"&"|"^"	{ yylval = strdup(yytext); return (int)yytext[0]; }
+"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"{"|"}"|")"|"("|"|"|"&"|"^"	{ return (int)(*yytext); }
 {ws}+							{ /* Throw away whitespace */ }
-	/* .								{ printf("Invalid character\n"); } */
 
 	/* for all multiple characters operators */
-"<="							{ yylval = strdup(yytext); return (T_REL_OP_LESS_THAN_EQUAL);  }
-">="							{ yylval = strdup(yytext); return (T_REL_OP_GREATER_THAN_EQUAL);  }
-"=="							{ yylval = strdup(yytext); return (T_REL_OP_EQUAL);  }
-"!="							{ yylval = strdup(yytext); return (T_REL_OP_NOT_EQUAL);  }
-"&&"							{ yylval = strdup(yytext); return (T_LOG_OP_AND);  }
-"||"							{ yylval = strdup(yytext); return (T_LOG_OP_OR);  }
-"<<"							{ yylval = strdup(yytext); return (T_IO_INSERTION);  }
-">>"							{ yylval = strdup(yytext); return (T_IO_EXTRACTION);  }
-"::"							{ yylval = strdup(yytext); return (T_SCOPE_RESOLUTION); }
-"++"							{ yylval = strdup(yytext); return (T_OP_INCREMENT); }
-"--"							{ yylval = strdup(yytext); return (T_OP_DECREMENT); }
+"<="							{  return (T_REL_OP_LESS_THAN_EQUAL);  }
+">="							{  return (T_REL_OP_GREATER_THAN_EQUAL);  }
+"=="							{  return (T_REL_OP_EQUAL);  }
+"!="							{  return (T_REL_OP_NOT_EQUAL);  }
+"&&"							{  return (T_LOG_OP_AND);  }
+"||"							{  return (T_LOG_OP_OR);  }
+"<<"							{  return (T_IO_INSERTION);  }
+">>"							{  return (T_IO_EXTRACTION);  }
+"::"							{  return (T_SCOPE_RESOLUTION); }
+"++"							{  return (T_OP_INCREMENT); }
+"--"							{  return (T_OP_DECREMENT); }
 
 	/* for all keywords */
-"return"						{ yylval = strdup(yytext); return (T_RETURN);  }
-"void"							{ yylval = strdup(yytext); return T_TYPE_VOID; }
-"class"							{ yylval = strdup(yytext); return T_TYPE_CLASS; }
-"public"						{ yylval = strdup(yytext); return T_ACCESS_PUBLIC; }
-"private"						{ yylval = strdup(yytext); return T_ACCESS_PRIVATE; }
-"protected"						{ yylval = strdup(yytext); return T_ACCESS_PROTECTED; }
-"int"							{ yylval = strdup(yytext); return (T_TYPE_INT);  }
-"float"							{ yylval = strdup(yytext); return (T_TYPE_FLOAT);  }
-"double"						{ yylval = strdup(yytext); return (T_TYPE_DOUBLE);  }
-"bool"							{ yylval = strdup(yytext); return (T_TYPE_BOOL);  }
-"if"							{ yylval = strdup(yytext); return (T_CONSTRUCT_IF);  }
-"else"							{ yylval = strdup(yytext); return (T_CONSTRUCT_ELSE); }
-"for"							{ yylval = strdup(yytext); return (T_CONSTRUCT_FOR); }
-"cin"							{ yylval = strdup(yytext); return (T_IO_CIN); }
-"cout"							{ yylval = strdup(yytext); return (T_IO_COUT); }
-"printf"						{ yylval = strdup(yytext); return (T_IO_PRINTF); }
-"scanf"							{ yylval = strdup(yytext); return (T_IO_SCANF); }
-"break"							{ yylval = strdup(yytext); return (T_JUMP_BREAK); }
-"continue"						{ yylval = strdup(yytext); return (T_JUMP_CONTINUE); }
-"exit"							{ yylval = strdup(yytext); return (T_JUMP_EXIT); }
+"return"						{  return (T_RETURN);  }
+"void"							{  return T_TYPE_VOID; }
+"class"							{  return T_TYPE_CLASS; }
+"public"						{  return T_ACCESS_PUBLIC; }
+"private"						{  return T_ACCESS_PRIVATE; }
+"protected"						{  return T_ACCESS_PROTECTED; }
+"int"							{  return (T_TYPE_INT);  }
+"float"							{  return (T_TYPE_FLOAT);  }
+"double"						{  return (T_TYPE_DOUBLE);  }
+"bool"							{  return (T_TYPE_BOOL);  }
+"if"							{  return (T_CONSTRUCT_IF);  }
+"else"							{  return (T_CONSTRUCT_ELSE); }
+"for"							{  return (T_CONSTRUCT_FOR); }
+"cin"							{  return (T_IO_CIN); }
+"cout"							{  return (T_IO_COUT); }
+"printf"						{  return (T_IO_PRINTF); }
+"scanf"							{  return (T_IO_SCANF); }
+"break"							{  return (T_JUMP_BREAK); }
+"continue"						{  return (T_JUMP_CONTINUE); }
+"exit"							{  return (T_JUMP_EXIT); }
+"string"						{  return (T_TYPE_STRING); }
+"char"							{  return (T_TYPE_CHAR); }
+"true"						{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
+"false"						{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
+
+{identifier}					{ if(yyleng < 32) yylval = strdup(yytext); 
+								  else {
+									  printf("Error : Identifier is too long, cutting it down to first 31 characters\n");
+									  char dummy[32];
+									  strncpy(dummy, yytext, 31);
+									  dummy[31] = '\0';
+									  yylval = strdup(dummy);
+								  }
+								  return T_IDENTIFIER; 
+								}
 
 
-	/* for all literals */
-{digit}+						{ yylval = strdup(yytext); return T_NUMBER_LITERAL;}
-"true"|"false"					{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
+	/* for all integer literals */
+{digit}+							{ yylval = strdup(yytext); return T_NUMBER_LITERAL;}
+	/* "true"|"false"					{ yylval = strdup(yytext); return T_BOOL_LITERAL; } */
 
-{character_lit}\'					{ yylval = yytext; return T_CHAR_LITERAL; }
+{character_lit}\'					{ yylval = strdup(yytext); return T_CHAR_LITERAL; }
 {character_lit}\'|{character_lit}	{ printf("Incomplete character literal\n"); }
 
 {string_lit}\"						{ yylval = strdup(yytext); return T_STRING_LITERAL; };
@@ -93,44 +106,18 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 
 
 
+
 	/* comments */
 "/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }	
 "/*"([^*]|(\*+[^*/]))*				{ printf("ERROR - Non-terminating comment\n"); }
 
-{identifier}					{ yylval = strdup(yytext);	return T_IDENTIFIER; char *temp = (char*)malloc(sizeof(char) * 32);
-									if(yyleng > 31)
-								  {
-									printf("Length of identifier is greater than 31 characters, truncating it to the first 31 characters only\n"); 
-									
-									for(int i=0;i<32;i++)
-									{
-										temp[i] = yytext[i];
-									}
-									yylval = strdup(temp);
-									} 
-									else
-									{
-										yylval = strdup(temp);
-									}
-									return T_IDENTIFIER; 
-								}
-
-{exp_number}					{ yylval = strdup(yytext); return T_TYPE_DOUBLE; }
+{exp_number}					{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
 \n								{ ; }
+
+.								{ printf("invalid character --> %s\n", yytext); }
 %%
 
-	int yywrap(void)
-	{
-		return 1;
-	}
-
-	/* int main()
-	{
-		yyin = fopen("test_basic.cpp","r");
-		yylex();
-	} */
-
-
-	/* 
-	check if [] in arrays is being handled properly : treating [, ] as single char operators and whats inside as identifier or literal
-	*/
+int yywrap(void)
+{
+	return 1;
+}
