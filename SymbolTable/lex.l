@@ -20,7 +20,10 @@ string_lit						(L?\"([^\"\\\n]|\\.)*)
 string_literal					({string_lit}\")
 
 	/* handling special cases of floating point numbers */
-exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
+exp_number						{digit}*(\.{digit}+)?([eE][+-]?{digit}+)?
+
+	/* floating point numbers */
+float_num						{digit}*(\.{digit}+)?[Ff]
 
 
 %{
@@ -55,32 +58,37 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 "::"							{  return (T_SCOPE_RESOLUTION); }
 "++"							{  return (T_OP_INCREMENT); }
 "--"							{  return (T_OP_DECREMENT); }
+"+="							{  return (T_OP_ADD_ASSIGNMENT); }
+"-="							{  return (T_OP_SUBTRACT_ASSIGNMENT); }
+"*="							{  return (T_OP_MULTIPLY_ASSIGNMENT); }
+"/="							{  return (T_OP_DIVIDE_ASSIGNMENT); }
+"%="							{  return (T_OP_MOD_ASSIGNMENT); }
 
 	/* for all keywords */
-"return"						{  return (T_RETURN);  }
-"void"							{  return T_TYPE_VOID; }
-"class"							{  return T_TYPE_CLASS; }
-"public"						{  return T_ACCESS_PUBLIC; }
-"private"						{  return T_ACCESS_PRIVATE; }
-"protected"						{  return T_ACCESS_PROTECTED; }
-"int"							{  return (T_TYPE_INT);  }
-"float"							{  return (T_TYPE_FLOAT);  }
-"double"						{  return (T_TYPE_DOUBLE);  }
-"bool"							{  return (T_TYPE_BOOL);  }
-"if"							{  return (T_CONSTRUCT_IF);  }
-"else"							{  return (T_CONSTRUCT_ELSE); }
-"for"							{  return (T_CONSTRUCT_FOR); }
-"cin"							{  return (T_IO_CIN); }
-"cout"							{  return (T_IO_COUT); }
-"printf"						{  return (T_IO_PRINTF); }
-"scanf"							{  return (T_IO_SCANF); }
-"break"							{  return (T_JUMP_BREAK); }
-"continue"						{  return (T_JUMP_CONTINUE); }
-"exit"							{  return (T_JUMP_EXIT); }
-"string"						{  return (T_TYPE_STRING); }
-"char"							{  return (T_TYPE_CHAR); }
-"true"						{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
-"false"						{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
+"return"						{  yylval = strdup(yytext); return (T_RETURN);  }
+"void"							{  yylval = strdup(yytext); return T_TYPE_VOID; }
+"class"							{  yylval = strdup(yytext); return T_TYPE_CLASS; }
+"public"						{  yylval = strdup(yytext); return T_ACCESS_PUBLIC; }
+"private"						{  yylval = strdup(yytext); return T_ACCESS_PRIVATE; }
+"protected"						{  yylval = strdup(yytext); return T_ACCESS_PROTECTED; }
+"int"							{  yylval = strdup(yytext); return (T_TYPE_INT);  }
+"float"							{  yylval = strdup(yytext); return (T_TYPE_FLOAT);  }
+"double"						{  yylval = strdup(yytext); return (T_TYPE_DOUBLE);  }
+"bool"							{  yylval = strdup(yytext); return (T_TYPE_BOOL);  }
+"if"							{  yylval = strdup(yytext); return (T_CONSTRUCT_IF);  }
+"else"							{  yylval = strdup(yytext); return (T_CONSTRUCT_ELSE); }
+"for"							{  yylval = strdup(yytext); return (T_CONSTRUCT_FOR); }
+"cin"							{  yylval = strdup(yytext); return (T_IO_CIN); }
+"cout"							{  yylval = strdup(yytext); return (T_IO_COUT); }
+"printf"						{  yylval = strdup(yytext); return (T_IO_PRINTF); }
+"scanf"							{  yylval = strdup(yytext); return (T_IO_SCANF); }
+"break"							{  yylval = strdup(yytext); return (T_JUMP_BREAK); }
+"continue"						{  yylval = strdup(yytext); return (T_JUMP_CONTINUE); }
+"exit"							{  yylval = strdup(yytext); return (T_JUMP_EXIT); }
+"string"						{  yylval = strdup(yytext); return (T_TYPE_STRING); }
+"char"							{  yylval = strdup(yytext); return (T_TYPE_CHAR); }
+"true"							{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
+"false"							{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
 
 {identifier}					{ if(yyleng < 32) yylval = strdup(yytext); 
 								  else {
@@ -111,7 +119,7 @@ exp_number						[+-]?{digit}+(\.{digit}+)?([eE][+-]?{digit}+)?
 "/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }	
 "/*"([^*]|(\*+[^*/]))*				{ printf("ERROR - Non-terminating comment\n"); }
 
-{exp_number}					{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
+{exp_number}|{float_num}		{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
 \n								{ ; }
 
 .								{ printf("invalid character --> %s\n", yytext); }
