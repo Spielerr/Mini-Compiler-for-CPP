@@ -315,17 +315,12 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
-		if (variable_declaration_type[0] != '\0' && is_declaration_assignment == 0) {
-			insert($1, "Identifier", variable_declaration_type, @1.last_line);
-		}
 		lookup($1);
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
-		if (variable_declaration_type[0] != '\0' && is_declaration_assignment == 0) {
-			insert($1, "Identifier", variable_declaration_type, @1.last_line);
-		}
 		lookup($1);
 	}
+	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ARRAY_LIST
 	;
 
 ASSIGNMENT_OPERATOR
@@ -415,21 +410,32 @@ VARIABLE_DECLARATION_TYPE
 
 VARIABLE_LIST
 	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
-	| ASSIGNMENT ',' VARIABLE_LIST
-	| T_IDENTIFIER {
-		insert($1, "Identifier", variable_declaration_type, @1.last_line);
-		strcpy(variable_declaration_type, "\0");
-		$$ = $1;
-	}
-	| ASSIGNMENT {
-		strcpy(variable_declaration_type, "\0");
-	}
+	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST
+	| VARIABLE_DECLARATION_IDENTIFIER '[' ']' ',' VARIABLE_LIST
+	| VARIABLE_DECLARATION_IDENTIFIER '[' EXPRESSION ']' ',' VARIABLE_LIST
+	| VARIABLE_DECLARATION_IDENTIFIER '[' ']' '=' ARRAY_LIST ',' VARIABLE_LIST
+	| VARIABLE_DECLARATION_IDENTIFIER '[' EXPRESSION ']' '=' ARRAY_LIST ',' VARIABLE_LIST
+	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION
+	| VARIABLE_DECLARATION_IDENTIFIER
+	| VARIABLE_DECLARATION_IDENTIFIER '[' ']'
+	| VARIABLE_DECLARATION_IDENTIFIER '[' EXPRESSION ']'
+	| VARIABLE_DECLARATION_IDENTIFIER '[' ']' '=' ARRAY_LIST
+	| VARIABLE_DECLARATION_IDENTIFIER '[' EXPRESSION ']' '=' ARRAY_LIST
 	;
 
 VARIABLE_DECLARATION_IDENTIFIER
 	: T_IDENTIFIER {
 		insert($1, "Identifier", variable_declaration_type, @1.last_line);
 	}
+	;
+
+ARRAY_LIST
+	: '{' LITERAL_LIST '}'
+	;
+
+LITERAL_LIST
+	: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST
+	| IDENTIFIER_OR_LITERAL
 	;
 
 COUT
@@ -478,6 +484,8 @@ IDENTIFIER_OR_LITERAL
 		lookup($1);
 		$$ = $1;
 	}
+	| T_IDENTIFIER '(' ')'
+	| T_IDENTIFIER '(' LITERAL_LIST ')'
 	| T_IDENTIFIER UNARY_OPERATOR {
 		lookup($1);
 		$$ = $1;
@@ -485,6 +493,18 @@ IDENTIFIER_OR_LITERAL
 	| UNARY_OPERATOR T_IDENTIFIER {
 		lookup($2);
 		$$ = $2;
+	}
+	| T_IDENTIFIER '[' EXPRESSION ']' {
+		lookup($1);
+		$$ = $1;
+	}
+	| UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']' {
+		lookup($1);
+		$$ = $1;
+	}
+	| T_IDENTIFIER '[' EXPRESSION  ']' UNARY_OPERATOR {
+		lookup($1);
+		$$ = $1;
 	}
 	| T_CHAR_LITERAL {
 		insert($1, "Constant", "Character", @1.last_line);
@@ -624,7 +644,7 @@ node_t *create_node(char *name, char *category, char *type, int line_number)
 	}
 	else
 	{
-		char dummy[] = "dummy";
+		char dummy[] = "NA";
 		strcpy(new_node->st->type, dummy);
 	}
 	new_node->st->line_number = line_number;

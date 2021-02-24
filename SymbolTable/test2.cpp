@@ -3,9 +3,9 @@
 using namespace std;
 
 int main() {
-    // int a = b + c + 3 + 10;
-    int a = b + 10;
-    int a, b, c;
-    // cout << (a << 5) << endl;
+    int a[10] = { 2, 4, c };
+    int b[];
+    int d = c(20, 40, 50);
+    b = ++a[5] +5;
     return 0;
 }
