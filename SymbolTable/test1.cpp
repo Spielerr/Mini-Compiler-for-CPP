@@ -28,14 +28,14 @@ int main() {
             int z;
     int x;
     for(int i = 0; i == 5; i = i + 1) {
-        cout << 5;
+        cout << 5.0F;
     }
     int x;
     for(;;)
     {
         if(a==0)
         {
-            a = a;
+            a += a;
         }
     }
 

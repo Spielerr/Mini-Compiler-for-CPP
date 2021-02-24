@@ -112,170 +112,173 @@ Grammar
 
    59 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
    60           | T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT
-   61           | T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ARRAY_LIST
+   61           | T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   62           | T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT
 
-   62 ASSIGNMENT_OPERATOR: '='
-   63                    | T_OP_ADD_ASSIGNMENT
-   64                    | T_OP_SUBTRACT_ASSIGNMENT
-   65                    | T_OP_MULTIPLY_ASSIGNMENT
-   66                    | T_OP_DIVIDE_ASSIGNMENT
-   67                    | T_OP_MOD_ASSIGNMENT
+   63 ASSIGNMENT_OPERATOR: '='
+   64                    | T_OP_ADD_ASSIGNMENT
+   65                    | T_OP_SUBTRACT_ASSIGNMENT
+   66                    | T_OP_MULTIPLY_ASSIGNMENT
+   67                    | T_OP_DIVIDE_ASSIGNMENT
+   68                    | T_OP_MOD_ASSIGNMENT
 
-   68 EXPRESSION: ASSIGNMENT
-   69           | CONDITIONAL_EXPRESSION
-   70           | EXPRESSION_GRAMMAR
-   71           | '+' EXPRESSION_GRAMMAR
-   72           | '-' EXPRESSION_GRAMMAR
+   69 EXPRESSION: ASSIGNMENT
+   70           | CONDITIONAL_EXPRESSION
+   71           | EXPRESSION_GRAMMAR
 
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR '-' EXPRESSION_TERM
-   75                   | EXPRESSION_TERM
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR '-' EXPRESSION_TERM
+   74                   | EXPRESSION_TERM
 
-   76 EXPRESSION_TERM: EXPRESSION_TERM '*' EXPRESSION_F
-   77                | EXPRESSION_TERM '/' EXPRESSION_F
-   78                | EXPRESSION_TERM '%' EXPRESSION_F
-   79                | EXPRESSION_F
-   80                | '!' EXPRESSION_F
+   75 EXPRESSION_TERM: EXPRESSION_TERM '*' EXPRESSION_F
+   76                | EXPRESSION_TERM '/' EXPRESSION_F
+   77                | EXPRESSION_TERM '%' EXPRESSION_F
+   78                | EXPRESSION_F
+   79                | '!' EXPRESSION_F
 
-   81 EXPRESSION_F: IDENTIFIER_OR_LITERAL
-   82             | '(' EXPRESSION ')'
+   80 EXPRESSION_F: IDENTIFIER_OR_LITERAL
+   81             | '(' EXPRESSION ')'
+   82             | '+' EXPRESSION_F
+   83             | '-' EXPRESSION_F
 
-   83 CONSTRUCT: SINGLE_LINE_CONSTRUCT
-   84          | BLOCK_CONSTRUCT
+   84 CONSTRUCT: SINGLE_LINE_CONSTRUCT
+   85          | BLOCK_CONSTRUCT
 
-   85 BLOCK_CONSTRUCT: BLOCK_FOR
-   86                | BLOCK_IF
-   87                | BLOCK_ELSE
+   86 BLOCK_CONSTRUCT: BLOCK_FOR
+   87                | BLOCK_IF
+   88                | BLOCK_ELSE
 
-   88 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_FOR
-   89                      | SINGLE_LINE_IF
-   90                      | SINGLE_LINE_ELSE
+   89 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_FOR
+   90                      | SINGLE_LINE_IF
+   91                      | SINGLE_LINE_ELSE
 
-   91 STATEMENT: LINE_STATEMENT ';'
-   92          | CONSTRUCT
-   93          | BLOCK
-   94          | ';'
+   92 STATEMENT: LINE_STATEMENT ';'
+   93          | CONSTRUCT
+   94          | BLOCK
+   95          | ';'
 
-   95 JUMP_STATEMENT: T_JUMP_BREAK
-   96               | T_JUMP_EXIT
-   97               | T_JUMP_CONTINUE
+   96 JUMP_STATEMENT: T_JUMP_BREAK
+   97               | T_JUMP_EXIT
+   98               | T_JUMP_CONTINUE
 
-   98 LINE_STATEMENT: VARIABLE_DECLARATION
-   99               | EXPRESSION
-  100               | COUT
-  101               | CIN
-  102               | RETURN
-  103               | JUMP_STATEMENT
+   99 LINE_STATEMENT: VARIABLE_DECLARATION
+  100               | EXPRESSION
+  101               | COUT
+  102               | CIN
+  103               | RETURN
+  104               | JUMP_STATEMENT
 
-  104 VARIABLE_DECLARATION: VARIABLE_DECLARATION_TYPE VARIABLE_LIST
+  105 VARIABLE_DECLARATION: VARIABLE_DECLARATION_TYPE VARIABLE_LIST
 
-  105 VARIABLE_DECLARATION_TYPE: TYPE
+  106 VARIABLE_DECLARATION_TYPE: TYPE
 
-  106 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
-  107              | VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST
-  108              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
-  109              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST
-  110              | VARIABLE_DECLARATION_IDENTIFIER
-  111              | VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION
-  112              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER
-  113              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST
+  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
+  108              | VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST
+  109              | VARIABLE_DECLARATION_IDENTIFIER
+  110              | VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION
+  111              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST
+  112              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST
+  113              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
+  114              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST
 
-  114 VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER
+  115 VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER
 
-  115 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' ']'
-  116                                      | T_IDENTIFIER '[' EXPRESSION ']'
+  116 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' ']'
+  117                                      | T_IDENTIFIER '[' EXPRESSION ']'
 
-  117 ARRAY_LIST: '{' LITERAL_LIST '}'
+  118 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE: T_IDENTIFIER '[' EXPRESSION ']'
 
-  118 LITERAL_LIST: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST
-  119             | IDENTIFIER_OR_LITERAL
+  119 ARRAY_LIST: '{' LITERAL_LIST '}'
 
-  120 COUT: T_IO_COUT T_IO_INSERTION INSERTION_LIST
+  120 LITERAL_LIST: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST
+  121             | IDENTIFIER_OR_LITERAL
 
-  121 INSERTION_LIST: EXPRESSION T_IO_INSERTION INSERTION_LIST
-  122               | EXPRESSION
+  122 COUT: T_IO_COUT T_IO_INSERTION INSERTION_LIST
 
-  123 CIN: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST
+  123 INSERTION_LIST: EXPRESSION T_IO_INSERTION INSERTION_LIST
+  124               | EXPRESSION
 
-  124 EXTRACTION_LIST: T_IDENTIFIER T_IO_EXTRACTION EXTRACTION_LIST
-  125                | T_IDENTIFIER
+  125 CIN: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST
 
-  126 RETURN: T_RETURN EXPRESSION
+  126 EXTRACTION_LIST: T_IDENTIFIER T_IO_EXTRACTION EXTRACTION_LIST
+  127                | T_IDENTIFIER
 
-  127 LOGICAL_OPERATOR: T_LOG_OP_AND
-  128                 | T_LOG_OP_OR
+  128 RETURN: T_RETURN EXPRESSION
 
-  129 RELATIONAL_OPERATOR: T_REL_OP_EQUAL
-  130                    | '>'
-  131                    | T_REL_OP_GREATER_THAN_EQUAL
-  132                    | '<'
-  133                    | T_REL_OP_LESS_THAN_EQUAL
-  134                    | T_REL_OP_NOT_EQUAL
+  129 LOGICAL_OPERATOR: T_LOG_OP_AND
+  130                 | T_LOG_OP_OR
 
-  135 IDENTIFIER_OR_LITERAL: T_IDENTIFIER
-  136                      | T_IDENTIFIER '(' ')'
-  137                      | T_IDENTIFIER '(' LITERAL_LIST ')'
-  138                      | T_IDENTIFIER UNARY_OPERATOR
-  139                      | UNARY_OPERATOR T_IDENTIFIER
-  140                      | T_IDENTIFIER '[' EXPRESSION ']'
-  141                      | UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']'
-  142                      | T_IDENTIFIER '[' EXPRESSION ']' UNARY_OPERATOR
-  143                      | T_CHAR_LITERAL
-  144                      | T_NUMBER_LITERAL
-  145                      | T_STRING_LITERAL
-  146                      | T_BOOL_LITERAL
+  131 RELATIONAL_OPERATOR: T_REL_OP_EQUAL
+  132                    | '>'
+  133                    | T_REL_OP_GREATER_THAN_EQUAL
+  134                    | '<'
+  135                    | T_REL_OP_LESS_THAN_EQUAL
+  136                    | T_REL_OP_NOT_EQUAL
 
-  147 UNARY_OPERATOR: T_OP_INCREMENT
-  148               | T_OP_DECREMENT
+  137 IDENTIFIER_OR_LITERAL: T_IDENTIFIER
+  138                      | T_IDENTIFIER '(' ')'
+  139                      | T_IDENTIFIER '(' LITERAL_LIST ')'
+  140                      | T_IDENTIFIER UNARY_OPERATOR
+  141                      | UNARY_OPERATOR T_IDENTIFIER
+  142                      | T_IDENTIFIER '[' EXPRESSION ']'
+  143                      | UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']'
+  144                      | T_IDENTIFIER '[' EXPRESSION ']' UNARY_OPERATOR
+  145                      | T_CHAR_LITERAL
+  146                      | T_NUMBER_LITERAL
+  147                      | T_STRING_LITERAL
+  148                      | T_BOOL_LITERAL
 
-  149 TYPE: T_TYPE_INT
-  150     | T_TYPE_DOUBLE
-  151     | T_TYPE_FLOAT
-  152     | T_TYPE_CHAR
-  153     | T_TYPE_STRING
-  154     | T_TYPE_VOID
-  155     | T_TYPE_BOOL
+  149 UNARY_OPERATOR: T_OP_INCREMENT
+  150               | T_OP_DECREMENT
+
+  151 TYPE: T_TYPE_INT
+  152     | T_TYPE_DOUBLE
+  153     | T_TYPE_FLOAT
+  154     | T_TYPE_CHAR
+  155     | T_TYPE_STRING
+  156     | T_TYPE_VOID
+  157     | T_TYPE_BOOL
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '!' (33) 80
-    '%' (37) 78
+    '!' (33) 79
+    '%' (37) 77
     '&' (38) 53
-    '(' (40) 26 35 36 46 82 136 137
-    ')' (41) 15 16 19 20 21 35 36 42 43 44 45 82 136 137
-    '*' (42) 76
-    '+' (43) 71 73
-    ',' (44) 17 22 23 106 107 108 109 118
-    '-' (45) 72 74
+    '(' (40) 26 35 36 46 81 138 139
+    ')' (41) 15 16 19 20 21 35 36 42 43 44 45 81 138 139
+    '*' (42) 75
+    '+' (43) 72 82
+    ',' (44) 17 22 23 107 108 111 112 120
+    '-' (45) 73 83
     '.' (46)
-    '/' (47) 77
-    ';' (59) 15 16 19 32 33 37 38 42 43 44 45 91 94
-    '<' (60) 4 6 132
-    '=' (61) 23 25 62 107 109 111 113
-    '>' (62) 4 6 130
-    '[' (91) 61 115 116 140 141 142
-    ']' (93) 61 115 116 140 141 142
+    '/' (47) 76
+    ';' (59) 15 16 19 32 33 37 38 42 43 44 45 92 95
+    '<' (60) 4 6 134
+    '=' (61) 23 25 63 108 110 112 114
+    '>' (62) 4 6 132
+    '[' (91) 61 62 116 117 118 142 143 144
+    ']' (93) 61 62 116 117 118 142 143 144
     '^' (94) 55
-    '{' (123) 20 21 28 45 117
+    '{' (123) 20 21 28 45 119
     '|' (124) 54
-    '}' (125) 20 21 29 45 117
+    '}' (125) 20 21 29 45 119
     error (256)
-    T_TYPE_INT (258) 149
-    T_TYPE_FLOAT (259) 151
-    T_TYPE_DOUBLE (260) 150
-    T_TYPE_BOOL (261) 155
-    T_TYPE_STRING (262) 153
-    T_TYPE_CHAR (263) 152
-    T_TYPE_VOID (264) 154
+    T_TYPE_INT (258) 151
+    T_TYPE_FLOAT (259) 153
+    T_TYPE_DOUBLE (260) 152
+    T_TYPE_BOOL (261) 157
+    T_TYPE_STRING (262) 155
+    T_TYPE_CHAR (263) 154
+    T_TYPE_VOID (264) 156
     T_TYPE_CLASS (265)
     T_USER_DEFINED_TYPE (266)
-    T_IDENTIFIER (267) 22 23 24 25 26 59 60 61 114 115 116 124 125 135 136 137 138 139 140 141 142
-    T_CHAR_LITERAL (268) 143
-    T_STRING_LITERAL (269) 5 7 145
-    T_NUMBER_LITERAL (270) 144
-    T_BOOL_LITERAL (271) 146
+    T_IDENTIFIER (267) 22 23 24 25 26 59 60 61 62 115 116 117 118 126 127 137 138 139 140 141 142 143 144
+    T_CHAR_LITERAL (268) 145
+    T_STRING_LITERAL (269) 5 7 147
+    T_NUMBER_LITERAL (270) 146
+    T_BOOL_LITERAL (271) 148
     T_CONSTRUCT_IF (272) 35 36
     T_CONSTRUCT_ELSE (273) 40 41
     T_CONSTRUCT_FOR (274) 46
@@ -284,36 +287,36 @@ Terminals, with rules where they appear
     T_ACCESS_PROTECTED (277)
     T_HEADER_INCLUDE (278) 4 5 6 7
     T_HEADER_FILE (279) 4 6
-    T_REL_OP_GREATER_THAN_EQUAL (280) 131
-    T_REL_OP_LESS_THAN_EQUAL (281) 133
-    T_REL_OP_EQUAL (282) 129
-    T_REL_OP_NOT_EQUAL (283) 134
-    T_LOG_OP_OR (284) 128
-    T_LOG_OP_AND (285) 127
+    T_REL_OP_GREATER_THAN_EQUAL (280) 133
+    T_REL_OP_LESS_THAN_EQUAL (281) 135
+    T_REL_OP_EQUAL (282) 131
+    T_REL_OP_NOT_EQUAL (283) 136
+    T_LOG_OP_OR (284) 130
+    T_LOG_OP_AND (285) 129
     T_BIT_OP_RIGHT_SHIFT (286)
     T_BIT_OP_LEFT_SHIFT (287)
-    T_OP_ADD_ASSIGNMENT (288) 63
-    T_OP_SUBTRACT_ASSIGNMENT (289) 64
-    T_OP_MULTIPLY_ASSIGNMENT (290) 65
-    T_OP_DIVIDE_ASSIGNMENT (291) 66
-    T_OP_MOD_ASSIGNMENT (292) 67
-    T_OP_INCREMENT (293) 147
-    T_OP_DECREMENT (294) 148
-    T_IO_COUT (295) 120
-    T_IO_CIN (296) 123
+    T_OP_ADD_ASSIGNMENT (288) 64
+    T_OP_SUBTRACT_ASSIGNMENT (289) 65
+    T_OP_MULTIPLY_ASSIGNMENT (290) 66
+    T_OP_DIVIDE_ASSIGNMENT (291) 67
+    T_OP_MOD_ASSIGNMENT (292) 68
+    T_OP_INCREMENT (293) 149
+    T_OP_DECREMENT (294) 150
+    T_IO_COUT (295) 122
+    T_IO_CIN (296) 125
     T_IO_PRINTF (297)
     T_IO_SCANF (298)
     T_IO_GETLINE (299)
-    T_IO_INSERTION (300) 120 121
-    T_IO_EXTRACTION (301) 123 124
-    T_JUMP_BREAK (302) 95
-    T_JUMP_EXIT (303) 96
-    T_JUMP_CONTINUE (304) 97
+    T_IO_INSERTION (300) 122 123
+    T_IO_EXTRACTION (301) 125 126
+    T_JUMP_BREAK (302) 96
+    T_JUMP_EXIT (303) 97
+    T_JUMP_CONTINUE (304) 98
     T_DOUBLE_QUOTES_OPEN (305)
     T_DOUBLE_QUOTES_CLOSE (306)
     T_COLON (307)
     T_SCOPE_RESOLUTION (308)
-    T_RETURN (309) 126
+    T_RETURN (309) 128
     T_SQ_BRACKET (310)
     T_COMMENT (311)
 
@@ -357,7 +360,7 @@ Nonterminals, with rules where they appear
         on right: 15 16 19 20 21
     BLOCK (90)
         on left: 27
-        on right: 11 35 40 93
+        on right: 11 35 40 94
     BLOCK_START (91)
         on left: 28
         on right: 27
@@ -369,28 +372,28 @@ Nonterminals, with rules where they appear
         on right: 20 21 27 30 45
     SINGLE_LINE_IF (94)
         on left: 32 33 34
-        on right: 89
+        on right: 90
     BLOCK_IF (95)
         on left: 35
-        on right: 86
+        on right: 87
     IF_PREFIX (96)
         on left: 36
         on right: 32 33 34
     SINGLE_LINE_ELSE (97)
         on left: 37 38 39
-        on right: 90
+        on right: 91
     BLOCK_ELSE (98)
         on left: 40
-        on right: 87
+        on right: 88
     ELSE_PREFIX (99)
         on left: 41
         on right: 37 38 39
     SINGLE_LINE_FOR (100)
         on left: 42 43 44
-        on right: 88
+        on right: 89
     BLOCK_FOR (101)
         on left: 45
-        on right: 85
+        on right: 86
     FOR_PREFIX (102)
         on left: 46
         on right: 42 43 44 45
@@ -408,94 +411,97 @@ Nonterminals, with rules where they appear
         on right: 58
     CONDITIONAL_EXPRESSION (107)
         on left: 56 57 58
-        on right: 50 69
+        on right: 50 70
     ASSIGNMENT (108)
-        on left: 59 60 61
-        on right: 60 68
+        on left: 59 60 61 62
+        on right: 60 62 69
     ASSIGNMENT_OPERATOR (109)
-        on left: 62 63 64 65 66 67
-        on right: 59 60 61
+        on left: 63 64 65 66 67 68
+        on right: 59 60 61 62
     EXPRESSION (110)
-        on left: 68 69 70 71 72
-        on right: 23 25 35 36 56 57 58 61 82 99 107 111 116 121 122 126 140 141 142
+        on left: 69 70 71
+        on right: 23 25 35 36 56 57 58 61 62 81 100 108 110 117 118 123 124 128 142 143 144
     EXPRESSION_GRAMMAR (111)
-        on left: 73 74 75
-        on right: 56 57 58 59 70 71 72 73 74
+        on left: 72 73 74
+        on right: 56 57 58 59 61 71 72 73
     EXPRESSION_TERM (112)
-        on left: 76 77 78 79 80
-        on right: 73 74 75 76 77 78
+        on left: 75 76 77 78 79
+        on right: 72 73 74 75 76 77
     EXPRESSION_F (113)
-        on left: 81 82
-        on right: 76 77 78 79 80
+        on left: 80 81 82 83
+        on right: 75 76 77 78 79 82 83
     CONSTRUCT (114)
-        on left: 83 84
-        on right: 34 39 44 92
+        on left: 84 85
+        on right: 34 39 44 93
     BLOCK_CONSTRUCT (115)
-        on left: 85 86 87
-        on right: 84
+        on left: 86 87 88
+        on right: 85
     SINGLE_LINE_CONSTRUCT (116)
-        on left: 88 89 90
-        on right: 83
+        on left: 89 90 91
+        on right: 84
     STATEMENT (117)
-        on left: 91 92 93 94
+        on left: 92 93 94 95
         on right: 30 31
     JUMP_STATEMENT (118)
-        on left: 95 96 97
-        on right: 103
-    LINE_STATEMENT (119)
-        on left: 98 99 100 101 102 103
-        on right: 32 37 42 48 52 91
-    VARIABLE_DECLARATION (120)
-        on left: 104
-        on right: 98
-    VARIABLE_DECLARATION_TYPE (121)
-        on left: 105
+        on left: 96 97 98
         on right: 104
+    LINE_STATEMENT (119)
+        on left: 99 100 101 102 103 104
+        on right: 32 37 42 48 52 92
+    VARIABLE_DECLARATION (120)
+        on left: 105
+        on right: 99
+    VARIABLE_DECLARATION_TYPE (121)
+        on left: 106
+        on right: 105
     VARIABLE_LIST (122)
-        on left: 106 107 108 109 110 111 112 113
-        on right: 104 106 107 108 109
+        on left: 107 108 109 110 111 112 113 114
+        on right: 105 107 108 111 112
     VARIABLE_DECLARATION_IDENTIFIER (123)
-        on left: 114
-        on right: 106 107 110 111
+        on left: 115
+        on right: 107 108 109 110
     ARRAY_VARIABLE_DECLARATION_IDENTIFIER (124)
-        on left: 115 116
-        on right: 108 109 112 113
-    ARRAY_LIST (125)
-        on left: 117
-        on right: 61 109 113
-    LITERAL_LIST (126)
-        on left: 118 119
-        on right: 117 118 137
-    COUT (127)
-        on left: 120
-        on right: 100
-    INSERTION_LIST (128)
-        on left: 121 122
-        on right: 120 121
-    CIN (129)
-        on left: 123
+        on left: 116 117
+        on right: 112 114
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE (125)
+        on left: 118
+        on right: 111 113
+    ARRAY_LIST (126)
+        on left: 119
+        on right: 112 114
+    LITERAL_LIST (127)
+        on left: 120 121
+        on right: 119 120 139
+    COUT (128)
+        on left: 122
         on right: 101
-    EXTRACTION_LIST (130)
-        on left: 124 125
-        on right: 123 124
-    RETURN (131)
-        on left: 126
+    INSERTION_LIST (129)
+        on left: 123 124
+        on right: 122 123
+    CIN (130)
+        on left: 125
         on right: 102
-    LOGICAL_OPERATOR (132)
-        on left: 127 128
+    EXTRACTION_LIST (131)
+        on left: 126 127
+        on right: 125 126
+    RETURN (132)
+        on left: 128
+        on right: 103
+    LOGICAL_OPERATOR (133)
+        on left: 129 130
         on right: 56
-    RELATIONAL_OPERATOR (133)
-        on left: 129 130 131 132 133 134
+    RELATIONAL_OPERATOR (134)
+        on left: 131 132 133 134 135 136
         on right: 57
-    IDENTIFIER_OR_LITERAL (134)
-        on left: 135 136 137 138 139 140 141 142 143 144 145 146
-        on right: 81 118 119
-    UNARY_OPERATOR (135)
-        on left: 147 148
-        on right: 138 139 141 142
-    TYPE (136)
-        on left: 149 150 151 152 153 154 155
-        on right: 17 18 22 23 24 25 26 105
+    IDENTIFIER_OR_LITERAL (135)
+        on left: 137 138 139 140 141 142 143 144 145 146 147 148
+        on right: 80 120 121
+    UNARY_OPERATOR (136)
+        on left: 149 150
+        on right: 140 141 143 144
+    TYPE (137)
+        on left: 151 152 153 154 155 156 157
+        on right: 17 18 22 23 24 25 26 106
 
 
 State 0
@@ -528,51 +534,51 @@ State 0
 
 State 1
 
-  149 TYPE: T_TYPE_INT .
-
-    $default  reduce using rule 149 (TYPE)
-
-
-State 2
-
-  151 TYPE: T_TYPE_FLOAT .
+  151 TYPE: T_TYPE_INT .
 
     $default  reduce using rule 151 (TYPE)
 
 
-State 3
+State 2
 
-  150 TYPE: T_TYPE_DOUBLE .
-
-    $default  reduce using rule 150 (TYPE)
-
-
-State 4
-
-  155 TYPE: T_TYPE_BOOL .
-
-    $default  reduce using rule 155 (TYPE)
-
-
-State 5
-
-  153 TYPE: T_TYPE_STRING .
+  153 TYPE: T_TYPE_FLOAT .
 
     $default  reduce using rule 153 (TYPE)
 
 
-State 6
+State 3
 
-  152 TYPE: T_TYPE_CHAR .
+  152 TYPE: T_TYPE_DOUBLE .
 
     $default  reduce using rule 152 (TYPE)
 
 
-State 7
+State 4
 
-  154 TYPE: T_TYPE_VOID .
+  157 TYPE: T_TYPE_BOOL .
+
+    $default  reduce using rule 157 (TYPE)
+
+
+State 5
+
+  155 TYPE: T_TYPE_STRING .
+
+    $default  reduce using rule 155 (TYPE)
+
+
+State 6
+
+  154 TYPE: T_TYPE_CHAR .
 
     $default  reduce using rule 154 (TYPE)
+
+
+State 7
+
+  156 TYPE: T_TYPE_VOID .
+
+    $default  reduce using rule 156 (TYPE)
 
 
 State 8
@@ -883,13 +889,14 @@ State 32
 
    59 ASSIGNMENT: T_IDENTIFIER . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
    60           | T_IDENTIFIER . ASSIGNMENT_OPERATOR ASSIGNMENT
-   61           | T_IDENTIFIER . '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ARRAY_LIST
-  135 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
-  136                      | T_IDENTIFIER . '(' ')'
-  137                      | T_IDENTIFIER . '(' LITERAL_LIST ')'
-  138                      | T_IDENTIFIER . UNARY_OPERATOR
-  140                      | T_IDENTIFIER . '[' EXPRESSION ']'
-  142                      | T_IDENTIFIER . '[' EXPRESSION ']' UNARY_OPERATOR
+   61           | T_IDENTIFIER . '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   62           | T_IDENTIFIER . '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT
+  137 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
+  138                      | T_IDENTIFIER . '(' ')'
+  139                      | T_IDENTIFIER . '(' LITERAL_LIST ')'
+  140                      | T_IDENTIFIER . UNARY_OPERATOR
+  142                      | T_IDENTIFIER . '[' EXPRESSION ']'
+  144                      | T_IDENTIFIER . '[' EXPRESSION ']' UNARY_OPERATOR
 
     '='                       shift, and go to state 94
     T_OP_ADD_ASSIGNMENT       shift, and go to state 95
@@ -902,7 +909,7 @@ State 32
     '('                       shift, and go to state 100
     '['                       shift, and go to state 101
 
-    $default  reduce using rule 135 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 137 (IDENTIFIER_OR_LITERAL)
 
     ASSIGNMENT_OPERATOR  go to state 102
     UNARY_OPERATOR       go to state 103
@@ -910,30 +917,30 @@ State 32
 
 State 33
 
-  143 IDENTIFIER_OR_LITERAL: T_CHAR_LITERAL .
-
-    $default  reduce using rule 143 (IDENTIFIER_OR_LITERAL)
-
-
-State 34
-
-  145 IDENTIFIER_OR_LITERAL: T_STRING_LITERAL .
+  145 IDENTIFIER_OR_LITERAL: T_CHAR_LITERAL .
 
     $default  reduce using rule 145 (IDENTIFIER_OR_LITERAL)
 
 
+State 34
+
+  147 IDENTIFIER_OR_LITERAL: T_STRING_LITERAL .
+
+    $default  reduce using rule 147 (IDENTIFIER_OR_LITERAL)
+
+
 State 35
 
-  144 IDENTIFIER_OR_LITERAL: T_NUMBER_LITERAL .
+  146 IDENTIFIER_OR_LITERAL: T_NUMBER_LITERAL .
 
-    $default  reduce using rule 144 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 146 (IDENTIFIER_OR_LITERAL)
 
 
 State 36
 
-  146 IDENTIFIER_OR_LITERAL: T_BOOL_LITERAL .
+  148 IDENTIFIER_OR_LITERAL: T_BOOL_LITERAL .
 
-    $default  reduce using rule 146 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 148 (IDENTIFIER_OR_LITERAL)
 
 
 State 37
@@ -966,13 +973,15 @@ State 39
 
 State 40
 
-   80 EXPRESSION_TERM: '!' . EXPRESSION_F
+   79 EXPRESSION_TERM: '!' . EXPRESSION_F
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
     T_STRING_LITERAL  shift, and go to state 34
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
@@ -984,98 +993,96 @@ State 40
 
 State 41
 
-   71 EXPRESSION: '+' . EXPRESSION_GRAMMAR
+   82 EXPRESSION_F: '+' . EXPRESSION_F
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
     T_STRING_LITERAL  shift, and go to state 34
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
-    '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    EXPRESSION_GRAMMAR     go to state 109
-    EXPRESSION_TERM        go to state 68
-    EXPRESSION_F           go to state 69
+    EXPRESSION_F           go to state 109
     IDENTIFIER_OR_LITERAL  go to state 81
     UNARY_OPERATOR         go to state 82
 
 
 State 42
 
-   72 EXPRESSION: '-' . EXPRESSION_GRAMMAR
+   83 EXPRESSION_F: '-' . EXPRESSION_F
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
     T_STRING_LITERAL  shift, and go to state 34
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
-    '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    EXPRESSION_GRAMMAR     go to state 110
-    EXPRESSION_TERM        go to state 68
-    EXPRESSION_F           go to state 69
+    EXPRESSION_F           go to state 110
     IDENTIFIER_OR_LITERAL  go to state 81
     UNARY_OPERATOR         go to state 82
 
 
 State 43
 
-  147 UNARY_OPERATOR: T_OP_INCREMENT .
+  149 UNARY_OPERATOR: T_OP_INCREMENT .
 
-    $default  reduce using rule 147 (UNARY_OPERATOR)
+    $default  reduce using rule 149 (UNARY_OPERATOR)
 
 
 State 44
 
-  148 UNARY_OPERATOR: T_OP_DECREMENT .
+  150 UNARY_OPERATOR: T_OP_DECREMENT .
 
-    $default  reduce using rule 148 (UNARY_OPERATOR)
+    $default  reduce using rule 150 (UNARY_OPERATOR)
 
 
 State 45
 
-  120 COUT: T_IO_COUT . T_IO_INSERTION INSERTION_LIST
+  122 COUT: T_IO_COUT . T_IO_INSERTION INSERTION_LIST
 
     T_IO_INSERTION  shift, and go to state 111
 
 
 State 46
 
-  123 CIN: T_IO_CIN . T_IO_EXTRACTION EXTRACTION_LIST
+  125 CIN: T_IO_CIN . T_IO_EXTRACTION EXTRACTION_LIST
 
     T_IO_EXTRACTION  shift, and go to state 112
 
 
 State 47
 
-   95 JUMP_STATEMENT: T_JUMP_BREAK .
-
-    $default  reduce using rule 95 (JUMP_STATEMENT)
-
-
-State 48
-
-   96 JUMP_STATEMENT: T_JUMP_EXIT .
+   96 JUMP_STATEMENT: T_JUMP_BREAK .
 
     $default  reduce using rule 96 (JUMP_STATEMENT)
 
 
-State 49
+State 48
 
-   97 JUMP_STATEMENT: T_JUMP_CONTINUE .
+   97 JUMP_STATEMENT: T_JUMP_EXIT .
 
     $default  reduce using rule 97 (JUMP_STATEMENT)
 
 
+State 49
+
+   98 JUMP_STATEMENT: T_JUMP_CONTINUE .
+
+    $default  reduce using rule 98 (JUMP_STATEMENT)
+
+
 State 50
 
-   82 EXPRESSION_F: '(' . EXPRESSION ')'
+   81 EXPRESSION_F: '(' . EXPRESSION ')'
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -1101,14 +1108,14 @@ State 50
 
 State 51
 
-   94 STATEMENT: ';' .
+   95 STATEMENT: ';' .
 
-    $default  reduce using rule 94 (STATEMENT)
+    $default  reduce using rule 95 (STATEMENT)
 
 
 State 52
 
-  126 RETURN: T_RETURN . EXPRESSION
+  128 RETURN: T_RETURN . EXPRESSION
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -1134,9 +1141,9 @@ State 52
 
 State 53
 
-   93 STATEMENT: BLOCK .
+   94 STATEMENT: BLOCK .
 
-    $default  reduce using rule 93 (STATEMENT)
+    $default  reduce using rule 94 (STATEMENT)
 
 
 State 54
@@ -1150,16 +1157,16 @@ State 54
 
 State 55
 
-   89 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_IF .
+   90 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_IF .
 
-    $default  reduce using rule 89 (SINGLE_LINE_CONSTRUCT)
+    $default  reduce using rule 90 (SINGLE_LINE_CONSTRUCT)
 
 
 State 56
 
-   86 BLOCK_CONSTRUCT: BLOCK_IF .
+   87 BLOCK_CONSTRUCT: BLOCK_IF .
 
-    $default  reduce using rule 86 (BLOCK_CONSTRUCT)
+    $default  reduce using rule 87 (BLOCK_CONSTRUCT)
 
 
 State 57
@@ -1229,16 +1236,16 @@ State 57
 
 State 58
 
-   90 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_ELSE .
+   91 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_ELSE .
 
-    $default  reduce using rule 90 (SINGLE_LINE_CONSTRUCT)
+    $default  reduce using rule 91 (SINGLE_LINE_CONSTRUCT)
 
 
 State 59
 
-   87 BLOCK_CONSTRUCT: BLOCK_ELSE .
+   88 BLOCK_CONSTRUCT: BLOCK_ELSE .
 
-    $default  reduce using rule 87 (BLOCK_CONSTRUCT)
+    $default  reduce using rule 88 (BLOCK_CONSTRUCT)
 
 
 State 60
@@ -1308,16 +1315,16 @@ State 60
 
 State 61
 
-   88 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_FOR .
+   89 SINGLE_LINE_CONSTRUCT: SINGLE_LINE_FOR .
 
-    $default  reduce using rule 88 (SINGLE_LINE_CONSTRUCT)
+    $default  reduce using rule 89 (SINGLE_LINE_CONSTRUCT)
 
 
 State 62
 
-   85 BLOCK_CONSTRUCT: BLOCK_FOR .
+   86 BLOCK_CONSTRUCT: BLOCK_FOR .
 
-    $default  reduce using rule 85 (BLOCK_CONSTRUCT)
+    $default  reduce using rule 86 (BLOCK_CONSTRUCT)
 
 
 State 63
@@ -1375,16 +1382,16 @@ State 63
 
 State 64
 
-   69 EXPRESSION: CONDITIONAL_EXPRESSION .
+   70 EXPRESSION: CONDITIONAL_EXPRESSION .
 
-    $default  reduce using rule 69 (EXPRESSION)
+    $default  reduce using rule 70 (EXPRESSION)
 
 
 State 65
 
-   68 EXPRESSION: ASSIGNMENT .
+   69 EXPRESSION: ASSIGNMENT .
 
-    $default  reduce using rule 68 (EXPRESSION)
+    $default  reduce using rule 69 (EXPRESSION)
 
 
 State 66
@@ -1392,7 +1399,7 @@ State 66
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-   99 LINE_STATEMENT: EXPRESSION .
+  100 LINE_STATEMENT: EXPRESSION .
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -1406,7 +1413,7 @@ State 66
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
 
-    $default  reduce using rule 99 (LINE_STATEMENT)
+    $default  reduce using rule 100 (LINE_STATEMENT)
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
@@ -1415,56 +1422,56 @@ State 66
 
 State 67
 
-   70 EXPRESSION: EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   71 EXPRESSION: EXPRESSION_GRAMMAR .
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
 
     '+'  shift, and go to state 139
     '-'  shift, and go to state 140
 
-    $default  reduce using rule 70 (EXPRESSION)
+    $default  reduce using rule 71 (EXPRESSION)
 
 
 State 68
 
-   75 EXPRESSION_GRAMMAR: EXPRESSION_TERM .
-   76 EXPRESSION_TERM: EXPRESSION_TERM . '*' EXPRESSION_F
-   77                | EXPRESSION_TERM . '/' EXPRESSION_F
-   78                | EXPRESSION_TERM . '%' EXPRESSION_F
+   74 EXPRESSION_GRAMMAR: EXPRESSION_TERM .
+   75 EXPRESSION_TERM: EXPRESSION_TERM . '*' EXPRESSION_F
+   76                | EXPRESSION_TERM . '/' EXPRESSION_F
+   77                | EXPRESSION_TERM . '%' EXPRESSION_F
 
     '*'  shift, and go to state 141
     '/'  shift, and go to state 142
     '%'  shift, and go to state 143
 
-    $default  reduce using rule 75 (EXPRESSION_GRAMMAR)
+    $default  reduce using rule 74 (EXPRESSION_GRAMMAR)
 
 
 State 69
 
-   79 EXPRESSION_TERM: EXPRESSION_F .
+   78 EXPRESSION_TERM: EXPRESSION_F .
 
-    $default  reduce using rule 79 (EXPRESSION_TERM)
+    $default  reduce using rule 78 (EXPRESSION_TERM)
 
 
 State 70
 
-   92 STATEMENT: CONSTRUCT .
+   93 STATEMENT: CONSTRUCT .
 
-    $default  reduce using rule 92 (STATEMENT)
+    $default  reduce using rule 93 (STATEMENT)
 
 
 State 71
 
-   84 CONSTRUCT: BLOCK_CONSTRUCT .
+   85 CONSTRUCT: BLOCK_CONSTRUCT .
 
-    $default  reduce using rule 84 (CONSTRUCT)
+    $default  reduce using rule 85 (CONSTRUCT)
 
 
 State 72
 
-   83 CONSTRUCT: SINGLE_LINE_CONSTRUCT .
+   84 CONSTRUCT: SINGLE_LINE_CONSTRUCT .
 
-    $default  reduce using rule 83 (CONSTRUCT)
+    $default  reduce using rule 84 (CONSTRUCT)
 
 
 State 73
@@ -1540,91 +1547,92 @@ State 73
 
 State 74
 
-  103 LINE_STATEMENT: JUMP_STATEMENT .
+  104 LINE_STATEMENT: JUMP_STATEMENT .
 
-    $default  reduce using rule 103 (LINE_STATEMENT)
+    $default  reduce using rule 104 (LINE_STATEMENT)
 
 
 State 75
 
-   91 STATEMENT: LINE_STATEMENT . ';'
+   92 STATEMENT: LINE_STATEMENT . ';'
 
     ';'  shift, and go to state 145
 
 
 State 76
 
-   98 LINE_STATEMENT: VARIABLE_DECLARATION .
+   99 LINE_STATEMENT: VARIABLE_DECLARATION .
 
-    $default  reduce using rule 98 (LINE_STATEMENT)
+    $default  reduce using rule 99 (LINE_STATEMENT)
 
 
 State 77
 
-  104 VARIABLE_DECLARATION: VARIABLE_DECLARATION_TYPE . VARIABLE_LIST
+  105 VARIABLE_DECLARATION: VARIABLE_DECLARATION_TYPE . VARIABLE_LIST
 
     T_IDENTIFIER  shift, and go to state 146
 
-    VARIABLE_LIST                          go to state 147
-    VARIABLE_DECLARATION_IDENTIFIER        go to state 148
-    ARRAY_VARIABLE_DECLARATION_IDENTIFIER  go to state 149
+    VARIABLE_LIST                                    go to state 147
+    VARIABLE_DECLARATION_IDENTIFIER                  go to state 148
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER            go to state 149
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE  go to state 150
 
 
 State 78
 
-  100 LINE_STATEMENT: COUT .
-
-    $default  reduce using rule 100 (LINE_STATEMENT)
-
-
-State 79
-
-  101 LINE_STATEMENT: CIN .
+  101 LINE_STATEMENT: COUT .
 
     $default  reduce using rule 101 (LINE_STATEMENT)
 
 
-State 80
+State 79
 
-  102 LINE_STATEMENT: RETURN .
+  102 LINE_STATEMENT: CIN .
 
     $default  reduce using rule 102 (LINE_STATEMENT)
 
 
+State 80
+
+  103 LINE_STATEMENT: RETURN .
+
+    $default  reduce using rule 103 (LINE_STATEMENT)
+
+
 State 81
 
-   81 EXPRESSION_F: IDENTIFIER_OR_LITERAL .
+   80 EXPRESSION_F: IDENTIFIER_OR_LITERAL .
 
-    $default  reduce using rule 81 (EXPRESSION_F)
+    $default  reduce using rule 80 (EXPRESSION_F)
 
 
 State 82
 
-  139 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR . T_IDENTIFIER
-  141                      | UNARY_OPERATOR . T_IDENTIFIER '[' EXPRESSION ']'
+  141 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR . T_IDENTIFIER
+  143                      | UNARY_OPERATOR . T_IDENTIFIER '[' EXPRESSION ']'
 
-    T_IDENTIFIER  shift, and go to state 150
+    T_IDENTIFIER  shift, and go to state 151
 
 
 State 83
 
-  105 VARIABLE_DECLARATION_TYPE: TYPE .
+  106 VARIABLE_DECLARATION_TYPE: TYPE .
 
-    $default  reduce using rule 105 (VARIABLE_DECLARATION_TYPE)
+    $default  reduce using rule 106 (VARIABLE_DECLARATION_TYPE)
 
 
 State 84
 
    26 FUNCTION_PREFIX: TYPE T_IDENTIFIER . '('
 
-    '('  shift, and go to state 151
+    '('  shift, and go to state 152
 
 
 State 85
 
     6 INCLUDE: T_HEADER_INCLUDE '<' T_HEADER_FILE . '>'
 
-    '>'  shift, and go to state 152
+    '>'  shift, and go to state 153
 
 
 State 86
@@ -1638,7 +1646,7 @@ State 87
 
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE '<' . T_HEADER_FILE '>'
 
-    T_HEADER_FILE  shift, and go to state 153
+    T_HEADER_FILE  shift, and go to state 154
 
 
 State 88
@@ -1677,7 +1685,7 @@ State 88
 
     BLOCK                      go to state 53
     BLOCK_START                go to state 20
-    STATEMENTS                 go to state 154
+    STATEMENTS                 go to state 155
     SINGLE_LINE_IF             go to state 55
     BLOCK_IF                   go to state 56
     IF_PREFIX                  go to state 57
@@ -1720,7 +1728,7 @@ State 90
 
    15 FUNCTION_PROTOTYPE: FUNCTION_PREFIX TYPE_LIST ')' . ';'
 
-    ';'  shift, and go to state 155
+    ';'  shift, and go to state 156
 
 
 State 91
@@ -1728,8 +1736,8 @@ State 91
    19 FUNCTION_DEFINITION: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' . ';'
    20 FUNCTION_DECLARATION: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' . '{' STATEMENTS '}'
 
-    '{'  shift, and go to state 156
-    ';'  shift, and go to state 157
+    '{'  shift, and go to state 157
+    ';'  shift, and go to state 158
 
 
 State 92
@@ -1739,8 +1747,8 @@ State 92
    24                        | TYPE T_IDENTIFIER .
    25                        | TYPE T_IDENTIFIER . '=' EXPRESSION
 
-    '='  shift, and go to state 158
-    ','  shift, and go to state 159
+    '='  shift, and go to state 159
+    ','  shift, and go to state 160
 
     $default  reduce using rule 24 (FUNCTION_PARAMETER_LIST)
 
@@ -1757,56 +1765,56 @@ State 93
     T_TYPE_CHAR    shift, and go to state 6
     T_TYPE_VOID    shift, and go to state 7
 
-    TYPE_LIST  go to state 160
-    TYPE       go to state 161
+    TYPE_LIST  go to state 161
+    TYPE       go to state 162
 
 
 State 94
 
-   62 ASSIGNMENT_OPERATOR: '=' .
-
-    $default  reduce using rule 62 (ASSIGNMENT_OPERATOR)
-
-
-State 95
-
-   63 ASSIGNMENT_OPERATOR: T_OP_ADD_ASSIGNMENT .
+   63 ASSIGNMENT_OPERATOR: '=' .
 
     $default  reduce using rule 63 (ASSIGNMENT_OPERATOR)
 
 
-State 96
+State 95
 
-   64 ASSIGNMENT_OPERATOR: T_OP_SUBTRACT_ASSIGNMENT .
+   64 ASSIGNMENT_OPERATOR: T_OP_ADD_ASSIGNMENT .
 
     $default  reduce using rule 64 (ASSIGNMENT_OPERATOR)
 
 
-State 97
+State 96
 
-   65 ASSIGNMENT_OPERATOR: T_OP_MULTIPLY_ASSIGNMENT .
+   65 ASSIGNMENT_OPERATOR: T_OP_SUBTRACT_ASSIGNMENT .
 
     $default  reduce using rule 65 (ASSIGNMENT_OPERATOR)
 
 
-State 98
+State 97
 
-   66 ASSIGNMENT_OPERATOR: T_OP_DIVIDE_ASSIGNMENT .
+   66 ASSIGNMENT_OPERATOR: T_OP_MULTIPLY_ASSIGNMENT .
 
     $default  reduce using rule 66 (ASSIGNMENT_OPERATOR)
 
 
-State 99
+State 98
 
-   67 ASSIGNMENT_OPERATOR: T_OP_MOD_ASSIGNMENT .
+   67 ASSIGNMENT_OPERATOR: T_OP_DIVIDE_ASSIGNMENT .
 
     $default  reduce using rule 67 (ASSIGNMENT_OPERATOR)
 
 
+State 99
+
+   68 ASSIGNMENT_OPERATOR: T_OP_MOD_ASSIGNMENT .
+
+    $default  reduce using rule 68 (ASSIGNMENT_OPERATOR)
+
+
 State 100
 
-  136 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' . ')'
-  137                      | T_IDENTIFIER '(' . LITERAL_LIST ')'
+  138 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' . ')'
+  139                      | T_IDENTIFIER '(' . LITERAL_LIST ')'
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
@@ -1815,18 +1823,19 @@ State 100
     T_BOOL_LITERAL    shift, and go to state 36
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
-    ')'               shift, and go to state 162
+    ')'               shift, and go to state 163
 
-    LITERAL_LIST           go to state 163
-    IDENTIFIER_OR_LITERAL  go to state 164
+    LITERAL_LIST           go to state 164
+    IDENTIFIER_OR_LITERAL  go to state 165
     UNARY_OPERATOR         go to state 82
 
 
 State 101
 
-   61 ASSIGNMENT: T_IDENTIFIER '[' . EXPRESSION ']' ASSIGNMENT_OPERATOR ARRAY_LIST
-  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' . EXPRESSION ']'
-  142                      | T_IDENTIFIER '[' . EXPRESSION ']' UNARY_OPERATOR
+   61 ASSIGNMENT: T_IDENTIFIER '[' . EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   62           | T_IDENTIFIER '[' . EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT
+  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' . EXPRESSION ']'
+  144                      | T_IDENTIFIER '[' . EXPRESSION ']' UNARY_OPERATOR
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -1842,7 +1851,7 @@ State 101
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 165
+    EXPRESSION              go to state 166
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
@@ -1861,12 +1870,14 @@ State 102
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    ASSIGNMENT             go to state 166
-    EXPRESSION_GRAMMAR     go to state 167
+    ASSIGNMENT             go to state 167
+    EXPRESSION_GRAMMAR     go to state 168
     EXPRESSION_TERM        go to state 68
     EXPRESSION_F           go to state 69
     IDENTIFIER_OR_LITERAL  go to state 81
@@ -1875,9 +1886,9 @@ State 102
 
 State 103
 
-  138 IDENTIFIER_OR_LITERAL: T_IDENTIFIER UNARY_OPERATOR .
+  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER UNARY_OPERATOR .
 
-    $default  reduce using rule 138 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 140 (IDENTIFIER_OR_LITERAL)
 
 
 State 104
@@ -1899,7 +1910,7 @@ State 104
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 168
+    EXPRESSION              go to state 169
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
@@ -1923,57 +1934,47 @@ State 106
 
 State 107
 
-  135 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
-  136                      | T_IDENTIFIER . '(' ')'
-  137                      | T_IDENTIFIER . '(' LITERAL_LIST ')'
-  138                      | T_IDENTIFIER . UNARY_OPERATOR
-  140                      | T_IDENTIFIER . '[' EXPRESSION ']'
-  142                      | T_IDENTIFIER . '[' EXPRESSION ']' UNARY_OPERATOR
+  137 IDENTIFIER_OR_LITERAL: T_IDENTIFIER .
+  138                      | T_IDENTIFIER . '(' ')'
+  139                      | T_IDENTIFIER . '(' LITERAL_LIST ')'
+  140                      | T_IDENTIFIER . UNARY_OPERATOR
+  142                      | T_IDENTIFIER . '[' EXPRESSION ']'
+  144                      | T_IDENTIFIER . '[' EXPRESSION ']' UNARY_OPERATOR
 
     T_OP_INCREMENT  shift, and go to state 43
     T_OP_DECREMENT  shift, and go to state 44
     '('             shift, and go to state 100
-    '['             shift, and go to state 169
+    '['             shift, and go to state 170
 
-    $default  reduce using rule 135 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 137 (IDENTIFIER_OR_LITERAL)
 
     UNARY_OPERATOR  go to state 103
 
 
 State 108
 
-   80 EXPRESSION_TERM: '!' EXPRESSION_F .
+   79 EXPRESSION_TERM: '!' EXPRESSION_F .
 
-    $default  reduce using rule 80 (EXPRESSION_TERM)
+    $default  reduce using rule 79 (EXPRESSION_TERM)
 
 
 State 109
 
-   71 EXPRESSION: '+' EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   82 EXPRESSION_F: '+' EXPRESSION_F .
 
-    '+'  shift, and go to state 139
-    '-'  shift, and go to state 140
-
-    $default  reduce using rule 71 (EXPRESSION)
+    $default  reduce using rule 82 (EXPRESSION_F)
 
 
 State 110
 
-   72 EXPRESSION: '-' EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   83 EXPRESSION_F: '-' EXPRESSION_F .
 
-    '+'  shift, and go to state 139
-    '-'  shift, and go to state 140
-
-    $default  reduce using rule 72 (EXPRESSION)
+    $default  reduce using rule 83 (EXPRESSION_F)
 
 
 State 111
 
-  120 COUT: T_IO_COUT T_IO_INSERTION . INSERTION_LIST
+  122 COUT: T_IO_COUT T_IO_INSERTION . INSERTION_LIST
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -1989,22 +1990,22 @@ State 111
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 170
+    EXPRESSION              go to state 171
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
-    INSERTION_LIST          go to state 171
+    INSERTION_LIST          go to state 172
     IDENTIFIER_OR_LITERAL   go to state 81
     UNARY_OPERATOR          go to state 82
 
 
 State 112
 
-  123 CIN: T_IO_CIN T_IO_EXTRACTION . EXTRACTION_LIST
+  125 CIN: T_IO_CIN T_IO_EXTRACTION . EXTRACTION_LIST
 
-    T_IDENTIFIER  shift, and go to state 172
+    T_IDENTIFIER  shift, and go to state 173
 
-    EXTRACTION_LIST  go to state 173
+    EXTRACTION_LIST  go to state 174
 
 
 State 113
@@ -2012,7 +2013,7 @@ State 113
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-   82 EXPRESSION_F: '(' EXPRESSION . ')'
+   81 EXPRESSION_F: '(' EXPRESSION . ')'
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -2025,7 +2026,7 @@ State 113
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ')'                          shift, and go to state 174
+    ')'                          shift, and go to state 175
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
@@ -2037,7 +2038,7 @@ State 114
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-  126 RETURN: T_RETURN EXPRESSION .
+  128 RETURN: T_RETURN EXPRESSION .
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -2051,7 +2052,7 @@ State 114
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
 
-    $default  reduce using rule 126 (RETURN)
+    $default  reduce using rule 128 (RETURN)
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
@@ -2090,7 +2091,7 @@ State 119
 
    32 SINGLE_LINE_IF: IF_PREFIX LINE_STATEMENT . ';'
 
-    ';'  shift, and go to state 175
+    ';'  shift, and go to state 176
 
 
 State 120
@@ -2111,7 +2112,7 @@ State 122
 
    37 SINGLE_LINE_ELSE: ELSE_PREFIX LINE_STATEMENT . ';'
 
-    ';'  shift, and go to state 176
+    ';'  shift, and go to state 177
 
 
 State 123
@@ -2121,7 +2122,7 @@ State 123
    44                | FOR_PREFIX FOR_INIT_STATEMENT . ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT . ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'
 
-    ';'  shift, and go to state 177
+    ';'  shift, and go to state 178
 
 
 State 124
@@ -2133,58 +2134,58 @@ State 124
 
 State 125
 
-  130 RELATIONAL_OPERATOR: '>' .
-
-    $default  reduce using rule 130 (RELATIONAL_OPERATOR)
-
-
-State 126
-
-  132 RELATIONAL_OPERATOR: '<' .
+  132 RELATIONAL_OPERATOR: '>' .
 
     $default  reduce using rule 132 (RELATIONAL_OPERATOR)
 
 
-State 127
+State 126
 
-  131 RELATIONAL_OPERATOR: T_REL_OP_GREATER_THAN_EQUAL .
-
-    $default  reduce using rule 131 (RELATIONAL_OPERATOR)
-
-
-State 128
-
-  133 RELATIONAL_OPERATOR: T_REL_OP_LESS_THAN_EQUAL .
-
-    $default  reduce using rule 133 (RELATIONAL_OPERATOR)
-
-
-State 129
-
-  129 RELATIONAL_OPERATOR: T_REL_OP_EQUAL .
-
-    $default  reduce using rule 129 (RELATIONAL_OPERATOR)
-
-
-State 130
-
-  134 RELATIONAL_OPERATOR: T_REL_OP_NOT_EQUAL .
+  134 RELATIONAL_OPERATOR: '<' .
 
     $default  reduce using rule 134 (RELATIONAL_OPERATOR)
 
 
+State 127
+
+  133 RELATIONAL_OPERATOR: T_REL_OP_GREATER_THAN_EQUAL .
+
+    $default  reduce using rule 133 (RELATIONAL_OPERATOR)
+
+
+State 128
+
+  135 RELATIONAL_OPERATOR: T_REL_OP_LESS_THAN_EQUAL .
+
+    $default  reduce using rule 135 (RELATIONAL_OPERATOR)
+
+
+State 129
+
+  131 RELATIONAL_OPERATOR: T_REL_OP_EQUAL .
+
+    $default  reduce using rule 131 (RELATIONAL_OPERATOR)
+
+
+State 130
+
+  136 RELATIONAL_OPERATOR: T_REL_OP_NOT_EQUAL .
+
+    $default  reduce using rule 136 (RELATIONAL_OPERATOR)
+
+
 State 131
 
-  128 LOGICAL_OPERATOR: T_LOG_OP_OR .
+  130 LOGICAL_OPERATOR: T_LOG_OP_OR .
 
-    $default  reduce using rule 128 (LOGICAL_OPERATOR)
+    $default  reduce using rule 130 (LOGICAL_OPERATOR)
 
 
 State 132
 
-  127 LOGICAL_OPERATOR: T_LOG_OP_AND .
+  129 LOGICAL_OPERATOR: T_LOG_OP_AND .
 
-    $default  reduce using rule 127 (LOGICAL_OPERATOR)
+    $default  reduce using rule 129 (LOGICAL_OPERATOR)
 
 
 State 133
@@ -2218,11 +2219,13 @@ State 136
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    EXPRESSION_GRAMMAR     go to state 178
+    EXPRESSION_GRAMMAR     go to state 179
     EXPRESSION_TERM        go to state 68
     EXPRESSION_F           go to state 69
     IDENTIFIER_OR_LITERAL  go to state 81
@@ -2239,11 +2242,13 @@ State 137
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    EXPRESSION_GRAMMAR     go to state 179
+    EXPRESSION_GRAMMAR     go to state 180
     EXPRESSION_TERM        go to state 68
     EXPRESSION_F           go to state 69
     IDENTIFIER_OR_LITERAL  go to state 81
@@ -2260,11 +2265,13 @@ State 138
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    EXPRESSION_GRAMMAR     go to state 180
+    EXPRESSION_GRAMMAR     go to state 181
     EXPRESSION_TERM        go to state 68
     EXPRESSION_F           go to state 69
     IDENTIFIER_OR_LITERAL  go to state 81
@@ -2273,7 +2280,7 @@ State 138
 
 State 139
 
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' . EXPRESSION_TERM
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' . EXPRESSION_TERM
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
@@ -2281,26 +2288,8 @@ State 139
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
     '!'               shift, and go to state 40
-    T_OP_INCREMENT    shift, and go to state 43
-    T_OP_DECREMENT    shift, and go to state 44
-    '('               shift, and go to state 50
-
-    EXPRESSION_TERM        go to state 181
-    EXPRESSION_F           go to state 69
-    IDENTIFIER_OR_LITERAL  go to state 81
-    UNARY_OPERATOR         go to state 82
-
-
-State 140
-
-   74 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '-' . EXPRESSION_TERM
-
-    T_IDENTIFIER      shift, and go to state 107
-    T_CHAR_LITERAL    shift, and go to state 33
-    T_STRING_LITERAL  shift, and go to state 34
-    T_NUMBER_LITERAL  shift, and go to state 35
-    T_BOOL_LITERAL    shift, and go to state 36
-    '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
@@ -2311,33 +2300,39 @@ State 140
     UNARY_OPERATOR         go to state 82
 
 
-State 141
+State 140
 
-   76 EXPRESSION_TERM: EXPRESSION_TERM '*' . EXPRESSION_F
+   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '-' . EXPRESSION_TERM
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
     T_STRING_LITERAL  shift, and go to state 34
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
+    '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
-    EXPRESSION_F           go to state 183
+    EXPRESSION_TERM        go to state 183
+    EXPRESSION_F           go to state 69
     IDENTIFIER_OR_LITERAL  go to state 81
     UNARY_OPERATOR         go to state 82
 
 
-State 142
+State 141
 
-   77 EXPRESSION_TERM: EXPRESSION_TERM '/' . EXPRESSION_F
+   75 EXPRESSION_TERM: EXPRESSION_TERM '*' . EXPRESSION_F
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
     T_STRING_LITERAL  shift, and go to state 34
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
@@ -2347,20 +2342,42 @@ State 142
     UNARY_OPERATOR         go to state 82
 
 
-State 143
+State 142
 
-   78 EXPRESSION_TERM: EXPRESSION_TERM '%' . EXPRESSION_F
+   76 EXPRESSION_TERM: EXPRESSION_TERM '/' . EXPRESSION_F
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
     T_STRING_LITERAL  shift, and go to state 34
     T_NUMBER_LITERAL  shift, and go to state 35
     T_BOOL_LITERAL    shift, and go to state 36
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
 
     EXPRESSION_F           go to state 185
+    IDENTIFIER_OR_LITERAL  go to state 81
+    UNARY_OPERATOR         go to state 82
+
+
+State 143
+
+   77 EXPRESSION_TERM: EXPRESSION_TERM '%' . EXPRESSION_F
+
+    T_IDENTIFIER      shift, and go to state 107
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
+    T_OP_INCREMENT    shift, and go to state 43
+    T_OP_DECREMENT    shift, and go to state 44
+    '('               shift, and go to state 50
+
+    EXPRESSION_F           go to state 186
     IDENTIFIER_OR_LITERAL  go to state 81
     UNARY_OPERATOR         go to state 82
 
@@ -2374,101 +2391,107 @@ State 144
 
 State 145
 
-   91 STATEMENT: LINE_STATEMENT ';' .
+   92 STATEMENT: LINE_STATEMENT ';' .
 
-    $default  reduce using rule 91 (STATEMENT)
+    $default  reduce using rule 92 (STATEMENT)
 
 
 State 146
 
-  114 VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER .
-  115 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER . '[' ']'
-  116                                      | T_IDENTIFIER . '[' EXPRESSION ']'
+  115 VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER .
+  116 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER . '[' ']'
+  117                                      | T_IDENTIFIER . '[' EXPRESSION ']'
+  118 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE: T_IDENTIFIER . '[' EXPRESSION ']'
 
-    '['  shift, and go to state 186
+    '['  shift, and go to state 187
 
-    $default  reduce using rule 114 (VARIABLE_DECLARATION_IDENTIFIER)
+    $default  reduce using rule 115 (VARIABLE_DECLARATION_IDENTIFIER)
 
 
 State 147
 
-  104 VARIABLE_DECLARATION: VARIABLE_DECLARATION_TYPE VARIABLE_LIST .
+  105 VARIABLE_DECLARATION: VARIABLE_DECLARATION_TYPE VARIABLE_LIST .
 
-    $default  reduce using rule 104 (VARIABLE_DECLARATION)
+    $default  reduce using rule 105 (VARIABLE_DECLARATION)
 
 
 State 148
 
-  106 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER . ',' VARIABLE_LIST
-  107              | VARIABLE_DECLARATION_IDENTIFIER . '=' EXPRESSION ',' VARIABLE_LIST
-  110              | VARIABLE_DECLARATION_IDENTIFIER .
-  111              | VARIABLE_DECLARATION_IDENTIFIER . '=' EXPRESSION
+  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER . ',' VARIABLE_LIST
+  108              | VARIABLE_DECLARATION_IDENTIFIER . '=' EXPRESSION ',' VARIABLE_LIST
+  109              | VARIABLE_DECLARATION_IDENTIFIER .
+  110              | VARIABLE_DECLARATION_IDENTIFIER . '=' EXPRESSION
 
-    '='  shift, and go to state 187
-    ','  shift, and go to state 188
+    '='  shift, and go to state 188
+    ','  shift, and go to state 189
 
-    $default  reduce using rule 110 (VARIABLE_LIST)
+    $default  reduce using rule 109 (VARIABLE_LIST)
 
 
 State 149
 
-  108 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER . ',' VARIABLE_LIST
-  109              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER . '=' ARRAY_LIST ',' VARIABLE_LIST
-  112              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER .
-  113              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER . '=' ARRAY_LIST
+  112 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER . '=' ARRAY_LIST ',' VARIABLE_LIST
+  114              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER . '=' ARRAY_LIST
 
-    '='  shift, and go to state 189
-    ','  shift, and go to state 190
-
-    $default  reduce using rule 112 (VARIABLE_LIST)
+    '='  shift, and go to state 190
 
 
 State 150
 
-  139 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER .
-  141                      | UNARY_OPERATOR T_IDENTIFIER . '[' EXPRESSION ']'
+  111 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE . ',' VARIABLE_LIST
+  113              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE .
 
-    '['  shift, and go to state 191
+    ','  shift, and go to state 191
 
-    $default  reduce using rule 139 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 113 (VARIABLE_LIST)
 
 
 State 151
+
+  141 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER .
+  143                      | UNARY_OPERATOR T_IDENTIFIER . '[' EXPRESSION ']'
+
+    '['  shift, and go to state 192
+
+    $default  reduce using rule 141 (IDENTIFIER_OR_LITERAL)
+
+
+State 152
 
    26 FUNCTION_PREFIX: TYPE T_IDENTIFIER '(' .
 
     $default  reduce using rule 26 (FUNCTION_PREFIX)
 
 
-State 152
+State 153
 
     6 INCLUDE: T_HEADER_INCLUDE '<' T_HEADER_FILE '>' .
 
     $default  reduce using rule 6 (INCLUDE)
 
 
-State 153
+State 154
 
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE '<' T_HEADER_FILE . '>'
 
-    '>'  shift, and go to state 192
-
-
-State 154
-
-   21 FUNCTION_DECLARATION: FUNCTION_PREFIX ')' '{' STATEMENTS . '}'
-
-    '}'  shift, and go to state 193
+    '>'  shift, and go to state 193
 
 
 State 155
+
+   21 FUNCTION_DECLARATION: FUNCTION_PREFIX ')' '{' STATEMENTS . '}'
+
+    '}'  shift, and go to state 194
+
+
+State 156
 
    15 FUNCTION_PROTOTYPE: FUNCTION_PREFIX TYPE_LIST ')' ';' .
 
     $default  reduce using rule 15 (FUNCTION_PROTOTYPE)
 
 
-State 156
+State 157
 
    20 FUNCTION_DECLARATION: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' '{' . STATEMENTS '}'
 
@@ -2504,7 +2527,7 @@ State 156
 
     BLOCK                      go to state 53
     BLOCK_START                go to state 20
-    STATEMENTS                 go to state 194
+    STATEMENTS                 go to state 195
     SINGLE_LINE_IF             go to state 55
     BLOCK_IF                   go to state 56
     IF_PREFIX                  go to state 57
@@ -2536,14 +2559,14 @@ State 156
     TYPE                       go to state 83
 
 
-State 157
+State 158
 
    19 FUNCTION_DEFINITION: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' ';' .
 
     $default  reduce using rule 19 (FUNCTION_DEFINITION)
 
 
-State 158
+State 159
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER '=' . EXPRESSION ',' FUNCTION_PARAMETER_LIST
    25                        | TYPE T_IDENTIFIER '=' . EXPRESSION
@@ -2562,7 +2585,7 @@ State 158
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 195
+    EXPRESSION              go to state 196
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
@@ -2570,7 +2593,7 @@ State 158
     UNARY_OPERATOR          go to state 82
 
 
-State 159
+State 160
 
    22 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER ',' . FUNCTION_PARAMETER_LIST
 
@@ -2582,18 +2605,18 @@ State 159
     T_TYPE_CHAR    shift, and go to state 6
     T_TYPE_VOID    shift, and go to state 7
 
-    FUNCTION_PARAMETER_LIST  go to state 196
-    TYPE                     go to state 197
+    FUNCTION_PARAMETER_LIST  go to state 197
+    TYPE                     go to state 198
 
 
-State 160
+State 161
 
    17 TYPE_LIST: TYPE ',' TYPE_LIST .
 
     $default  reduce using rule 17 (TYPE_LIST)
 
 
-State 161
+State 162
 
    17 TYPE_LIST: TYPE . ',' TYPE_LIST
    18          | TYPE .
@@ -2603,38 +2626,39 @@ State 161
     $default  reduce using rule 18 (TYPE_LIST)
 
 
-State 162
-
-  136 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' ')' .
-
-    $default  reduce using rule 136 (IDENTIFIER_OR_LITERAL)
-
-
 State 163
 
-  137 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' LITERAL_LIST . ')'
+  138 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' ')' .
 
-    ')'  shift, and go to state 198
+    $default  reduce using rule 138 (IDENTIFIER_OR_LITERAL)
 
 
 State 164
 
-  118 LITERAL_LIST: IDENTIFIER_OR_LITERAL . ',' LITERAL_LIST
-  119             | IDENTIFIER_OR_LITERAL .
+  139 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' LITERAL_LIST . ')'
 
-    ','  shift, and go to state 199
-
-    $default  reduce using rule 119 (LITERAL_LIST)
+    ')'  shift, and go to state 199
 
 
 State 165
 
+  120 LITERAL_LIST: IDENTIFIER_OR_LITERAL . ',' LITERAL_LIST
+  121             | IDENTIFIER_OR_LITERAL .
+
+    ','  shift, and go to state 200
+
+    $default  reduce using rule 121 (LITERAL_LIST)
+
+
+State 166
+
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION . ']' ASSIGNMENT_OPERATOR ARRAY_LIST
-  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION . ']'
-  142                      | T_IDENTIFIER '[' EXPRESSION . ']' UNARY_OPERATOR
+   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION . ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   62           | T_IDENTIFIER '[' EXPRESSION . ']' ASSIGNMENT_OPERATOR ASSIGNMENT
+  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION . ']'
+  144                      | T_IDENTIFIER '[' EXPRESSION . ']' UNARY_OPERATOR
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -2647,25 +2671,25 @@ State 165
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ']'                          shift, and go to state 200
+    ']'                          shift, and go to state 201
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
     RELATIONAL_OPERATOR  go to state 138
 
 
-State 166
+State 167
 
    60 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT .
 
     $default  reduce using rule 60 (ASSIGNMENT)
 
 
-State 167
+State 168
 
    59 ASSIGNMENT: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
 
     '+'  shift, and go to state 139
     '-'  shift, and go to state 140
@@ -2673,7 +2697,7 @@ State 167
     $default  reduce using rule 59 (ASSIGNMENT)
 
 
-State 168
+State 169
 
    35 BLOCK_IF: T_CONSTRUCT_IF '(' EXPRESSION . ')' BLOCK
    36 IF_PREFIX: T_CONSTRUCT_IF '(' EXPRESSION . ')'
@@ -2692,17 +2716,17 @@ State 168
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ')'                          shift, and go to state 201
+    ')'                          shift, and go to state 202
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
     RELATIONAL_OPERATOR  go to state 138
 
 
-State 169
+State 170
 
-  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' . EXPRESSION ']'
-  142                      | T_IDENTIFIER '[' . EXPRESSION ']' UNARY_OPERATOR
+  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' . EXPRESSION ']'
+  144                      | T_IDENTIFIER '[' . EXPRESSION ']' UNARY_OPERATOR
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -2718,7 +2742,7 @@ State 169
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 202
+    EXPRESSION              go to state 203
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
@@ -2726,13 +2750,13 @@ State 169
     UNARY_OPERATOR          go to state 82
 
 
-State 170
+State 171
 
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-  121 INSERTION_LIST: EXPRESSION . T_IO_INSERTION INSERTION_LIST
-  122               | EXPRESSION .
+  123 INSERTION_LIST: EXPRESSION . T_IO_INSERTION INSERTION_LIST
+  124               | EXPRESSION .
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -2745,61 +2769,61 @@ State 170
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    T_IO_INSERTION               shift, and go to state 203
+    T_IO_INSERTION               shift, and go to state 204
 
-    $default  reduce using rule 122 (INSERTION_LIST)
+    $default  reduce using rule 124 (INSERTION_LIST)
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
     RELATIONAL_OPERATOR  go to state 138
 
 
-State 171
-
-  120 COUT: T_IO_COUT T_IO_INSERTION INSERTION_LIST .
-
-    $default  reduce using rule 120 (COUT)
-
-
 State 172
 
-  124 EXTRACTION_LIST: T_IDENTIFIER . T_IO_EXTRACTION EXTRACTION_LIST
-  125                | T_IDENTIFIER .
+  122 COUT: T_IO_COUT T_IO_INSERTION INSERTION_LIST .
 
-    T_IO_EXTRACTION  shift, and go to state 204
-
-    $default  reduce using rule 125 (EXTRACTION_LIST)
+    $default  reduce using rule 122 (COUT)
 
 
 State 173
 
-  123 CIN: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST .
+  126 EXTRACTION_LIST: T_IDENTIFIER . T_IO_EXTRACTION EXTRACTION_LIST
+  127                | T_IDENTIFIER .
 
-    $default  reduce using rule 123 (CIN)
+    T_IO_EXTRACTION  shift, and go to state 205
+
+    $default  reduce using rule 127 (EXTRACTION_LIST)
 
 
 State 174
 
-   82 EXPRESSION_F: '(' EXPRESSION ')' .
+  125 CIN: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST .
 
-    $default  reduce using rule 82 (EXPRESSION_F)
+    $default  reduce using rule 125 (CIN)
 
 
 State 175
+
+   81 EXPRESSION_F: '(' EXPRESSION ')' .
+
+    $default  reduce using rule 81 (EXPRESSION_F)
+
+
+State 176
 
    32 SINGLE_LINE_IF: IF_PREFIX LINE_STATEMENT ';' .
 
     $default  reduce using rule 32 (SINGLE_LINE_IF)
 
 
-State 176
+State 177
 
    37 SINGLE_LINE_ELSE: ELSE_PREFIX LINE_STATEMENT ';' .
 
     $default  reduce using rule 37 (SINGLE_LINE_ELSE)
 
 
-State 177
+State 178
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' . FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'
    43                | FOR_PREFIX FOR_INIT_STATEMENT ';' . FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';'
@@ -2820,10 +2844,10 @@ State 177
 
     $default  reduce using rule 49 (FOR_CONDITION_STATEMENT)
 
-    FOR_CONDITION_STATEMENT  go to state 205
-    CONDITIONAL_EXPRESSION   go to state 206
+    FOR_CONDITION_STATEMENT  go to state 206
+    CONDITIONAL_EXPRESSION   go to state 207
     ASSIGNMENT               go to state 65
-    EXPRESSION               go to state 207
+    EXPRESSION               go to state 208
     EXPRESSION_GRAMMAR       go to state 67
     EXPRESSION_TERM          go to state 68
     EXPRESSION_F             go to state 69
@@ -2831,11 +2855,11 @@ State 177
     UNARY_OPERATOR           go to state 82
 
 
-State 178
+State 179
 
    58 CONDITIONAL_EXPRESSION: EXPRESSION BITWISE_OPERATOR EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
 
     '+'  shift, and go to state 139
     '-'  shift, and go to state 140
@@ -2843,11 +2867,11 @@ State 178
     $default  reduce using rule 58 (CONDITIONAL_EXPRESSION)
 
 
-State 179
+State 180
 
    56 CONDITIONAL_EXPRESSION: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
 
     '+'  shift, and go to state 139
     '-'  shift, and go to state 140
@@ -2855,11 +2879,11 @@ State 179
     $default  reduce using rule 56 (CONDITIONAL_EXPRESSION)
 
 
-State 180
+State 181
 
    57 CONDITIONAL_EXPRESSION: EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR .
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
-   74                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
 
     '+'  shift, and go to state 139
     '-'  shift, and go to state 140
@@ -2867,12 +2891,26 @@ State 180
     $default  reduce using rule 57 (CONDITIONAL_EXPRESSION)
 
 
-State 181
+State 182
 
-   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM .
-   76 EXPRESSION_TERM: EXPRESSION_TERM . '*' EXPRESSION_F
-   77                | EXPRESSION_TERM . '/' EXPRESSION_F
-   78                | EXPRESSION_TERM . '%' EXPRESSION_F
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM .
+   75 EXPRESSION_TERM: EXPRESSION_TERM . '*' EXPRESSION_F
+   76                | EXPRESSION_TERM . '/' EXPRESSION_F
+   77                | EXPRESSION_TERM . '%' EXPRESSION_F
+
+    '*'  shift, and go to state 141
+    '/'  shift, and go to state 142
+    '%'  shift, and go to state 143
+
+    $default  reduce using rule 72 (EXPRESSION_GRAMMAR)
+
+
+State 183
+
+   73 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '-' EXPRESSION_TERM .
+   75 EXPRESSION_TERM: EXPRESSION_TERM . '*' EXPRESSION_F
+   76                | EXPRESSION_TERM . '/' EXPRESSION_F
+   77                | EXPRESSION_TERM . '%' EXPRESSION_F
 
     '*'  shift, and go to state 141
     '/'  shift, and go to state 142
@@ -2881,73 +2919,32 @@ State 181
     $default  reduce using rule 73 (EXPRESSION_GRAMMAR)
 
 
-State 182
-
-   74 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR '-' EXPRESSION_TERM .
-   76 EXPRESSION_TERM: EXPRESSION_TERM . '*' EXPRESSION_F
-   77                | EXPRESSION_TERM . '/' EXPRESSION_F
-   78                | EXPRESSION_TERM . '%' EXPRESSION_F
-
-    '*'  shift, and go to state 141
-    '/'  shift, and go to state 142
-    '%'  shift, and go to state 143
-
-    $default  reduce using rule 74 (EXPRESSION_GRAMMAR)
-
-
-State 183
-
-   76 EXPRESSION_TERM: EXPRESSION_TERM '*' EXPRESSION_F .
-
-    $default  reduce using rule 76 (EXPRESSION_TERM)
-
-
 State 184
 
-   77 EXPRESSION_TERM: EXPRESSION_TERM '/' EXPRESSION_F .
+   75 EXPRESSION_TERM: EXPRESSION_TERM '*' EXPRESSION_F .
 
-    $default  reduce using rule 77 (EXPRESSION_TERM)
+    $default  reduce using rule 75 (EXPRESSION_TERM)
 
 
 State 185
 
-   78 EXPRESSION_TERM: EXPRESSION_TERM '%' EXPRESSION_F .
+   76 EXPRESSION_TERM: EXPRESSION_TERM '/' EXPRESSION_F .
 
-    $default  reduce using rule 78 (EXPRESSION_TERM)
+    $default  reduce using rule 76 (EXPRESSION_TERM)
 
 
 State 186
 
-  115 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' . ']'
-  116                                      | T_IDENTIFIER '[' . EXPRESSION ']'
+   77 EXPRESSION_TERM: EXPRESSION_TERM '%' EXPRESSION_F .
 
-    T_IDENTIFIER      shift, and go to state 32
-    T_CHAR_LITERAL    shift, and go to state 33
-    T_STRING_LITERAL  shift, and go to state 34
-    T_NUMBER_LITERAL  shift, and go to state 35
-    T_BOOL_LITERAL    shift, and go to state 36
-    '!'               shift, and go to state 40
-    '+'               shift, and go to state 41
-    '-'               shift, and go to state 42
-    T_OP_INCREMENT    shift, and go to state 43
-    T_OP_DECREMENT    shift, and go to state 44
-    '('               shift, and go to state 50
-    ']'               shift, and go to state 208
-
-    CONDITIONAL_EXPRESSION  go to state 64
-    ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 209
-    EXPRESSION_GRAMMAR      go to state 67
-    EXPRESSION_TERM         go to state 68
-    EXPRESSION_F            go to state 69
-    IDENTIFIER_OR_LITERAL   go to state 81
-    UNARY_OPERATOR          go to state 82
+    $default  reduce using rule 77 (EXPRESSION_TERM)
 
 
 State 187
 
-  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' . EXPRESSION ',' VARIABLE_LIST
-  111              | VARIABLE_DECLARATION_IDENTIFIER '=' . EXPRESSION
+  116 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' . ']'
+  117                                      | T_IDENTIFIER '[' . EXPRESSION ']'
+  118 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE: T_IDENTIFIER '[' . EXPRESSION ']'
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -2960,6 +2957,7 @@ State 187
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
     '('               shift, and go to state 50
+    ']'               shift, and go to state 209
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
@@ -2973,39 +2971,8 @@ State 187
 
 State 188
 
-  106 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER ',' . VARIABLE_LIST
-
-    T_IDENTIFIER  shift, and go to state 146
-
-    VARIABLE_LIST                          go to state 211
-    VARIABLE_DECLARATION_IDENTIFIER        go to state 148
-    ARRAY_VARIABLE_DECLARATION_IDENTIFIER  go to state 149
-
-
-State 189
-
-  109 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' . ARRAY_LIST ',' VARIABLE_LIST
-  113              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' . ARRAY_LIST
-
-    '{'  shift, and go to state 212
-
-    ARRAY_LIST  go to state 213
-
-
-State 190
-
-  108 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER ',' . VARIABLE_LIST
-
-    T_IDENTIFIER  shift, and go to state 146
-
-    VARIABLE_LIST                          go to state 214
-    VARIABLE_DECLARATION_IDENTIFIER        go to state 148
-    ARRAY_VARIABLE_DECLARATION_IDENTIFIER  go to state 149
-
-
-State 191
-
-  141 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER '[' . EXPRESSION ']'
+  108 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' . EXPRESSION ',' VARIABLE_LIST
+  110              | VARIABLE_DECLARATION_IDENTIFIER '=' . EXPRESSION
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -3021,7 +2988,7 @@ State 191
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 215
+    EXPRESSION              go to state 211
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
@@ -3029,28 +2996,88 @@ State 191
     UNARY_OPERATOR          go to state 82
 
 
+State 189
+
+  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER ',' . VARIABLE_LIST
+
+    T_IDENTIFIER  shift, and go to state 146
+
+    VARIABLE_LIST                                    go to state 212
+    VARIABLE_DECLARATION_IDENTIFIER                  go to state 148
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER            go to state 149
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE  go to state 150
+
+
+State 190
+
+  112 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' . ARRAY_LIST ',' VARIABLE_LIST
+  114              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' . ARRAY_LIST
+
+    '{'  shift, and go to state 213
+
+    ARRAY_LIST  go to state 214
+
+
+State 191
+
+  111 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' . VARIABLE_LIST
+
+    T_IDENTIFIER  shift, and go to state 146
+
+    VARIABLE_LIST                                    go to state 215
+    VARIABLE_DECLARATION_IDENTIFIER                  go to state 148
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER            go to state 149
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE  go to state 150
+
+
 State 192
+
+  143 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER '[' . EXPRESSION ']'
+
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
+    '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
+    T_OP_INCREMENT    shift, and go to state 43
+    T_OP_DECREMENT    shift, and go to state 44
+    '('               shift, and go to state 50
+
+    CONDITIONAL_EXPRESSION  go to state 64
+    ASSIGNMENT              go to state 65
+    EXPRESSION              go to state 216
+    EXPRESSION_GRAMMAR      go to state 67
+    EXPRESSION_TERM         go to state 68
+    EXPRESSION_F            go to state 69
+    IDENTIFIER_OR_LITERAL   go to state 81
+    UNARY_OPERATOR          go to state 82
+
+
+State 193
 
     4 INCLUDE: INCLUDE T_HEADER_INCLUDE '<' T_HEADER_FILE '>' .
 
     $default  reduce using rule 4 (INCLUDE)
 
 
-State 193
+State 194
 
    21 FUNCTION_DECLARATION: FUNCTION_PREFIX ')' '{' STATEMENTS '}' .
 
     $default  reduce using rule 21 (FUNCTION_DECLARATION)
 
 
-State 194
+State 195
 
    20 FUNCTION_DECLARATION: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' '{' STATEMENTS . '}'
 
-    '}'  shift, and go to state 216
+    '}'  shift, and go to state 217
 
 
-State 195
+State 196
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER '=' EXPRESSION . ',' FUNCTION_PARAMETER_LIST
    25                        | TYPE T_IDENTIFIER '=' EXPRESSION .
@@ -3069,7 +3096,7 @@ State 195
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ','                          shift, and go to state 217
+    ','                          shift, and go to state 218
 
     $default  reduce using rule 25 (FUNCTION_PARAMETER_LIST)
 
@@ -3078,14 +3105,14 @@ State 195
     RELATIONAL_OPERATOR  go to state 138
 
 
-State 196
+State 197
 
    22 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER ',' FUNCTION_PARAMETER_LIST .
 
     $default  reduce using rule 22 (FUNCTION_PARAMETER_LIST)
 
 
-State 197
+State 198
 
    22 FUNCTION_PARAMETER_LIST: TYPE . T_IDENTIFIER ',' FUNCTION_PARAMETER_LIST
    23                        | TYPE . T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST
@@ -3095,16 +3122,16 @@ State 197
     T_IDENTIFIER  shift, and go to state 92
 
 
-State 198
-
-  137 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' LITERAL_LIST ')' .
-
-    $default  reduce using rule 137 (IDENTIFIER_OR_LITERAL)
-
-
 State 199
 
-  118 LITERAL_LIST: IDENTIFIER_OR_LITERAL ',' . LITERAL_LIST
+  139 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '(' LITERAL_LIST ')' .
+
+    $default  reduce using rule 139 (IDENTIFIER_OR_LITERAL)
+
+
+State 200
+
+  120 LITERAL_LIST: IDENTIFIER_OR_LITERAL ',' . LITERAL_LIST
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
@@ -3114,16 +3141,17 @@ State 199
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
 
-    LITERAL_LIST           go to state 218
-    IDENTIFIER_OR_LITERAL  go to state 164
+    LITERAL_LIST           go to state 219
+    IDENTIFIER_OR_LITERAL  go to state 165
     UNARY_OPERATOR         go to state 82
 
 
-State 200
+State 201
 
-   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' . ASSIGNMENT_OPERATOR ARRAY_LIST
-  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION ']' .
-  142                      | T_IDENTIFIER '[' EXPRESSION ']' . UNARY_OPERATOR
+   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' . ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
+   62           | T_IDENTIFIER '[' EXPRESSION ']' . ASSIGNMENT_OPERATOR ASSIGNMENT
+  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION ']' .
+  144                      | T_IDENTIFIER '[' EXPRESSION ']' . UNARY_OPERATOR
 
     '='                       shift, and go to state 94
     T_OP_ADD_ASSIGNMENT       shift, and go to state 95
@@ -3134,13 +3162,13 @@ State 200
     T_OP_INCREMENT            shift, and go to state 43
     T_OP_DECREMENT            shift, and go to state 44
 
-    $default  reduce using rule 140 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 142 (IDENTIFIER_OR_LITERAL)
 
-    ASSIGNMENT_OPERATOR  go to state 219
-    UNARY_OPERATOR       go to state 220
+    ASSIGNMENT_OPERATOR  go to state 220
+    UNARY_OPERATOR       go to state 221
 
 
-State 201
+State 202
 
    35 BLOCK_IF: T_CONSTRUCT_IF '(' EXPRESSION ')' . BLOCK
    36 IF_PREFIX: T_CONSTRUCT_IF '(' EXPRESSION ')' .
@@ -3149,17 +3177,17 @@ State 201
 
     $default  reduce using rule 36 (IF_PREFIX)
 
-    BLOCK        go to state 221
+    BLOCK        go to state 222
     BLOCK_START  go to state 20
 
 
-State 202
+State 203
 
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION . ']'
-  142                      | T_IDENTIFIER '[' EXPRESSION . ']' UNARY_OPERATOR
+  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION . ']'
+  144                      | T_IDENTIFIER '[' EXPRESSION . ']' UNARY_OPERATOR
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -3172,16 +3200,16 @@ State 202
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ']'                          shift, and go to state 222
+    ']'                          shift, and go to state 223
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
     RELATIONAL_OPERATOR  go to state 138
 
 
-State 203
+State 204
 
-  121 INSERTION_LIST: EXPRESSION T_IO_INSERTION . INSERTION_LIST
+  123 INSERTION_LIST: EXPRESSION T_IO_INSERTION . INSERTION_LIST
 
     T_IDENTIFIER      shift, and go to state 32
     T_CHAR_LITERAL    shift, and go to state 33
@@ -3197,79 +3225,48 @@ State 203
 
     CONDITIONAL_EXPRESSION  go to state 64
     ASSIGNMENT              go to state 65
-    EXPRESSION              go to state 170
+    EXPRESSION              go to state 171
     EXPRESSION_GRAMMAR      go to state 67
     EXPRESSION_TERM         go to state 68
     EXPRESSION_F            go to state 69
-    INSERTION_LIST          go to state 223
+    INSERTION_LIST          go to state 224
     IDENTIFIER_OR_LITERAL   go to state 81
     UNARY_OPERATOR          go to state 82
 
 
-State 204
-
-  124 EXTRACTION_LIST: T_IDENTIFIER T_IO_EXTRACTION . EXTRACTION_LIST
-
-    T_IDENTIFIER  shift, and go to state 172
-
-    EXTRACTION_LIST  go to state 224
-
-
 State 205
+
+  126 EXTRACTION_LIST: T_IDENTIFIER T_IO_EXTRACTION . EXTRACTION_LIST
+
+    T_IDENTIFIER  shift, and go to state 173
+
+    EXTRACTION_LIST  go to state 225
+
+
+State 206
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT . ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'
    43                | FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT . ';' FOR_ACTION_STATEMENT ')' ';'
    44                | FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT . ';' FOR_ACTION_STATEMENT ')' CONSTRUCT
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT . ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'
 
-    ';'  shift, and go to state 225
-
-
-State 206
-
-   50 FOR_CONDITION_STATEMENT: CONDITIONAL_EXPRESSION .
-   69 EXPRESSION: CONDITIONAL_EXPRESSION .
-
-    ';'       reduce using rule 50 (FOR_CONDITION_STATEMENT)
-    $default  reduce using rule 69 (EXPRESSION)
+    ';'  shift, and go to state 226
 
 
 State 207
 
-   56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-   57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
-   58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
+   50 FOR_CONDITION_STATEMENT: CONDITIONAL_EXPRESSION .
+   70 EXPRESSION: CONDITIONAL_EXPRESSION .
 
-    '>'                          shift, and go to state 125
-    '<'                          shift, and go to state 126
-    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 127
-    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 128
-    T_REL_OP_EQUAL               shift, and go to state 129
-    T_REL_OP_NOT_EQUAL           shift, and go to state 130
-    T_LOG_OP_OR                  shift, and go to state 131
-    T_LOG_OP_AND                 shift, and go to state 132
-    '&'                          shift, and go to state 133
-    '|'                          shift, and go to state 134
-    '^'                          shift, and go to state 135
-
-    BITWISE_OPERATOR     go to state 136
-    LOGICAL_OPERATOR     go to state 137
-    RELATIONAL_OPERATOR  go to state 138
+    ';'       reduce using rule 50 (FOR_CONDITION_STATEMENT)
+    $default  reduce using rule 70 (EXPRESSION)
 
 
 State 208
 
-  115 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' ']' .
-
-    $default  reduce using rule 115 (ARRAY_VARIABLE_DECLARATION_IDENTIFIER)
-
-
-State 209
-
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-  116 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' EXPRESSION . ']'
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -3282,11 +3279,17 @@ State 209
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ']'                          shift, and go to state 226
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
     RELATIONAL_OPERATOR  go to state 138
+
+
+State 209
+
+  116 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' ']' .
+
+    $default  reduce using rule 116 (ARRAY_VARIABLE_DECLARATION_IDENTIFIER)
 
 
 State 210
@@ -3294,8 +3297,8 @@ State 210
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION . ',' VARIABLE_LIST
-  111              | VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION .
+  117 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' EXPRESSION . ']'
+  118 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE: T_IDENTIFIER '[' EXPRESSION . ']'
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -3308,9 +3311,7 @@ State 210
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ','                          shift, and go to state 227
-
-    $default  reduce using rule 111 (VARIABLE_LIST)
+    ']'                          shift, and go to state 227
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
@@ -3319,14 +3320,42 @@ State 210
 
 State 211
 
-  106 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST .
+   56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
+   57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
+   58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
+  108 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION . ',' VARIABLE_LIST
+  110              | VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION .
 
-    $default  reduce using rule 106 (VARIABLE_LIST)
+    '>'                          shift, and go to state 125
+    '<'                          shift, and go to state 126
+    T_REL_OP_GREATER_THAN_EQUAL  shift, and go to state 127
+    T_REL_OP_LESS_THAN_EQUAL     shift, and go to state 128
+    T_REL_OP_EQUAL               shift, and go to state 129
+    T_REL_OP_NOT_EQUAL           shift, and go to state 130
+    T_LOG_OP_OR                  shift, and go to state 131
+    T_LOG_OP_AND                 shift, and go to state 132
+    '&'                          shift, and go to state 133
+    '|'                          shift, and go to state 134
+    '^'                          shift, and go to state 135
+    ','                          shift, and go to state 228
+
+    $default  reduce using rule 110 (VARIABLE_LIST)
+
+    BITWISE_OPERATOR     go to state 136
+    LOGICAL_OPERATOR     go to state 137
+    RELATIONAL_OPERATOR  go to state 138
 
 
 State 212
 
-  117 ARRAY_LIST: '{' . LITERAL_LIST '}'
+  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST .
+
+    $default  reduce using rule 107 (VARIABLE_LIST)
+
+
+State 213
+
+  119 ARRAY_LIST: '{' . LITERAL_LIST '}'
 
     T_IDENTIFIER      shift, and go to state 107
     T_CHAR_LITERAL    shift, and go to state 33
@@ -3336,34 +3365,34 @@ State 212
     T_OP_INCREMENT    shift, and go to state 43
     T_OP_DECREMENT    shift, and go to state 44
 
-    LITERAL_LIST           go to state 228
-    IDENTIFIER_OR_LITERAL  go to state 164
+    LITERAL_LIST           go to state 229
+    IDENTIFIER_OR_LITERAL  go to state 165
     UNARY_OPERATOR         go to state 82
-
-
-State 213
-
-  109 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST . ',' VARIABLE_LIST
-  113              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST .
-
-    ','  shift, and go to state 229
-
-    $default  reduce using rule 113 (VARIABLE_LIST)
 
 
 State 214
 
-  108 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST .
+  112 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST . ',' VARIABLE_LIST
+  114              | ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST .
 
-    $default  reduce using rule 108 (VARIABLE_LIST)
+    ','  shift, and go to state 230
+
+    $default  reduce using rule 114 (VARIABLE_LIST)
 
 
 State 215
 
+  111 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST .
+
+    $default  reduce using rule 111 (VARIABLE_LIST)
+
+
+State 216
+
    56 CONDITIONAL_EXPRESSION: EXPRESSION . LOGICAL_OPERATOR EXPRESSION_GRAMMAR
    57                       | EXPRESSION . RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
    58                       | EXPRESSION . BITWISE_OPERATOR EXPRESSION_GRAMMAR
-  141 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION . ']'
+  143 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION . ']'
 
     '>'                          shift, and go to state 125
     '<'                          shift, and go to state 126
@@ -3376,21 +3405,21 @@ State 215
     '&'                          shift, and go to state 133
     '|'                          shift, and go to state 134
     '^'                          shift, and go to state 135
-    ']'                          shift, and go to state 230
+    ']'                          shift, and go to state 231
 
     BITWISE_OPERATOR     go to state 136
     LOGICAL_OPERATOR     go to state 137
     RELATIONAL_OPERATOR  go to state 138
 
 
-State 216
+State 217
 
    20 FUNCTION_DECLARATION: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' '{' STATEMENTS '}' .
 
     $default  reduce using rule 20 (FUNCTION_DECLARATION)
 
 
-State 217
+State 218
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER '=' EXPRESSION ',' . FUNCTION_PARAMETER_LIST
 
@@ -3402,68 +3431,84 @@ State 217
     T_TYPE_CHAR    shift, and go to state 6
     T_TYPE_VOID    shift, and go to state 7
 
-    FUNCTION_PARAMETER_LIST  go to state 231
-    TYPE                     go to state 197
-
-
-State 218
-
-  118 LITERAL_LIST: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST .
-
-    $default  reduce using rule 118 (LITERAL_LIST)
+    FUNCTION_PARAMETER_LIST  go to state 232
+    TYPE                     go to state 198
 
 
 State 219
 
-   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR . ARRAY_LIST
+  120 LITERAL_LIST: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST .
 
-    '{'  shift, and go to state 212
-
-    ARRAY_LIST  go to state 232
+    $default  reduce using rule 120 (LITERAL_LIST)
 
 
 State 220
 
-  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION ']' UNARY_OPERATOR .
+   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR . EXPRESSION_GRAMMAR
+   62           | T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR . ASSIGNMENT
 
-    $default  reduce using rule 142 (IDENTIFIER_OR_LITERAL)
+    T_IDENTIFIER      shift, and go to state 32
+    T_CHAR_LITERAL    shift, and go to state 33
+    T_STRING_LITERAL  shift, and go to state 34
+    T_NUMBER_LITERAL  shift, and go to state 35
+    T_BOOL_LITERAL    shift, and go to state 36
+    '!'               shift, and go to state 40
+    '+'               shift, and go to state 41
+    '-'               shift, and go to state 42
+    T_OP_INCREMENT    shift, and go to state 43
+    T_OP_DECREMENT    shift, and go to state 44
+    '('               shift, and go to state 50
+
+    ASSIGNMENT             go to state 233
+    EXPRESSION_GRAMMAR     go to state 234
+    EXPRESSION_TERM        go to state 68
+    EXPRESSION_F           go to state 69
+    IDENTIFIER_OR_LITERAL  go to state 81
+    UNARY_OPERATOR         go to state 82
 
 
 State 221
+
+  144 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION ']' UNARY_OPERATOR .
+
+    $default  reduce using rule 144 (IDENTIFIER_OR_LITERAL)
+
+
+State 222
 
    35 BLOCK_IF: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK .
 
     $default  reduce using rule 35 (BLOCK_IF)
 
 
-State 222
+State 223
 
-  140 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION ']' .
-  142                      | T_IDENTIFIER '[' EXPRESSION ']' . UNARY_OPERATOR
+  142 IDENTIFIER_OR_LITERAL: T_IDENTIFIER '[' EXPRESSION ']' .
+  144                      | T_IDENTIFIER '[' EXPRESSION ']' . UNARY_OPERATOR
 
     T_OP_INCREMENT  shift, and go to state 43
     T_OP_DECREMENT  shift, and go to state 44
 
-    $default  reduce using rule 140 (IDENTIFIER_OR_LITERAL)
+    $default  reduce using rule 142 (IDENTIFIER_OR_LITERAL)
 
-    UNARY_OPERATOR  go to state 220
-
-
-State 223
-
-  121 INSERTION_LIST: EXPRESSION T_IO_INSERTION INSERTION_LIST .
-
-    $default  reduce using rule 121 (INSERTION_LIST)
+    UNARY_OPERATOR  go to state 221
 
 
 State 224
 
-  124 EXTRACTION_LIST: T_IDENTIFIER T_IO_EXTRACTION EXTRACTION_LIST .
+  123 INSERTION_LIST: EXPRESSION T_IO_INSERTION INSERTION_LIST .
 
-    $default  reduce using rule 124 (EXTRACTION_LIST)
+    $default  reduce using rule 123 (INSERTION_LIST)
 
 
 State 225
+
+  126 EXTRACTION_LIST: T_IDENTIFIER T_IO_EXTRACTION EXTRACTION_LIST .
+
+    $default  reduce using rule 126 (EXTRACTION_LIST)
+
+
+State 226
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' . FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'
    43                | FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' . FOR_ACTION_STATEMENT ')' ';'
@@ -3497,7 +3542,7 @@ State 225
 
     $default  reduce using rule 51 (FOR_ACTION_STATEMENT)
 
-    FOR_ACTION_STATEMENT       go to state 233
+    FOR_ACTION_STATEMENT       go to state 235
     CONDITIONAL_EXPRESSION     go to state 64
     ASSIGNMENT                 go to state 65
     EXPRESSION                 go to state 66
@@ -3505,7 +3550,7 @@ State 225
     EXPRESSION_TERM            go to state 68
     EXPRESSION_F               go to state 69
     JUMP_STATEMENT             go to state 74
-    LINE_STATEMENT             go to state 234
+    LINE_STATEMENT             go to state 236
     VARIABLE_DECLARATION       go to state 76
     VARIABLE_DECLARATION_TYPE  go to state 77
     COUT                       go to state 78
@@ -3516,102 +3561,118 @@ State 225
     TYPE                       go to state 83
 
 
-State 226
-
-  116 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' EXPRESSION ']' .
-
-    $default  reduce using rule 116 (ARRAY_VARIABLE_DECLARATION_IDENTIFIER)
-
-
 State 227
 
-  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' . VARIABLE_LIST
+  117 ARRAY_VARIABLE_DECLARATION_IDENTIFIER: T_IDENTIFIER '[' EXPRESSION ']' .
+  118 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE: T_IDENTIFIER '[' EXPRESSION ']' .
 
-    T_IDENTIFIER  shift, and go to state 146
-
-    VARIABLE_LIST                          go to state 235
-    VARIABLE_DECLARATION_IDENTIFIER        go to state 148
-    ARRAY_VARIABLE_DECLARATION_IDENTIFIER  go to state 149
+    '='       reduce using rule 117 (ARRAY_VARIABLE_DECLARATION_IDENTIFIER)
+    $default  reduce using rule 118 (ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE)
 
 
 State 228
 
-  117 ARRAY_LIST: '{' LITERAL_LIST . '}'
+  108 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' . VARIABLE_LIST
 
-    '}'  shift, and go to state 236
+    T_IDENTIFIER  shift, and go to state 146
+
+    VARIABLE_LIST                                    go to state 237
+    VARIABLE_DECLARATION_IDENTIFIER                  go to state 148
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER            go to state 149
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE  go to state 150
 
 
 State 229
 
-  109 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' . VARIABLE_LIST
+  119 ARRAY_LIST: '{' LITERAL_LIST . '}'
 
-    T_IDENTIFIER  shift, and go to state 146
-
-    VARIABLE_LIST                          go to state 237
-    VARIABLE_DECLARATION_IDENTIFIER        go to state 148
-    ARRAY_VARIABLE_DECLARATION_IDENTIFIER  go to state 149
+    '}'  shift, and go to state 238
 
 
 State 230
 
-  141 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']' .
+  112 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' . VARIABLE_LIST
 
-    $default  reduce using rule 141 (IDENTIFIER_OR_LITERAL)
+    T_IDENTIFIER  shift, and go to state 146
+
+    VARIABLE_LIST                                    go to state 239
+    VARIABLE_DECLARATION_IDENTIFIER                  go to state 148
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER            go to state 149
+    ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE  go to state 150
 
 
 State 231
+
+  143 IDENTIFIER_OR_LITERAL: UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']' .
+
+    $default  reduce using rule 143 (IDENTIFIER_OR_LITERAL)
+
+
+State 232
 
    23 FUNCTION_PARAMETER_LIST: TYPE T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST .
 
     $default  reduce using rule 23 (FUNCTION_PARAMETER_LIST)
 
 
-State 232
+State 233
 
-   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ARRAY_LIST .
+   62 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT .
+
+    $default  reduce using rule 62 (ASSIGNMENT)
+
+
+State 234
+
+   61 ASSIGNMENT: T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR .
+   72 EXPRESSION_GRAMMAR: EXPRESSION_GRAMMAR . '+' EXPRESSION_TERM
+   73                   | EXPRESSION_GRAMMAR . '-' EXPRESSION_TERM
+
+    '+'  shift, and go to state 139
+    '-'  shift, and go to state 140
 
     $default  reduce using rule 61 (ASSIGNMENT)
 
 
-State 233
+State 235
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT . ')' LINE_STATEMENT ';'
    43                | FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT . ')' ';'
    44                | FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT . ')' CONSTRUCT
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT . ')' '{' STATEMENTS '}'
 
-    ')'  shift, and go to state 238
+    ')'  shift, and go to state 240
 
 
-State 234
+State 236
 
    52 FOR_ACTION_STATEMENT: LINE_STATEMENT .
 
     $default  reduce using rule 52 (FOR_ACTION_STATEMENT)
 
 
-State 235
-
-  107 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST .
-
-    $default  reduce using rule 107 (VARIABLE_LIST)
-
-
-State 236
-
-  117 ARRAY_LIST: '{' LITERAL_LIST '}' .
-
-    $default  reduce using rule 117 (ARRAY_LIST)
-
-
 State 237
 
-  109 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST .
+  108 VARIABLE_LIST: VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST .
 
-    $default  reduce using rule 109 (VARIABLE_LIST)
+    $default  reduce using rule 108 (VARIABLE_LIST)
 
 
 State 238
+
+  119 ARRAY_LIST: '{' LITERAL_LIST '}' .
+
+    $default  reduce using rule 119 (ARRAY_LIST)
+
+
+State 239
+
+  112 VARIABLE_LIST: ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST .
+
+    $default  reduce using rule 112 (VARIABLE_LIST)
+
+
+State 240
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' . LINE_STATEMENT ';'
    43                | FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' . ';'
@@ -3633,7 +3694,7 @@ State 238
     T_CONSTRUCT_IF    shift, and go to state 37
     T_CONSTRUCT_ELSE  shift, and go to state 38
     T_CONSTRUCT_FOR   shift, and go to state 39
-    '{'               shift, and go to state 239
+    '{'               shift, and go to state 241
     '!'               shift, and go to state 40
     '+'               shift, and go to state 41
     '-'               shift, and go to state 42
@@ -3645,7 +3706,7 @@ State 238
     T_JUMP_EXIT       shift, and go to state 48
     T_JUMP_CONTINUE   shift, and go to state 49
     '('               shift, and go to state 50
-    ';'               shift, and go to state 240
+    ';'               shift, and go to state 242
     T_RETURN          shift, and go to state 52
 
     SINGLE_LINE_IF             go to state 55
@@ -3663,11 +3724,11 @@ State 238
     EXPRESSION_GRAMMAR         go to state 67
     EXPRESSION_TERM            go to state 68
     EXPRESSION_F               go to state 69
-    CONSTRUCT                  go to state 241
+    CONSTRUCT                  go to state 243
     BLOCK_CONSTRUCT            go to state 71
     SINGLE_LINE_CONSTRUCT      go to state 72
     JUMP_STATEMENT             go to state 74
-    LINE_STATEMENT             go to state 242
+    LINE_STATEMENT             go to state 244
     VARIABLE_DECLARATION       go to state 76
     VARIABLE_DECLARATION_TYPE  go to state 77
     COUT                       go to state 78
@@ -3678,7 +3739,7 @@ State 238
     TYPE                       go to state 83
 
 
-State 239
+State 241
 
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' . STATEMENTS '}'
 
@@ -3714,7 +3775,7 @@ State 239
 
     BLOCK                      go to state 53
     BLOCK_START                go to state 20
-    STATEMENTS                 go to state 243
+    STATEMENTS                 go to state 245
     SINGLE_LINE_IF             go to state 55
     BLOCK_IF                   go to state 56
     IF_PREFIX                  go to state 57
@@ -3746,42 +3807,42 @@ State 239
     TYPE                       go to state 83
 
 
-State 240
+State 242
 
    43 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';' .
 
     $default  reduce using rule 43 (SINGLE_LINE_FOR)
 
 
-State 241
+State 243
 
    44 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT .
 
     $default  reduce using rule 44 (SINGLE_LINE_FOR)
 
 
-State 242
+State 244
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT . ';'
 
-    ';'  shift, and go to state 244
+    ';'  shift, and go to state 246
 
 
-State 243
+State 245
 
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS . '}'
 
-    '}'  shift, and go to state 245
+    '}'  shift, and go to state 247
 
 
-State 244
+State 246
 
    42 SINGLE_LINE_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';' .
 
     $default  reduce using rule 42 (SINGLE_LINE_FOR)
 
 
-State 245
+State 247
 
    45 BLOCK_FOR: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}' .
 
