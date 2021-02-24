@@ -336,6 +336,8 @@ EXPRESSION
 	: ASSIGNMENT
 	| CONDITIONAL_EXPRESSION
 	| EXPRESSION_GRAMMAR
+	| '+' EXPRESSION_GRAMMAR
+	| '-' EXPRESSION_GRAMMAR
 	;
 
 EXPRESSION_GRAMMAR
@@ -489,8 +491,14 @@ IDENTIFIER_OR_LITERAL
 		lookup($1);
 		$$ = $1;
 	}
-	| T_IDENTIFIER '(' ')'
-	| T_IDENTIFIER '(' LITERAL_LIST ')'
+	| T_IDENTIFIER '(' ')' {
+		lookup($1);
+		$$ = $1;
+	}
+	| T_IDENTIFIER '(' LITERAL_LIST ')' {
+		lookup($1);
+		$$ = $1;
+	}
 	| T_IDENTIFIER UNARY_OPERATOR {
 		lookup($1);
 		$$ = $1;
