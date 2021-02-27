@@ -54,13 +54,6 @@
 
 %}
 
-	/* %union {
-		int int_val;
-		double double_val;
-		char char_val;
-		char* string_val;
-	}; */
-
 %start START
 
 // ---------------- TOKENS ------------------
@@ -181,16 +174,24 @@ FUNCTION_DECLARATION
 
 FUNCTION_PARAMETER_LIST
 	: TYPE T_IDENTIFIER ',' FUNCTION_PARAMETER_LIST {
-		insert($2, "Identifier", $1, @2.last_line);
+		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
+		}
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST {
-		insert($2, "Identifier", $1, @2.last_line);
+		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
+		}
 	}
 	| TYPE T_IDENTIFIER {
-		insert($2, "Identifier", $1, @2.last_line);
+		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
+		}
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION {
-		insert($2, "Identifier", $1, @2.last_line);
+		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
+		}
 	}
 	;
 
@@ -315,13 +316,25 @@ CONDITIONAL_EXPRESSION
 
 ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
+		}
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
+		}
 	}
-	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR
-	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT
+	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
+		}
+	}
+	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT {
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
+		}
+	}
 	;
 
 ASSIGNMENT_OPERATOR
@@ -425,22 +438,30 @@ VARIABLE_LIST
 
 VARIABLE_DECLARATION_IDENTIFIER
 	: T_IDENTIFIER {
-		insert($1, "Identifier", variable_declaration_type, @1.last_line);
+		if (insert($1, "Identifier", variable_declaration_type, @1.last_line) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
 	}
 	;
 
 ARRAY_VARIABLE_DECLARATION_IDENTIFIER
 	: T_IDENTIFIER '[' ']' {
-		insert($1, "Identifier-Array", variable_declaration_type, @1.last_line);
+		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' {
-		insert($1, "Identifier-Array", variable_declaration_type, @1.last_line);
+		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
 	}
 	;
 
 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
 	: T_IDENTIFIER '[' EXPRESSION ']' {
-		insert($1, "Identifier-Array", variable_declaration_type, @1.last_line);
+		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
 	}
 	;
  
@@ -468,10 +489,14 @@ CIN
 
 EXTRACTION_LIST
 	: T_IDENTIFIER T_IO_EXTRACTION EXTRACTION_LIST {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 	}
 	| T_IDENTIFIER {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	;
@@ -496,35 +521,51 @@ RELATIONAL_OPERATOR
 
 IDENTIFIER_OR_LITERAL
 	: T_IDENTIFIER {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	| T_IDENTIFIER '(' ')' {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	| T_IDENTIFIER '(' LITERAL_LIST ')' {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	| T_IDENTIFIER UNARY_OPERATOR {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	| UNARY_OPERATOR T_IDENTIFIER {
-		lookup($2);
+		if (lookup($2) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @2.last_line, $2);
+		}
 		$$ = $2;
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	| UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']' {
-		lookup($1);
-		$$ = $1;
+		if (lookup($2) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @2.last_line, $2);
+		}
+		$$ = $2;
 	}
 	| T_IDENTIFIER '[' EXPRESSION  ']' UNARY_OPERATOR {
-		lookup($1);
+		if (lookup($1) == NULL) {
+			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+		}
 		$$ = $1;
 	}
 	| T_CHAR_LITERAL
@@ -570,12 +611,10 @@ void yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test2.cpp","r");
+	yyin = fopen("test1.cpp","r");
 	
 	init_symbol_table();
-	
-	// char *variable_declaration_type = (char *)malloc(20 * sizeof(char));
-	// strcpy(variable_declaration_type, "\0");
+
     int isError = yyparse();
 
     if (isError) {
@@ -600,13 +639,8 @@ void scope_leave()
 }
 void init_symbol_table()
 {
-	// node_t** complete_symbol_table = (node_t**)malloc(sizeof(node_t*)*SYMBOL_TABLE_SIZE);
-
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
-		// printf("complete symbol table -> i\n");
-		// complete_symbol_table[i]->st = (symbol_table*)(malloc(sizeof(symbol_table)));
-		// printf("complete symbol table -> i\n");
 		complete_symbol_table[i] = NULL;
 	}
 }
@@ -622,7 +656,6 @@ unsigned int hash_function(char *name)
 }
 symbol_table* lookup(char *name)
 {
-	// printf("Look Up Function called with %s\n",name);
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	// check in parent scope
@@ -638,7 +671,6 @@ symbol_table* lookup(char *name)
 		}
 		temp = temp->next;
 	}
-	// printf("ERROR!!!\n");
 	return looked_up;
 }
 node_t *create_node(char *name, char *category, char *type, int line_number)
@@ -664,24 +696,22 @@ node_t *create_node(char *name, char *category, char *type, int line_number)
 symbol_table* insert(char *name, char *category, char *type, int line_number)
 {
 	// only in current scope
-	// printf("Insert Function called with %s\n",name);
-
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	if(temp!=NULL)
 	{
-		while(temp->next!=NULL)
-		{
+		node_t *prev = NULL;
+		while(temp!=NULL) {
 			if((temp->st->scope==current_scope)&&(strcmp(temp->st->name,name)==0))
 			{
-				// printf("Already Exists! ERROR!!!!\n");
 				return NULL;
 			}
+			prev = temp;
 			temp = temp->next;
 		}
 
-		temp->next = create_node(name,category,type,line_number);
-		temp = temp->next;
+		prev->next = create_node(name,category,type,line_number);
+		temp = prev->next;
 	}
 	else
 	{
@@ -701,7 +731,6 @@ void display_symbol_table()
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			/* printf("%s\t\t\t%s\t\t%s\t\t\t%d\t\t\t\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope); */
 			printf("%-10s\t\t%-20s\t\t%-10s\t\t%10d\t\t%10d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
 			temp = temp->next;
 		}

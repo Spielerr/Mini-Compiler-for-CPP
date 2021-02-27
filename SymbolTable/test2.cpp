@@ -2,21 +2,12 @@
 
 using namespace std;
 
+void add(int a, int a) {
+    return 0;
+}
+
 int main() {
-    int a[5] = {2, 3, 4, 5};
-
-    for(int i=0; i<=5; i++)
-    {
-        for(int j=0;j<=5;j++)
-        {
-            int c = 10;
-            if(c == 10)
-            {
-                double b = 3.12E4;
-            }
-        }
-        char s = 'k';
-    }
-
+    int a = 10;
+    b = 5;
     return 0;
 }

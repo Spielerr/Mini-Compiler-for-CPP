@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void add() { cout << 'H' << endl; }
+void add() { cout << 'H'; }
 
 int main() {
     return 0;
@@ -47,5 +47,5 @@ int main() {
     cout << a << b == c;
     if ( (5 + 3) ) { cout << a; }
     int a = 6, b = 4, c = 6;
-    cout << (a = b == c) << endl;
+    cout << (a = b == c);
 }
