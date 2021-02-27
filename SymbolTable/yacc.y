@@ -582,7 +582,7 @@ int main(int argc, char *argv[]) {
         printf("Error has Occured while parsing\n");
     }
     else {
-        printf("Parsing successful!!!\n");
+        printf("\n\nParsing is successful!\n\n");
 		display_symbol_table();
     }
     return 0;
@@ -692,15 +692,19 @@ symbol_table* insert(char *name, char *category, char *type, int line_number)
 }
 void display_symbol_table()
 {
-	printf("---------SYMBOL TABLE---------\n");
-	printf("Token\t\tCategory\t\tType\t\tLine Number\t\tScope\n");
+	printf("SYMBOL TABLE\n");
+	printf("--------------------------------------------------------------------------------------------------------------------------\n");
+	printf("Token\t\t\tCategory\t\t\tType\t\t\tLine Number\t\t\tScope\n");
+	printf("--------------------------------------------------------------------------------------------------------------------------\n");
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			printf("%s\t\t%s\t\t%s\t\t%d\t\t\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
+			/* printf("%s\t\t\t%s\t\t%s\t\t\t%d\t\t\t\t%d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope); */
+			printf("%-10s\t\t%-20s\t\t%-10s\t\t%10d\t\t%10d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
 			temp = temp->next;
 		}
 	}
+	printf("\n\n");
 }
