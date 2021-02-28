@@ -36,6 +36,7 @@ int main() {
         if(a==0)
         {
             a += a;
+            zjafgjhbsd = 9;
         }
     }
 

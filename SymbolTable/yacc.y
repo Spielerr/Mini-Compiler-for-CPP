@@ -119,8 +119,12 @@
 
 
 START
-	: INCLUDE BODY
-	| BODY
+	: INCLUDE BODY {
+        sprintf($$, "%s", $2);
+    }
+	| BODY {
+        sprintf($$, "%s", $1);
+    }
 	| INCLUDE
 	;
 
@@ -132,43 +136,68 @@ INCLUDE
 	;
 
 BODY
-	: BODY_BLOCK BODY
-	| BODY_BLOCK
+	: BODY_BLOCK BODY {
+        sprintf($$, "%s %s", $1, $2);
+    }
+	| BODY_BLOCK {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 BODY_BLOCK
-	: FUNCTION
-	| BLOCK
+	: FUNCTION {
+        sprintf($$, "%s", $1);
+    }
+	| BLOCK {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 FUNCTION
-	: FUNCTION_PROTOTYPE
-	| FUNCTION_DEFINITION
-	| FUNCTION_DECLARATION
+	: FUNCTION_PROTOTYPE {
+        sprintf($$, "%s", $1);
+    }
+	| FUNCTION_DEFINITION {
+        sprintf($$, "%s", $1);
+    }
+	| FUNCTION_DECLARATION {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 FUNCTION_PROTOTYPE
-	: FUNCTION_PREFIX TYPE_LIST ')' ';'
-	| FUNCTION_PREFIX ')' ';'
+	: FUNCTION_PREFIX TYPE_LIST ')' ';' {
+        sprintf($$, "%s %s ) ;", $1, $2);
+    }
+	| FUNCTION_PREFIX ')' ';' {
+        sprintf($$, "%s ) ;", $1);
+    }
 	;
 
 TYPE_LIST
-	: TYPE ',' TYPE_LIST
-	| TYPE
+	: TYPE ',' TYPE_LIST {
+        sprintf($$, "%s , %s", $1, $3);
+    }
+	| TYPE {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 FUNCTION_DEFINITION
 	: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' ';' {
 		scope_leave();
+        sprintf($$, "%s %s ) ;", $1, $2);
 	}
 	;
 
 FUNCTION_DECLARATION
 	: FUNCTION_PREFIX FUNCTION_PARAMETER_LIST ')' '{' STATEMENTS '}' {
 		scope_leave();
+        sprintf($$, "%s %s ) { %s }", $1, $2, $5);
 	}
 	| FUNCTION_PREFIX ')' '{' STATEMENTS '}' {
 		scope_leave();
+        sprintf($$, "%s ) { %s }", $1, $4);
 	}
 	;
 
@@ -177,21 +206,25 @@ FUNCTION_PARAMETER_LIST
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
+        sprintf($$, "%s %s , %s", $1, $2, $4);
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST {
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
+        sprintf($$, "%s %s = %s , %s", $1, $2, $4, $6);
 	}
 	| TYPE T_IDENTIFIER {
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
+        sprintf($$, "%s %s", $1, $2);
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION {
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
+        sprintf($$, "%s %s = %s", $1, $2, $4);
 	}
 	;
 
@@ -199,119 +232,167 @@ FUNCTION_PREFIX
 	: TYPE T_IDENTIFIER '(' {
 		insert($2, "Function-Identifier", $1, @2.last_line, NULL);
 		scope_enter();
+        sprintf($$, "%s %s (", $1, $2);
 	}
 	;
 
 BLOCK
-	: BLOCK_START STATEMENTS BLOCK_END
+	: BLOCK_START STATEMENTS BLOCK_END {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
 	;
 
 BLOCK_START
-	: '{' { scope_enter(); }
+	: '{' {
+        scope_enter();
+        sprintf($$, "{");
+    }
 	;
 
 BLOCK_END
-	: '}' { scope_leave(); }
+	: '}' {
+        scope_leave();
+        sprintf($$, "}");
+    }
 	;
 
 STATEMENTS
-	: STATEMENT STATEMENTS
-	| STATEMENT
+	: STATEMENT STATEMENTS {
+        sprintf($$, "%s %s", $1, $2);
+    }
+	| STATEMENT {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 SINGLE_LINE_IF
 	: IF_PREFIX LINE_STATEMENT ';' {
 		scope_leave();
+        sprintf($$, "%s %s ;", $1, $2);
 	}
 	| IF_PREFIX ';' {
 		scope_leave();
+        sprintf($$, "%s ;", $1);
 	}
 	| IF_PREFIX CONSTRUCT {
 		scope_leave();
+        sprintf($$, "%s", $1);
 	}
 	;
 
 BLOCK_IF
-	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK
+	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK {
+        sprintf($$, "%s ( %s ) %s", $1, $3, $5);
+    }
 	;
 
 IF_PREFIX
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' {
 		scope_enter();
+        sprintf($$, "%s ( %s )", $1, $3);
 	}
 	;
 
 SINGLE_LINE_ELSE
 	: ELSE_PREFIX LINE_STATEMENT ';'{
 		scope_leave();
+        sprintf($$, "%s %s ;", $1, $2);
 	}
 	| ELSE_PREFIX ';'{
 		scope_leave();
+        sprintf($$, "%s ;", $1);
 	}
 	| ELSE_PREFIX CONSTRUCT {
 		scope_leave();
+        sprintf($$, "%s %s", $1, $2);
 	}
 	;
 
 BLOCK_ELSE
-	: T_CONSTRUCT_ELSE BLOCK
+	: T_CONSTRUCT_ELSE BLOCK {
+        sprintf($$, "%s %s", $1, $2);
+    }
 	;
 
 ELSE_PREFIX
 	: T_CONSTRUCT_ELSE {
 		scope_enter();
+        sprintf($$, "%s", $1);
 	}
 	;
 
 SINGLE_LINE_FOR
 	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'{
 		scope_leave();
+        sprintf($$, "%s %s ; %s ; %s ) %s ;", $1, $2, $4, $6, $8);
 	}
 	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';'{
 		scope_leave();
+        sprintf($$, "%s %s ; %s ; %s ) ;", $1, $2, $4, $6);
 	}
 	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT{
 		scope_leave();
+        sprintf($$, "%s %s ; %s ; %s ) %s", $1, $2, $4, $6, $8);
 	}
 	;
 
 BLOCK_FOR
 	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'{
 		scope_leave();
+        sprintf($$, "%s %s ; %s ; %s ) { %s }", $1, $2, $4, $6, $9);
 	}
 	;
 
 FOR_PREFIX
 	: T_CONSTRUCT_FOR '(' {
 		scope_enter();
+        sprintf($$, "%s (", $1);
 	}
 	;
 
 FOR_INIT_STATEMENT
 	:
-	| LINE_STATEMENT
+	| LINE_STATEMENT {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 FOR_CONDITION_STATEMENT
 	:
-	| CONDITIONAL_EXPRESSION
+	| CONDITIONAL_EXPRESSION {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 FOR_ACTION_STATEMENT
 	:
-	| LINE_STATEMENT
+	| LINE_STATEMENT {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 BITWISE_OPERATOR
-	: '&'
-	| '|'
-	| '^'
+	: '&' {
+        sprintf($$, "&");
+    }
+	| '|' {
+        sprintf($$, "|");
+    }
+	| '^' {
+        sprintf($$, "^");
+    }
 	;
 
 CONDITIONAL_EXPRESSION
-	: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR
-	| EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR
-	| EXPRESSION BITWISE_OPERATOR EXPRESSION_GRAMMAR
+	: EXPRESSION LOGICAL_OPERATOR EXPRESSION_GRAMMAR {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
+	| EXPRESSION RELATIONAL_OPERATOR EXPRESSION_GRAMMAR {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
+	| EXPRESSION BITWISE_OPERATOR EXPRESSION_GRAMMAR {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
 	;
 
 ASSIGNMENT
@@ -319,128 +400,231 @@ ASSIGNMENT
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
 		}
+        sprintf($$, "%s %s %s", $1, $2, $3);
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
 		}
+        sprintf($$, "%s %s %s", $1, $2, $3);
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
 		}
+        sprintf($$, "%s [ %s ] %s %s", $1, $3, $5, $6);
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR ASSIGNMENT {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
 		}
+        sprintf($$, "%s [ %s ] %s %s", $1, $3, $5, $6);
 	}
 	;
 
 ASSIGNMENT_OPERATOR
-	: '='
-	| T_OP_ADD_ASSIGNMENT
-	| T_OP_SUBTRACT_ASSIGNMENT
-	| T_OP_MULTIPLY_ASSIGNMENT
-	| T_OP_DIVIDE_ASSIGNMENT
-	| T_OP_MOD_ASSIGNMENT
+	: '=' {
+        sprintf($$, "=");
+    }
+	| T_OP_ADD_ASSIGNMENT {
+        sprintf($$, "+=");
+    }
+	| T_OP_SUBTRACT_ASSIGNMENT {
+        sprintf($$, "-=");
+    }
+	| T_OP_MULTIPLY_ASSIGNMENT {
+        sprintf($$, "*=");
+    }
+	| T_OP_DIVIDE_ASSIGNMENT {
+        sprintf($$, "/=");
+    }
+	| T_OP_MOD_ASSIGNMENT {
+        sprintf($$, "%%=");
+    }
 	;
 
 EXPRESSION
-	: ASSIGNMENT
-	| CONDITIONAL_EXPRESSION
-	| EXPRESSION_GRAMMAR
+	: ASSIGNMENT {
+        sprintf($$, "%s", $1);
+    }
+	| CONDITIONAL_EXPRESSION {
+        sprintf($$, "%s", $1);
+    }
+	| EXPRESSION_GRAMMAR {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 EXPRESSION_GRAMMAR
-	: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM
-	| EXPRESSION_GRAMMAR '-' EXPRESSION_TERM
-	| EXPRESSION_TERM
+	: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM {
+        sprintf($$, "%s + %s", $1, $3);
+    }
+	| EXPRESSION_GRAMMAR '-' EXPRESSION_TERM {
+        sprintf($$, "%s - %s", $1, $3);
+    }
+	| EXPRESSION_TERM {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 EXPRESSION_TERM
-	: EXPRESSION_TERM '*' EXPRESSION_F
-	| EXPRESSION_TERM '/' EXPRESSION_F
-	| EXPRESSION_TERM '%' EXPRESSION_F
-	| EXPRESSION_F
-	| '!' EXPRESSION_F
+	: EXPRESSION_TERM '*' EXPRESSION_F {
+        sprintf($$, "%s * %s", $1, $3);
+    }
+	| EXPRESSION_TERM '/' EXPRESSION_F {
+        sprintf($$, "%s / %s", $1, $3);
+    }
+	| EXPRESSION_TERM '%' EXPRESSION_F {
+        sprintf($$, "%s %% %s", $1, $3);
+    }
+	| EXPRESSION_F {
+        sprintf($$, "%s", $1);
+    }
+	| '!' EXPRESSION_F {
+        sprintf($$, "! %s", $2);
+    }
 	;
 
 EXPRESSION_F
-	: IDENTIFIER_OR_LITERAL
-	| '(' EXPRESSION ')'
-	| '+' EXPRESSION_F
-	| '-' EXPRESSION_F
+	: IDENTIFIER_OR_LITERAL {
+        sprintf($$, "%s", $1);
+    }
+	| '(' EXPRESSION ')' {
+        sprintf($$, "( %s )", $2);
+    }
+	| '+' EXPRESSION_F {
+        sprintf($$, "+ %s", $2);
+    }
+	| '-' EXPRESSION_F {
+        sprintf($$, "- %s", $2);
+    }
 	;
 
 CONSTRUCT
-	: SINGLE_LINE_CONSTRUCT
-	| BLOCK_CONSTRUCT
+	: SINGLE_LINE_CONSTRUCT {
+        sprintf($$, "%s", $1);
+    }
+	| BLOCK_CONSTRUCT {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 BLOCK_CONSTRUCT
-	: BLOCK_FOR
-	| BLOCK_IF
-	| BLOCK_ELSE
+	: BLOCK_FOR {
+        sprintf($$, "%s", $1);
+    }
+	| BLOCK_IF {
+        sprintf($$, "%s", $1);
+    }
+	| BLOCK_ELSE {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 SINGLE_LINE_CONSTRUCT
-	: SINGLE_LINE_FOR
-	| SINGLE_LINE_IF
-	| SINGLE_LINE_ELSE
+	: SINGLE_LINE_FOR {
+        sprintf($$, "%s", $1);
+    }
+	| SINGLE_LINE_IF {
+        sprintf($$, "%s", $1);
+    }
+	| SINGLE_LINE_ELSE {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 STATEMENT
-	: LINE_STATEMENT ';'
-	| CONSTRUCT
-	| BLOCK
-	| ';'
+	: LINE_STATEMENT ';' {
+        sprintf($$, "%s ;", $1);
+    }
+	| CONSTRUCT {
+        sprintf($$, "%s", $1);
+    }
+	| BLOCK {
+        sprintf($$, "%s", $1);
+    }
+	| ';' {
+        sprintf($$, ";");
+    }
 	;
 
 JUMP_STATEMENT
-	: T_JUMP_BREAK
-	| T_JUMP_EXIT
-	| T_JUMP_CONTINUE
+	: T_JUMP_BREAK {
+        sprintf($$, "%s", $1);
+    }
+	| T_JUMP_EXIT {
+        sprintf($$, "%s", $1);
+    }
+	| T_JUMP_CONTINUE {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 LINE_STATEMENT
-	: VARIABLE_DECLARATION
-	| EXPRESSION
-	| COUT
-	| CIN
-	| RETURN
-	| JUMP_STATEMENT
+	: VARIABLE_DECLARATION {
+        sprintf($$, "%s", $1);
+    }
+	| EXPRESSION {
+        sprintf($$, "%s", $1);
+    }
+	| COUT {
+        sprintf($$, "%s", $1);
+    }
+	| CIN {
+        sprintf($$, "%s", $1);
+    }
+	| RETURN {
+        sprintf($$, "%s", $1);
+    }
+	| JUMP_STATEMENT {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 VARIABLE_DECLARATION
 	: VARIABLE_DECLARATION_TYPE VARIABLE_LIST {
 		strcpy(variable_declaration_type, "\0");
+        sprintf($$, "%s %s", $1, $2);
 	}
 	;
 
 VARIABLE_DECLARATION_TYPE
 	: TYPE {
 		strcpy(variable_declaration_type, $1);
+        sprintf($$, "%s", $1);
 	}
 	;
 
 VARIABLE_LIST
-	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
+	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST {
+        sprintf($$, "%s , %s", $1, $3);
+    }
 	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST {
 		symbol_table* element = lookup($1);
-		// strcpy($3, element->value);
+		strcpy(element->value, $3);
+        sprintf($$, "%s = %s , %s", $1, $3, $5);
 	}
-	| VARIABLE_DECLARATION_IDENTIFIER
+	| VARIABLE_DECLARATION_IDENTIFIER {
+        sprintf($$, "%s", $1);
+    }
 	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION {
 		symbol_table* element = lookup($1);
-		printf("%s\n", $1);
-		// strcpy($3, element->value);
+		strcpy(element->value, $3);
+        sprintf($$, "%s = %s", $1, $3);
 	}
 
-	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST
-	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST
-	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
-	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST
+	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST {
+        sprintf($$, "%s , %s", $1, $3);
+    }
+	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST {
+        sprintf($$, "%s = %s , %s", $1, $3, $5);
+    }
+	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE {
+        sprintf($$, "%s", $1);
+    }
+	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST {
+        sprintf($$, "%s = %s", $1, $3);
+    }
 	;
 
 VARIABLE_DECLARATION_IDENTIFIER
@@ -448,7 +632,7 @@ VARIABLE_DECLARATION_IDENTIFIER
 		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
-		sprintf($$, "%s", $1);
+        sprintf($$, "%s", $1);
 	}
 	;
 
@@ -457,11 +641,13 @@ ARRAY_VARIABLE_DECLARATION_IDENTIFIER
 		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
+        sprintf($$, "%s []", $1);
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' {
 		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
+        sprintf($$, "%s [ %s ]", $1, $3);
 	}
 	;
 
@@ -470,30 +656,47 @@ ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
 		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
+        sprintf($$, "%s [ %s ]", $1, $3);
 	}
 	;
 
 ARRAY_LIST
-	: '{' LITERAL_LIST '}'
-	| T_STRING_LITERAL
+	: '{' LITERAL_LIST '}' {
+        sprintf($$, "{ %s }", $2);
+    }
+	| T_STRING_LITERAL {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 LITERAL_LIST
-	: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST
-	| IDENTIFIER_OR_LITERAL
+	: IDENTIFIER_OR_LITERAL ',' LITERAL_LIST {
+        sprintf($$, "%s , %s", $1, $3);
+    }
+	| IDENTIFIER_OR_LITERAL {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 COUT
-	: T_IO_COUT T_IO_INSERTION INSERTION_LIST
+	: T_IO_COUT T_IO_INSERTION INSERTION_LIST {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
 	;
 
 INSERTION_LIST
-	: EXPRESSION T_IO_INSERTION INSERTION_LIST
-	| EXPRESSION
+	: EXPRESSION T_IO_INSERTION INSERTION_LIST {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
+	| EXPRESSION {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 CIN
-	: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST
+	: T_IO_CIN T_IO_EXTRACTION EXTRACTION_LIST {
+        sprintf($$, "%s %s %s", $1, $2, $3);
+    }
 	;
 
 EXTRACTION_LIST
@@ -501,31 +704,50 @@ EXTRACTION_LIST
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
+        sprintf($$, "%s %s %s", $1, $2, $3);
 	}
 	| T_IDENTIFIER {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	;
 
 RETURN
-	: T_RETURN EXPRESSION
+	: T_RETURN EXPRESSION {
+        sprintf($$, "%s %s", $1, $2);
+    }
 	;
 
 LOGICAL_OPERATOR
-	: T_LOG_OP_AND
-	| T_LOG_OP_OR
+	: T_LOG_OP_AND {
+        sprintf($$, "%s", $1);
+    }
+	| T_LOG_OP_OR {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 RELATIONAL_OPERATOR
-	: T_REL_OP_EQUAL
-	| '>'
-	| T_REL_OP_GREATER_THAN_EQUAL
-	| '<'
-	| T_REL_OP_LESS_THAN_EQUAL
-	| T_REL_OP_NOT_EQUAL
+	: T_REL_OP_EQUAL {
+        sprintf($$, "%s", $1);
+    }
+	| '>' {
+        sprintf($$, ">");
+    }
+	| T_REL_OP_GREATER_THAN_EQUAL {
+        sprintf($$, "%s", $1);
+    }
+	| '<' {
+        sprintf($$, "<");
+    }
+	| T_REL_OP_LESS_THAN_EQUAL {
+        sprintf($$, "%s", $1);
+    }
+	| T_REL_OP_NOT_EQUAL {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 IDENTIFIER_OR_LITERAL
@@ -533,82 +755,94 @@ IDENTIFIER_OR_LITERAL
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_IDENTIFIER '(' ')' {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Function \"%s\" not defined \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s ()", $1);
 	}
 	| T_IDENTIFIER '(' LITERAL_LIST ')' {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Function \"%s\" not defined \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s ( %s )", $1, $3);
 	}
 	| T_IDENTIFIER UNARY_OPERATOR {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s %s", $1, $2);
 	}
 	| UNARY_OPERATOR T_IDENTIFIER {
 		if (lookup($2) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @2.last_line, $2);
 		}
-		$$ = $2;
+		sprintf($$, "%s %s", $1, $2);
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s [ %s ]", $1, $3);
 	}
 	| UNARY_OPERATOR T_IDENTIFIER '[' EXPRESSION ']' {
 		if (lookup($2) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @2.last_line, $2);
 		}
-		$$ = $2;
+		sprintf($$, "%s %s [ %s ]", $1, $2, $4);
 	}
 	| T_IDENTIFIER '[' EXPRESSION  ']' UNARY_OPERATOR {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = $1;
+		sprintf($$, "%s [ %s ] %s", $1, $3, $5);
 	}
-	| T_CHAR_LITERAL
-	| T_NUMBER_LITERAL
-	| T_STRING_LITERAL
-	| T_BOOL_LITERAL
+	| T_CHAR_LITERAL {
+        sprintf($$, "%s", $1);
+    }
+	| T_NUMBER_LITERAL {
+        sprintf($$, "%s", $1);
+    }
+	| T_STRING_LITERAL {
+        sprintf($$, "%s", $1);
+    }
+	| T_BOOL_LITERAL {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 UNARY_OPERATOR
-	: T_OP_INCREMENT
-	| T_OP_DECREMENT
+	: T_OP_INCREMENT {
+        sprintf($$, "%s", $1);
+    }
+	| T_OP_DECREMENT {
+        sprintf($$, "%s", $1);
+    }
 	;
 
 TYPE
 	: T_TYPE_INT {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_TYPE_DOUBLE {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_TYPE_FLOAT {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_TYPE_CHAR {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_TYPE_STRING {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_TYPE_VOID {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	| T_TYPE_BOOL {
-		$$ = $1;
+		sprintf($$, "%s", $1);
 	}
 	;
 
@@ -624,13 +858,19 @@ int main(int argc, char *argv[]) {
 
 	init_symbol_table();
 
+    printf("TOKENS STREAMED\n");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("Token Type\t\t\t\t\tToken Value\n");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+
     int isError = yyparse();
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
     if (isError) {
-        printf("\n\nParsing is unsuccessful\n\n");
+        printf("\nPARSING IS UNSUCCESSFUL\n\n");
     }
     else {
-        printf("\n\nParsing is successful!\n\n");
+        printf("\nPARSING IS SUCCESSFUL\n\n");
 		display_symbol_table();
     }
     return 0;
@@ -673,7 +913,7 @@ symbol_table* lookup(char *name)
 	{
 		if((strcmp(temp->st->name,name)==0))
 		{
-			if(temp->st->scope==current_scope) {
+			if(temp->st->scope==current_scope)
 				return temp->st;
 			int x_scope = temp->st->scope;
 			while(x_scope!=0)
@@ -726,6 +966,7 @@ symbol_table* insert(char *name, char *category, char *type, int line_number, ch
 {
 	// only in current scope
 	unsigned int hash_value = hash_function(name);
+    printf("HASH: %s %d\n", name, hash_value);
 	node_t *temp = complete_symbol_table[hash_value];
 	if(temp!=NULL)
 	{
@@ -745,16 +986,16 @@ symbol_table* insert(char *name, char *category, char *type, int line_number, ch
 	else
 	{
 		complete_symbol_table[hash_value] = create_node(name,category,type,line_number, value);
-		temp = 	complete_symbol_table[hash_value];
+		temp = complete_symbol_table[hash_value];
 	}
 	return temp->st;
 }
 void display_symbol_table()
 {
 	printf("SYMBOL TABLE\n");
-	printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("Token\t\t\tCategory\t\t\tType\t\t\tLine Number\t\t\tScope\t\t\tValue String\n");
-	printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
 		node_t* temp = complete_symbol_table[i];
@@ -764,5 +1005,6 @@ void display_symbol_table()
 			temp = temp->next;
 		}
 	}
+    printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("\n\n");
 }

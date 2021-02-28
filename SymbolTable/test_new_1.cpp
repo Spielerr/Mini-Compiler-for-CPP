@@ -12,42 +12,42 @@ int main()
     // Variable declaration check
     int a;
     int b;
-    int c,d,e,f=5;
+    int c,d,e,f=5 + 6;
     int x = 25;
-    int p = 40,q=30;
-    float m,n=3.1415f;
-    char abcdef[1000];
-    // char xyz[10] = "compiler";
-    bool boo = true;
-
-    // //Long name check
+    // int p = 40,q=30;
+    // // float m,n=3.1415f;
+    // char abcdef[1000];
+    // // char xyz[10] = "compiler";
+    // bool boo = true;
+    //
+    // // //Long name check
     // int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;
+    //
+    // // Array Check
+    // int arr[10] = {10,20,30,40,40,40};
+    // float arr_new[20];
+    //
+    // // Construct if check
+    // //Nested if check
+    // if(true)
+    // {
+    //     if(1)
+    //     {
+    //         if(c==d)
+    //         {
+    //             if(c!=d)
+    //             {
+    //                 int a = 200;
+    //             }
+    //         }
+    //     }
+    // }
+    // if((a==b)&&(b==c)&&(d>=f)&&(p<q)||(boo))
+    // {
+    //     cout<<"checking if multiple condiitons in if block works\n";
+    // }
 
-    // Array Check
-    int arr[10] = {10,20,30,40,40,40};
-    float arr_new[20];
-
-    // Construct if check
-    //Nested if check
-    if(true)
-    {
-        if(1)
-        {
-            if(c==d)
-            {
-                if(c!=d)
-                {
-                    int a = 200;
-                }
-            }
-        }
-    }
-    if((a==b)&&(b==c)&&(d>=f)&&(p<q)||(boo))
-    {
-        cout<<"checking if multiple condiitons in if block works\n";
-    }
-
-    // //If else test
+    //If else test
     // if(m)
     // {
     //     if(m==n)
@@ -59,7 +59,7 @@ int main()
     // }
     // else
     //     p = q*f;
-
+    //
     // //For loop test:
     // for(int i=0;i<10;i++)
     // {
@@ -71,7 +71,7 @@ int main()
     // for(;f>0;--f)
     //     cout<<f<<"\t";
     // cout<<"\n";
-
+    //
     // for(int qwe=0;qwe<5;++qwe)
     // {
     //     if(qwe%2!=0)
