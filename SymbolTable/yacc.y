@@ -606,19 +606,19 @@ TYPE
 %%
 
 void yyerror(char *s){
-	printf("ERROR\n");
+	printf("\n[Error] at line:%d, column:%d\n", yylloc.last_line, yylloc.last_column);
 }
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test1.cpp","r");
+	yyin = fopen("test2.cpp","r");
 	
 	init_symbol_table();
 
     int isError = yyparse();
 
     if (isError) {
-        printf("Error has Occured while parsing\n");
+        printf("\n\nParsing is unsuccessful\n\n");
     }
     else {
         printf("\n\nParsing is successful!\n\n");
