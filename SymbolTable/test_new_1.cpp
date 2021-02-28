@@ -2,46 +2,50 @@
 
 using namespace std;
 
-/* Note this is a comment to check the correctness of the comment removal code in Lex 
-   This comment spans multiple lines. 
+/* Note this is a comment to check the correctness of the comment removal code in Lex
+   This comment spans multiple lines.
 */
 // This is a single comment line.....
 
 int main()
 {
-    // // Variable declaration check
-    // int a;
-    // int b;
-    // int c,d,e,f=5;
-    // int x = 25;
-    // int p = 40,q=30;
-    float n = 3;
-    // char abcdef[1000];
+    // Variable declaration check
+    int a;
+    int b;
+    int c,d,e,f=5;
+    int x = 25;
+    int p = 40,q=30;
+    float m,n=3.1415f;
+    char abcdef[1000];
     // char xyz[10] = "compiler";
-    // bool boo = true;
+    bool boo = true;
 
     // //Long name check
     // int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;
 
-    // // Construct if check
-    // //Nested if check
-    // if(true)
-    // {
-    //     if(1)
-    //     {
-    //         if(c==d)
-    //         {
-    //             if(c!=d)
-    //             {
-    //                 int a = 200;
-    //             }
-    //         }
-    //     }
-    // }
-    // if((a==b)&&(b==c)&&(d>=f)&&(p<q)||(boo))
-    // {
-    //     cout<<"checking if multiple condiitons in if block works\n";
-    // }
+    // Array Check
+    int arr[10] = {10,20,30,40,40,40};
+    float arr_new[20];
+
+    // Construct if check
+    //Nested if check
+    if(true)
+    {
+        if(1)
+        {
+            if(c==d)
+            {
+                if(c!=d)
+                {
+                    int a = 200;
+                }
+            }
+        }
+    }
+    if((a==b)&&(b==c)&&(d>=f)&&(p<q)||(boo))
+    {
+        cout<<"checking if multiple condiitons in if block works\n";
+    }
 
     // //If else test
     // if(m)
@@ -55,7 +59,7 @@ int main()
     // }
     // else
     //     p = q*f;
-    
+
     // //For loop test:
     // for(int i=0;i<10;i++)
     // {

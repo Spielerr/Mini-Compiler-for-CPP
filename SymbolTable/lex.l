@@ -31,9 +31,21 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 	#include <stdlib.h>
 	#include <string.h>
 	#define YYSTYPE char *
-	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
-	#include "y.tab.h"
 
+	#define YY_USER_ACTION \
+    yylloc.first_line = yylloc.last_line; \
+    yylloc.first_column = yylloc.last_column; \
+    for(int i = 0; yytext[i] != '\0'; i++) { \
+        if(yytext[i] == '\n') { \
+            yylloc.last_line++; \
+            yylloc.last_column = 0; \
+        } \
+        else { \
+            yylloc.last_column++; \
+        } \
+    }
+
+	#include "y.tab.h"
 %}
 
 %option yylineno
@@ -91,7 +103,7 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 "true"							{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
 "false"							{ yylval = strdup(yytext); return T_BOOL_LITERAL; }
 
-{identifier}					{ if(yyleng < 32) yylval = strdup(yytext); 
+{identifier}					{ if(yyleng < 32) yylval = strdup(yytext);
 								  else {
 									  printf("[Error] at line:%d - %s is too long, truncating to first 31 characters\n", yylineno , yytext);
 									  char dummy[32];
@@ -99,7 +111,7 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 									  dummy[31] = '\0';
 									  yylval = strdup(dummy);
 								  }
-								  return T_IDENTIFIER; 
+								  return T_IDENTIFIER;
 								}
 
 
@@ -117,7 +129,7 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 
 
 	/* comments */
-"/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }	
+"/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }
 "/*"([^*]|(\*+[^*/]))*				{ printf("ERROR - Non-terminating comment\n"); }
 
 {exp_number}|{float_num}		{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }

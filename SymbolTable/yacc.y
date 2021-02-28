@@ -153,7 +153,7 @@ FUNCTION_PROTOTYPE
 	;
 
 TYPE_LIST
-	: TYPE ',' TYPE_LIST 
+	: TYPE ',' TYPE_LIST
 	| TYPE
 	;
 
@@ -293,12 +293,12 @@ FOR_INIT_STATEMENT
 	;
 
 FOR_CONDITION_STATEMENT
-	: 
+	:
 	| CONDITIONAL_EXPRESSION
 	;
 
 FOR_ACTION_STATEMENT
-	: 
+	:
 	| LINE_STATEMENT
 	;
 
@@ -338,12 +338,12 @@ ASSIGNMENT
 	;
 
 ASSIGNMENT_OPERATOR
-	: '='	
+	: '='
 	| T_OP_ADD_ASSIGNMENT
 	| T_OP_SUBTRACT_ASSIGNMENT
 	| T_OP_MULTIPLY_ASSIGNMENT
 	| T_OP_DIVIDE_ASSIGNMENT
-	| T_OP_MOD_ASSIGNMENT	
+	| T_OP_MOD_ASSIGNMENT
 	;
 
 EXPRESSION
@@ -472,7 +472,7 @@ ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
 		}
 	}
 	;
- 
+
 ARRAY_LIST
 	: '{' LITERAL_LIST '}'
 	| T_STRING_LITERAL
@@ -589,7 +589,7 @@ UNARY_OPERATOR
 	;
 
 TYPE
-	: T_TYPE_INT {  
+	: T_TYPE_INT {
 		$$ = $1;
 	}
 	| T_TYPE_DOUBLE {
@@ -615,19 +615,19 @@ TYPE
 %%
 
 void yyerror(char *s){
-	printf("ERROR\n");
+	printf("\n[Error] at line:%d, column:%d\n", yylloc.last_line, yylloc.last_column);
 }
 
 int main(int argc, char *argv[]) {
 
 	yyin = fopen("test_new_1.cpp","r");
-	
+
 	init_symbol_table();
 
     int isError = yyparse();
 
     if (isError) {
-        printf("Error has Occured while parsing\n");
+        printf("\n\nParsing is unsuccessful\n\n");
     }
     else {
         printf("\n\nParsing is successful!\n\n");
@@ -643,7 +643,7 @@ void scope_enter()
 	current_scope = scope_counter;
 }
 void scope_leave()
-{	
+{
 	current_scope = scopes[current_scope];
 }
 void init_symbol_table()
@@ -675,10 +675,22 @@ symbol_table* lookup(char *name)
 		{
 			if(temp->st->scope==current_scope) {
 				return temp->st;
+			int x_scope = temp->st->scope;
+			while(x_scope!=0)
+			{
+				int par_scope = scopes[x_scope];
+				if(x_scope==scopes[par_scope])
+				{
+					looked_up = temp->st;
+					break;
+				}
+				x_scope = par_scope;
 			}
-			if(temp->st->scope==scopes[current_scope])
-				looked_up = temp->st;
+			if(x_scope==0)
+				looked_up=temp->st;
 		}
+		if(looked_up!=NULL)
+			break;
 		temp = temp->next;
 	}
 	return looked_up;
