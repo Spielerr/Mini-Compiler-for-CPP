@@ -613,10 +613,23 @@ char *yytext;
 	#include <stdlib.h>
 	#include <string.h>
 	#define YYSTYPE char *
-	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
+
+	#define YY_USER_ACTION \
+    yylloc.first_line = yylloc.last_line; \
+    yylloc.first_column = yylloc.last_column; \
+    for(int i = 0; yytext[i] != '\0'; i++) { \
+        if(yytext[i] == '\n') { \
+            yylloc.last_line++; \
+            yylloc.last_column = 0; \
+        } \
+        else { \
+            yylloc.last_column++; \
+        } \
+    }
+	
 	#include "y.tab.h"	
-#line 619 "lex.yy.c"
-#line 620 "lex.yy.c"
+#line 632 "lex.yy.c"
+#line 633 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -836,9 +849,9 @@ YY_DECL
 		}
 
 	{
-#line 40 "lex.l"
+#line 53 "lex.l"
 
-#line 842 "lex.yy.c"
+#line 855 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -908,230 +921,230 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 41 "lex.l"
+#line 54 "lex.l"
 { /* not do anything for preprocessor lines */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 43 "lex.l"
+#line 56 "lex.l"
 { ; }
 	YY_BREAK
 /* for all single characters - including operators */
 case 3:
 YY_RULE_SETUP
-#line 46 "lex.l"
+#line 59 "lex.l"
 { return (int)(*yytext); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 47 "lex.l"
+#line 60 "lex.l"
 { /* Throw away whitespace */ }
 	YY_BREAK
 /* for all multiple characters operators */
 case 5:
 YY_RULE_SETUP
-#line 50 "lex.l"
+#line 63 "lex.l"
 {  return (T_REL_OP_LESS_THAN_EQUAL);  }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 51 "lex.l"
+#line 64 "lex.l"
 {  return (T_REL_OP_GREATER_THAN_EQUAL);  }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "lex.l"
+#line 65 "lex.l"
 {  return (T_REL_OP_EQUAL);  }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 53 "lex.l"
+#line 66 "lex.l"
 {  return (T_REL_OP_NOT_EQUAL);  }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 54 "lex.l"
+#line 67 "lex.l"
 {  return (T_LOG_OP_AND);  }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 55 "lex.l"
+#line 68 "lex.l"
 {  return (T_LOG_OP_OR);  }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 56 "lex.l"
+#line 69 "lex.l"
 {  return (T_IO_INSERTION);  }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "lex.l"
+#line 70 "lex.l"
 {  return (T_IO_EXTRACTION);  }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 58 "lex.l"
+#line 71 "lex.l"
 {  return (T_SCOPE_RESOLUTION); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 59 "lex.l"
+#line 72 "lex.l"
 {  return (T_OP_INCREMENT); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 60 "lex.l"
+#line 73 "lex.l"
 {  return (T_OP_DECREMENT); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 61 "lex.l"
+#line 74 "lex.l"
 {  return (T_OP_ADD_ASSIGNMENT); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 62 "lex.l"
+#line 75 "lex.l"
 {  return (T_OP_SUBTRACT_ASSIGNMENT); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 63 "lex.l"
+#line 76 "lex.l"
 {  return (T_OP_MULTIPLY_ASSIGNMENT); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 64 "lex.l"
+#line 77 "lex.l"
 {  return (T_OP_DIVIDE_ASSIGNMENT); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 65 "lex.l"
+#line 78 "lex.l"
 {  return (T_OP_MOD_ASSIGNMENT); }
 	YY_BREAK
 /* for all keywords */
 case 21:
 YY_RULE_SETUP
-#line 68 "lex.l"
+#line 81 "lex.l"
 {  yylval = strdup(yytext); return (T_RETURN);  }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 69 "lex.l"
+#line 82 "lex.l"
 {  yylval = strdup(yytext); return T_TYPE_VOID; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 70 "lex.l"
+#line 83 "lex.l"
 {  yylval = strdup(yytext); return T_TYPE_CLASS; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 71 "lex.l"
+#line 84 "lex.l"
 {  yylval = strdup(yytext); return T_ACCESS_PUBLIC; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 72 "lex.l"
+#line 85 "lex.l"
 {  yylval = strdup(yytext); return T_ACCESS_PRIVATE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 73 "lex.l"
+#line 86 "lex.l"
 {  yylval = strdup(yytext); return T_ACCESS_PROTECTED; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 74 "lex.l"
+#line 87 "lex.l"
 {  yylval = strdup(yytext); return (T_TYPE_INT);  }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 75 "lex.l"
+#line 88 "lex.l"
 {  yylval = strdup(yytext); return (T_TYPE_FLOAT);  }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 76 "lex.l"
+#line 89 "lex.l"
 {  yylval = strdup(yytext); return (T_TYPE_DOUBLE);  }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 77 "lex.l"
+#line 90 "lex.l"
 {  yylval = strdup(yytext); return (T_TYPE_BOOL);  }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 78 "lex.l"
+#line 91 "lex.l"
 {  yylval = strdup(yytext); return (T_CONSTRUCT_IF);  }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 79 "lex.l"
+#line 92 "lex.l"
 {  yylval = strdup(yytext); return (T_CONSTRUCT_ELSE); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 80 "lex.l"
+#line 93 "lex.l"
 {  yylval = strdup(yytext); return (T_CONSTRUCT_FOR); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 81 "lex.l"
+#line 94 "lex.l"
 {  yylval = strdup(yytext); return (T_IO_CIN); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 82 "lex.l"
+#line 95 "lex.l"
 {  yylval = strdup(yytext); return (T_IO_COUT); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 83 "lex.l"
+#line 96 "lex.l"
 {  yylval = strdup(yytext); return (T_IO_PRINTF); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 84 "lex.l"
+#line 97 "lex.l"
 {  yylval = strdup(yytext); return (T_IO_SCANF); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 85 "lex.l"
+#line 98 "lex.l"
 {  yylval = strdup(yytext); return (T_JUMP_BREAK); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 86 "lex.l"
+#line 99 "lex.l"
 {  yylval = strdup(yytext); return (T_JUMP_CONTINUE); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 87 "lex.l"
+#line 100 "lex.l"
 {  yylval = strdup(yytext); return (T_JUMP_EXIT); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 88 "lex.l"
+#line 101 "lex.l"
 {  yylval = strdup(yytext); return (T_TYPE_STRING); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 89 "lex.l"
+#line 102 "lex.l"
 {  yylval = strdup(yytext); return (T_TYPE_CHAR); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 90 "lex.l"
+#line 103 "lex.l"
 { yylval = strdup(yytext); return T_BOOL_LITERAL; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 91 "lex.l"
+#line 104 "lex.l"
 { yylval = strdup(yytext); return T_BOOL_LITERAL; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 93 "lex.l"
+#line 106 "lex.l"
 { if(yyleng < 32) yylval = strdup(yytext); 
 								  else {
 									  printf("Error : Identifier is too long, truncating to first 31 characters\n");
@@ -1146,65 +1159,65 @@ YY_RULE_SETUP
 /* for all integer literals */
 case 46:
 YY_RULE_SETUP
-#line 106 "lex.l"
+#line 119 "lex.l"
 { yylval = strdup(yytext); return T_NUMBER_LITERAL;}
 	YY_BREAK
 /* "true"|"false"					{ yylval = strdup(yytext); return T_BOOL_LITERAL; } */
 case 47:
 YY_RULE_SETUP
-#line 109 "lex.l"
+#line 122 "lex.l"
 { yylval = strdup(yytext); return T_CHAR_LITERAL; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 110 "lex.l"
+#line 123 "lex.l"
 { printf("Incomplete character literal\n"); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 112 "lex.l"
+#line 125 "lex.l"
 { yylval = strdup(yytext); return T_STRING_LITERAL; };
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 113 "lex.l"
+#line 126 "lex.l"
 { printf("Incomplete string literal\n"); }
 	YY_BREAK
 /* comments */
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 119 "lex.l"
+#line 132 "lex.l"
 { ; }	
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 120 "lex.l"
+#line 133 "lex.l"
 { printf("ERROR - Non-terminating comment\n"); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 122 "lex.l"
+#line 135 "lex.l"
 { snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 123 "lex.l"
+#line 136 "lex.l"
 { ; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 125 "lex.l"
+#line 138 "lex.l"
 { printf("invalid character --> %s\n", yytext); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 126 "lex.l"
+#line 139 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1208 "lex.yy.c"
+#line 1221 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2223,7 +2236,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 126 "lex.l"
+#line 139 "lex.l"
 
 
 int yywrap(void)
