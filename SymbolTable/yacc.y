@@ -32,7 +32,7 @@
 	unsigned int hash_function(char *name);
 	// node_t *create_node(char *name, char *category, char *type, int line_number);
 
-	symbol_table* insert(char *name, char *category, char *type, int line_number);
+	symbol_table* insert(char *name, char *category, char *type, int line_number, char *value);
 	// symbol_table* lookup_and_insert(char *name, char *category, char *type, int line_number);
 	void init_symbol_table();
 	symbol_table* lookup(char *name);
@@ -174,22 +174,22 @@ FUNCTION_DECLARATION
 
 FUNCTION_PARAMETER_LIST
 	: TYPE T_IDENTIFIER ',' FUNCTION_PARAMETER_LIST {
-		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION ',' FUNCTION_PARAMETER_LIST {
-		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
 	}
 	| TYPE T_IDENTIFIER {
-		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
 	}
 	| TYPE T_IDENTIFIER '=' EXPRESSION {
-		if (insert($2, "Identifier", $1, @2.last_line) == NULL) {
+		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
 	}
@@ -197,7 +197,7 @@ FUNCTION_PARAMETER_LIST
 
 FUNCTION_PREFIX
 	: TYPE T_IDENTIFIER '(' {
-		insert($2, "Function-Identifier", $1, @2.last_line );
+		insert($2, "Function-Identifier", $1, @2.last_line, NULL);
 		scope_enter();
 	}
 	;
@@ -425,10 +425,26 @@ VARIABLE_DECLARATION_TYPE
 	;
 
 VARIABLE_LIST
-	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
-	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST
-	| VARIABLE_DECLARATION_IDENTIFIER
-	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION
+	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST {
+		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, NULL) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
+	}
+	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST {
+		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, $3) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
+	}
+	| VARIABLE_DECLARATION_IDENTIFIER {
+		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, NULL) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
+	}
+	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION {
+		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, $3) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
+	}
 
 	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST
 	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER '=' ARRAY_LIST ',' VARIABLE_LIST
@@ -438,20 +454,18 @@ VARIABLE_LIST
 
 VARIABLE_DECLARATION_IDENTIFIER
 	: T_IDENTIFIER {
-		if (insert($1, "Identifier", variable_declaration_type, @1.last_line) == NULL) {
-			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
-		}
+		$$ = $1;
 	}
 	;
 
 ARRAY_VARIABLE_DECLARATION_IDENTIFIER
 	: T_IDENTIFIER '[' ']' {
-		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line) == NULL) {
+		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' {
-		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line) == NULL) {
+		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
 	}
@@ -459,7 +473,7 @@ ARRAY_VARIABLE_DECLARATION_IDENTIFIER
 
 ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
 	: T_IDENTIFIER '[' EXPRESSION ']' {
-		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line) == NULL) {
+		if (insert($1, "Identifier-Array", variable_declaration_type, @1.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
 		}
 	}
@@ -467,6 +481,7 @@ ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE
  
 ARRAY_LIST
 	: '{' LITERAL_LIST '}'
+	| T_STRING_LITERAL
 	;
 
 LITERAL_LIST
@@ -528,13 +543,13 @@ IDENTIFIER_OR_LITERAL
 	}
 	| T_IDENTIFIER '(' ')' {
 		if (lookup($1) == NULL) {
-			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+			printf("[Error] at line:%d - Function \"%s\" not defined \n", @1.last_line, $1);
 		}
 		$$ = $1;
 	}
 	| T_IDENTIFIER '(' LITERAL_LIST ')' {
 		if (lookup($1) == NULL) {
-			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
+			printf("[Error] at line:%d - Function \"%s\" not defined \n", @1.last_line, $1);
 		}
 		$$ = $1;
 	}
@@ -611,7 +626,7 @@ void yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test1.cpp","r");
+	yyin = fopen("test_new_1.cpp","r");
 	
 	init_symbol_table();
 
@@ -673,7 +688,7 @@ symbol_table* lookup(char *name)
 	}
 	return looked_up;
 }
-node_t *create_node(char *name, char *category, char *type, int line_number)
+node_t *create_node(char *name, char *category, char *type, int line_number, char *value)
 {
 	node_t *new_node = (node_t*)malloc(sizeof(node_t));
 	new_node->st = (symbol_table*)malloc(sizeof(symbol_table));
@@ -688,12 +703,19 @@ node_t *create_node(char *name, char *category, char *type, int line_number)
 		char dummy[] = "NA";
 		strcpy(new_node->st->type, dummy);
 	}
-	new_node->st->line_number = line_number;
+	if (value != NULL) {
+		strcpy(new_node->st->value, value);
+	}
+	else {
+		char dummy[] = "NA";
+		strcpy(new_node->st->value, dummy);
+	}
+ 	new_node->st->line_number = line_number;
 	new_node->st->scope = current_scope;
 	new_node->next = NULL;
 	return new_node;
 }
-symbol_table* insert(char *name, char *category, char *type, int line_number)
+symbol_table* insert(char *name, char *category, char *type, int line_number, char *value)
 {
 	// only in current scope
 	unsigned int hash_value = hash_function(name);
@@ -710,12 +732,12 @@ symbol_table* insert(char *name, char *category, char *type, int line_number)
 			temp = temp->next;
 		}
 
-		prev->next = create_node(name,category,type,line_number);
+		prev->next = create_node(name,category,type,line_number, value);
 		temp = prev->next;
 	}
 	else
 	{
-		complete_symbol_table[hash_value] = create_node(name,category,type,line_number);
+		complete_symbol_table[hash_value] = create_node(name,category,type,line_number, value);
 		temp = 	complete_symbol_table[hash_value];
 	}
 	return temp->st;
@@ -723,15 +745,15 @@ symbol_table* insert(char *name, char *category, char *type, int line_number)
 void display_symbol_table()
 {
 	printf("SYMBOL TABLE\n");
-	printf("--------------------------------------------------------------------------------------------------------------------------\n");
-	printf("Token\t\t\tCategory\t\t\tType\t\t\tLine Number\t\t\tScope\n");
-	printf("--------------------------------------------------------------------------------------------------------------------------\n");
+	printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+	printf("Token\t\t\tCategory\t\t\tType\t\t\tLine Number\t\t\tScope\t\t\tValue String\n");
+	printf("----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	for(int i=0;i<SYMBOL_TABLE_SIZE;++i)
 	{
 		node_t* temp = complete_symbol_table[i];
 		while(temp!=NULL)
 		{
-			printf("%-10s\t\t%-20s\t\t%-10s\t\t%10d\t\t%10d\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope);
+			printf("%-10s\t\t%-20s\t\t%-10s\t\t%10d\t\t%10d\t\t\t%s\n",temp->st->name,temp->st->category,temp->st->type,temp->st->line_number,temp->st->scope, temp->st->value);
 			temp = temp->next;
 		}
 	}

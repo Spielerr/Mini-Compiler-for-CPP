@@ -1134,7 +1134,7 @@ YY_RULE_SETUP
 #line 93 "lex.l"
 { if(yyleng < 32) yylval = strdup(yytext); 
 								  else {
-									  printf("Error : Identifier is too long, truncating to first 31 characters\n");
+									  printf("[Error] at line:%d - %s is too long, truncating to first 31 characters\n", yylineno , yytext);
 									  char dummy[32];
 									  strncpy(dummy, yytext, 31);
 									  dummy[31] = '\0';
@@ -1186,7 +1186,7 @@ YY_RULE_SETUP
 case 53:
 YY_RULE_SETUP
 #line 122 "lex.l"
-{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
+{ snprintf(yylval, 50, "%f", atof(yytext)); printf("%s\n", yylval); return T_NUMBER_LITERAL; }
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */

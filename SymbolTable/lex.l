@@ -92,7 +92,7 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 
 {identifier}					{ if(yyleng < 32) yylval = strdup(yytext); 
 								  else {
-									  printf("Error : Identifier is too long, truncating to first 31 characters\n");
+									  printf("[Error] at line:%d - %s is too long, truncating to first 31 characters\n", yylineno , yytext);
 									  char dummy[32];
 									  strncpy(dummy, yytext, 31);
 									  dummy[31] = '\0';
@@ -119,7 +119,7 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 "/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }	
 "/*"([^*]|(\*+[^*/]))*				{ printf("ERROR - Non-terminating comment\n"); }
 
-{exp_number}|{float_num}		{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
+{exp_number}|{float_num}		{ snprintf(yylval, 50, "%f", atof(yytext)); printf("%s\n", yylval); return T_NUMBER_LITERAL; }
 \n								{ ; }
 
 .								{ printf("invalid character --> %s\n", yytext); }
