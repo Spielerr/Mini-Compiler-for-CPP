@@ -425,25 +425,16 @@ VARIABLE_DECLARATION_TYPE
 	;
 
 VARIABLE_LIST
-	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST {
-		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, NULL) == NULL) {
-			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
-		}
-	}
+	: VARIABLE_DECLARATION_IDENTIFIER ',' VARIABLE_LIST
 	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION ',' VARIABLE_LIST {
-		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, $3) == NULL) {
-			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
-		}
+		symbol_table* element = lookup($1);
+		// strcpy($3, element->value);
 	}
-	| VARIABLE_DECLARATION_IDENTIFIER {
-		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, NULL) == NULL) {
-			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
-		}
-	}
+	| VARIABLE_DECLARATION_IDENTIFIER
 	| VARIABLE_DECLARATION_IDENTIFIER '=' EXPRESSION {
-		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, $3) == NULL) {
-			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
-		}
+		symbol_table* element = lookup($1);
+		printf("%s\n", $1);
+		// strcpy($3, element->value);
 	}
 
 	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST
@@ -454,7 +445,10 @@ VARIABLE_LIST
 
 VARIABLE_DECLARATION_IDENTIFIER
 	: T_IDENTIFIER {
-		$$ = $1;
+		if (insert($1, "Identifier", variable_declaration_type, @1.last_line, NULL) == NULL) {
+			printf("[Error] at line:%d - \"%s\" has already been declared\n", @1.last_line, $1);
+		}
+		sprintf($$, "%s", $1);
 	}
 	;
 
@@ -679,8 +673,9 @@ symbol_table* lookup(char *name)
 	{
 		if((strcmp(temp->st->name,name)==0))
 		{
-			if(temp->st->scope==current_scope)
+			if(temp->st->scope==current_scope) {
 				return temp->st;
+			}
 			if(temp->st->scope==scopes[current_scope])
 				looked_up = temp->st;
 		}

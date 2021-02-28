@@ -15,7 +15,7 @@ int main()
     // int c,d,e,f=5;
     // int x = 25;
     // int p = 40,q=30;
-    float m,n = 3.15;
+    float n = 3;
     // char abcdef[1000];
     // char xyz[10] = "compiler";
     // bool boo = true;

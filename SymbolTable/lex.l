@@ -32,7 +32,8 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 	#include <string.h>
 	#define YYSTYPE char *
 	#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
-	#include "y.tab.h"	
+	#include "y.tab.h"
+
 %}
 
 %option yylineno
@@ -119,7 +120,7 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 "/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }	
 "/*"([^*]|(\*+[^*/]))*				{ printf("ERROR - Non-terminating comment\n"); }
 
-{exp_number}|{float_num}		{ snprintf(yylval, 50, "%f", atof(yytext)); printf("%s\n", yylval); return T_NUMBER_LITERAL; }
+{exp_number}|{float_num}		{ snprintf(yylval, 50, "%f", atof(yytext)); return T_NUMBER_LITERAL; }
 \n								{ ; }
 
 .								{ printf("invalid character --> %s\n", yytext); }
