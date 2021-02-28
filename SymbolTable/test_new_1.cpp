@@ -17,11 +17,15 @@ int main()
     int p = 40,q=30;
     float m,n=3.1415f;
     char abcdef[1000];
-    char xyz[10] = "compiler";
+    // char xyz[10] = "compiler";
     bool boo = true;
 
     //Long name check
     int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;
+
+    // Array Check
+    int arr[10] = {10,20,30,40,40,40};
+    float arr_new[20];
 
     // Construct if check
     //Nested if check

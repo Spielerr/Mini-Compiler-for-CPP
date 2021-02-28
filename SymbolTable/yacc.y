@@ -611,7 +611,7 @@ void yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen("test2.cpp","r");
+	yyin = fopen("test1.cpp","r");
 	
 	init_symbol_table();
 
@@ -666,9 +666,22 @@ symbol_table* lookup(char *name)
 		{
 			if(temp->st->scope==current_scope)
 				return temp->st;
-			if(temp->st->scope==scopes[current_scope])
-				looked_up = temp->st;
+			int x_scope = temp->st->scope;
+			while(x_scope!=0)
+			{
+				int par_scope = scopes[x_scope];
+				if(x_scope==scopes[par_scope])
+				{
+					looked_up = temp->st;
+					break;
+				}
+				x_scope = par_scope;
+			}
+			if(x_scope==0)
+				looked_up=temp->st;
 		}
+		if(looked_up!=NULL)
+			break;
 		temp = temp->next;
 	}
 	return looked_up;
