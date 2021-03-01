@@ -1,4 +1,5 @@
 #!/bin/bash
+# Usage: ./run.sh <FILENAME>
 rm -f lex.yy.c
 rm -f y.output y.tab.h y.tab.c
 
