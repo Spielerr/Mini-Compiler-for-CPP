@@ -2,6 +2,17 @@ TOKENS STREAMED
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 Token Type					Token Value
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+Keyword-void        					void      
+Identifier          					add       
+Single Character Token					(         
+Keyword-int         					int       
+Identifier          					a         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-return      					return    
+Literal-Number      					0         
+Single Character Token					;         
+Single Character Token					}         
 Keyword-int         					int       
 Identifier          					main      
 Single Character Token					(         
@@ -10,300 +21,18 @@ Single Character Token					{
 Keyword-int         					int       
 Identifier          					a         
 Single Character Token					=         
-Literal-Number      					5         
-Single Character Token					&         
-Literal-Number      					6         
-Single Character Token					;         
-Keyword-int         					int       
-Identifier          					b         
-Single Character Token					;         
-Keyword-int         					int       
-Identifier          					c         
-Single Character Token					,         
-Identifier          					d         
-Single Character Token					,         
-Identifier          					e         
-Single Character Token					,         
-Identifier          					f         
-Single Character Token					=         
-Literal-Number      					5         
+Literal-Number      					10        
 Single Character Token					+         
-Literal-Number      					6         
+Literal-Number      					7236      
+Single Character Token					-         
+Literal-Number      					783       
 Single Character Token					;         
 Keyword-int         					int       
-Identifier          					x         
-Single Character Token					=         
-Literal-Number      					25        
-Single Character Token					;         
-Keyword-int         					int       
-Identifier          					p         
-Single Character Token					=         
-Literal-Number      					40        
-Single Character Token					,         
-Identifier          					q         
-Single Character Token					=         
-Literal-Number      					30        
-Single Character Token					;         
-Keyword-float       					float     
-Identifier          					m         
-Single Character Token					,         
-Identifier          					n         
-Single Character Token					=         
-Literal-Number      					3.1415f   
-Single Character Token					;         
-Identifier          					a         
-Single Character Token					=         
-Literal-Number      					5         
-Single Character Token					;         
-Keyword-char        					char      
-Identifier          					abcdef    
-Single Character Token					[         
-Literal-Number      					1000      
-Single Character Token					]         
-Single Character Token					;         
-Keyword-char        					char      
-Identifier          					xyz       
-Single Character Token					[         
-Literal-Number      					10        
-Single Character Token					]         
-Single Character Token					=         
-Literal-String      					"compiler"
-Single Character Token					;         
-Keyword-bool        					bool      
-Identifier          					boo       
-Single Character Token					=         
-Keyword-true        					true      
-Single Character Token					;         
-Keyword-int         					int       
-Identifier          					longnameidontknowwhattowritesimplyiamwritinghopeitsenough
-Single Character Token					=         
-Literal-Number      					200       
-Single Character Token					;         
-Keyword-int         					int       
-Identifier          					arr       
-Single Character Token					[         
-Literal-Number      					10        
-Single Character Token					]         
-Single Character Token					=         
-Single Character Token					{         
-Literal-Number      					10        
-Single Character Token					,         
-Literal-Number      					20        
-Single Character Token					,         
-Literal-Number      					30        
-Single Character Token					,         
-Literal-Number      					40        
-Single Character Token					,         
-Literal-Number      					40        
-Single Character Token					,         
-Literal-Number      					40        
-Single Character Token					}         
-Single Character Token					;         
-Keyword-float       					float     
-Identifier          					arr_new   
-Single Character Token					[         
-Literal-Number      					20        
-Single Character Token					]         
-Single Character Token					;         
-Keyword-if          					if        
-Single Character Token					(         
-Keyword-true        					true      
-Single Character Token					)         
-Single Character Token					{         
-Keyword-if          					if        
-Single Character Token					(         
-Literal-Number      					1         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-if          					if        
-Single Character Token					(         
-Identifier          					c         
-Equal to            					==        
-Identifier          					d         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-if          					if        
-Single Character Token					(         
-Identifier          					c         
-Not equal to        					!=        
-Identifier          					d         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-int         					int       
-Identifier          					a         
-Single Character Token					=         
-Literal-Number      					200       
-Single Character Token					;         
-Single Character Token					}         
-Single Character Token					}         
-Single Character Token					}         
-Single Character Token					}         
-Keyword-if          					if        
-Single Character Token					(         
-Single Character Token					(         
-Identifier          					a         
-Equal to            					==        
 Identifier          					b         
-Single Character Token					)         
-Logical AND         					&&        
-Single Character Token					(         
-Identifier          					b         
-Equal to            					==        
+Single Character Token					,         
 Identifier          					c         
-Single Character Token					)         
-Logical AND         					&&        
-Single Character Token					(         
-Identifier          					d         
-Greater than or equal to					>=        
-Identifier          					f         
-Single Character Token					)         
-Logical AND         					&&        
-Single Character Token					(         
-Identifier          					p         
-Single Character Token					<         
-Identifier          					q         
-Single Character Token					)         
-Logical OR          					||        
-Single Character Token					(         
-Identifier          					boo       
-Single Character Token					)         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Literal-String      					"checking if multiple condiitons in if block works\n"
 Single Character Token					;         
-Single Character Token					}         
-Keyword-int         					int       
-Identifier          					sbdgjbsdjf
-Single Character Token					;         
-Keyword-int         					int       
-Identifier          					xjhbfgjhbdfvzsdkf
-Single Character Token					=         
-Literal-Number      					7823678263
-Single Character Token					;         
-Keyword-if          					if        
-Single Character Token					(         
-Identifier          					m         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-if          					if        
-Single Character Token					(         
-Identifier          					m         
-Equal to            					==        
-Identifier          					n         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Literal-String      					"if else test\n"
-Single Character Token					;         
-Single Character Token					}         
-Keyword-else        					else      
-Identifier          					c         
-Single Character Token					=         
-Identifier          					a         
-Single Character Token					+         
-Identifier          					b         
-Single Character Token					;         
-Single Character Token					}         
-Keyword-else        					else      
-Identifier          					p         
-Single Character Token					=         
-Identifier          					q         
-Single Character Token					*         
-Identifier          					f         
-Single Character Token					;         
-Keyword-for         					for       
-Single Character Token					(         
-Keyword-int         					int       
-Identifier          					i         
-Single Character Token					=         
-Literal-Number      					0         
-Single Character Token					;         
-Identifier          					i         
-Single Character Token					<         
+Keyword-return      					return    
 Literal-Number      					10        
 Single Character Token					;         
-Identifier          					i         
-Increment operator  					++        
-Single Character Token					)         
-Single Character Token					{         
-Keyword-for         					for       
-Single Character Token					(         
-Single Character Token					;         
-Single Character Token					;         
-Single Character Token					)         
-Single Character Token					{         
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Literal-String      					"for test"
-Single Character Token					;         
-Single Character Token					}         
-Single Character Token					}         
-Keyword-for         					for       
-Single Character Token					(         
-Single Character Token					;         
-Identifier          					f         
-Single Character Token					>         
-Literal-Number      					0         
-Single Character Token					;         
-Decrement operator  					--        
-Identifier          					f         
-Single Character Token					)         
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Identifier          					f         
-Insertion operator  					<<        
-Literal-String      					"\t"      
-Single Character Token					;         
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Literal-String      					"\n"      
-Single Character Token					;         
-Keyword-for         					for       
-Single Character Token					(         
-Keyword-int         					int       
-Identifier          					qwe       
-Single Character Token					=         
-Literal-Number      					0         
-Single Character Token					;         
-Identifier          					qwe       
-Single Character Token					<         
-Literal-Number      					5         
-Single Character Token					;         
-Increment operator  					++        
-Identifier          					qwe       
-Single Character Token					)         
-Single Character Token					{         
-Keyword-if          					if        
-Single Character Token					(         
-Identifier          					qwe       
-Single Character Token					%         
-Literal-Number      					2         
-Not equal to        					!=        
-Literal-Number      					0         
-Single Character Token					)         
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Literal-String      					"qwe is odd\n"
-Single Character Token					;         
-Keyword-else        					else      
-Keyword-cout        					cout      
-Insertion operator  					<<        
-Literal-String      					"qwe is even\n"
-Single Character Token					;         
-Keyword-if          					if        
-Single Character Token					(         
-Identifier          					qwe       
-Single Character Token					+         
-Literal-Number      					2         
-Equal to            					==        
-Literal-Number      					5         
-Single Character Token					)         
-Identifier          					a         
-Single Character Token					=         
-Literal-Number      					20        
-Single Character Token					;         
-Single Character Token					}         
 Single Character Token					}         
