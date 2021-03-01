@@ -135,7 +135,11 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 "/*"([^*]|(\*+[^*/]))*\*+\/|\/\/.*	{ ; }
 "/*"([^*]|(\*+[^*/]))*				{ printf("ERROR - Non-terminating comment\n"); }
 
-{exp_number}|{float_num}		{ print_token("Literal-Number"); yylval = strdup(yytext); return T_NUMBER_LITERAL; }
+{exp_number}|{float_num}		{ print_token("Literal-Number"); 
+									char id_temp[32];
+									gcvt(atof(yytext), 10, id_temp); 
+									id_temp[32] = '\0';
+									yylval = strdup(id_temp); return T_NUMBER_LITERAL; }
 \n								{ ; }
 
 .								{ printf("invalid character --> %s\n", yytext); }

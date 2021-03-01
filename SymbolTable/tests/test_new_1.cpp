@@ -21,9 +21,6 @@ int main()
     char xyz[10] = "compiler";
     bool boo = true;
     //
-    // Long name check
-    int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;
-    //
     // // Array Check
     int arr[10] = {10,20,30,40,40,40};
     float arr_new[20];
