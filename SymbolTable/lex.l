@@ -58,26 +58,26 @@ float_num						{digit}*(\.{digit}+)?[Ff]
 ^"using namespace std;"				{ ; }
 
 	/* for all single characters - including operators */
-"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"{"|"}"|")"|"("|"|"|"&"|"^"	{ print_token("Single Character Token"); return (int)(*yytext); }
+"+"|"-"|"*"|"/"|"%"|"<"|">"|"="|"!"|";"|","|"."|"["|"]"|"{"|"}"|")"|"("|"|"|"&"|"^"	{ print_token("Single Character Token"); yylval = strdup(yytext); return (int)(*yytext); }
 {ws}+							{ /* Throw away whitespace */ }
 
 	/* for all multiple characters operators */
-"<="							{  print_token("Less than or equal to"); return (T_REL_OP_LESS_THAN_EQUAL);  }
-">="							{  print_token("Greater than or equal to"); return (T_REL_OP_GREATER_THAN_EQUAL);  }
-"=="							{  print_token("Equal to"); return (T_REL_OP_EQUAL);  }
-"!="							{  print_token("Not equal to"); return (T_REL_OP_NOT_EQUAL);  }
-"&&"							{  print_token("Logical AND"); return (T_LOG_OP_AND);  }
-"||"							{  print_token("Logical OR"); return (T_LOG_OP_OR);  }
-"<<"							{  print_token("Insertion operator"); return (T_IO_INSERTION);  }
-">>"							{  print_token("Extraction Operator"); return (T_IO_EXTRACTION);  }
-"::"							{  print_token("Scope Resolution Operator"); return (T_SCOPE_RESOLUTION); }
-"++"							{  print_token("Increment operator"); return (T_OP_INCREMENT); }
-"--"							{  print_token("Decrement operator"); return (T_OP_DECREMENT); }
-"+="							{  print_token("Additive assignment"); return (T_OP_ADD_ASSIGNMENT); }
-"-="							{  print_token("Subtraction Assignment"); return (T_OP_SUBTRACT_ASSIGNMENT); }
-"*="							{  print_token("Multiplicative assignment"); return (T_OP_MULTIPLY_ASSIGNMENT); }
-"/="							{  print_token("Divisive Assignment"); return (T_OP_DIVIDE_ASSIGNMENT); }
-"%="							{  print_token("Mod Assignment"); return (T_OP_MOD_ASSIGNMENT); }
+"<="							{  print_token("Less than or equal to"); yylval = strdup(yytext); return (T_REL_OP_LESS_THAN_EQUAL);  }
+">="							{  print_token("Greater than or equal to"); yylval = strdup(yytext); return (T_REL_OP_GREATER_THAN_EQUAL);  }
+"=="							{  print_token("Equal to"); yylval = strdup(yytext); return (T_REL_OP_EQUAL);  }
+"!="							{  print_token("Not equal to"); yylval = strdup(yytext); return (T_REL_OP_NOT_EQUAL);  }
+"&&"							{  print_token("Logical AND"); yylval = strdup(yytext); return (T_LOG_OP_AND);  }
+"||"							{  print_token("Logical OR"); yylval = strdup(yytext); return (T_LOG_OP_OR);  }
+"<<"							{  print_token("Insertion operator"); yylval = strdup(yytext); return (T_IO_INSERTION);  }
+">>"							{  print_token("Extraction Operator"); yylval = strdup(yytext); return (T_IO_EXTRACTION);  }
+"::"							{  print_token("Scope Resolution Operator"); yylval = strdup(yytext); return (T_SCOPE_RESOLUTION); }
+"++"							{  print_token("Increment operator"); yylval = strdup(yytext); return (T_OP_INCREMENT); }
+"--"							{  print_token("Decrement operator"); yylval = strdup(yytext); return (T_OP_DECREMENT); }
+"+="							{  print_token("Additive assignment"); yylval = strdup(yytext); return (T_OP_ADD_ASSIGNMENT); }
+"-="							{  print_token("Subtraction Assignment"); yylval = strdup(yytext); return (T_OP_SUBTRACT_ASSIGNMENT); }
+"*="							{  print_token("Multiplicative assignment"); yylval = strdup(yytext); return (T_OP_MULTIPLY_ASSIGNMENT); }
+"/="							{  print_token("Divisive Assignment"); yylval = strdup(yytext); return (T_OP_DIVIDE_ASSIGNMENT); }
+"%="							{  print_token("Mod Assignment"); yylval = strdup(yytext); return (T_OP_MOD_ASSIGNMENT); }
 
 	/* for all keywords */
 "return"						{  print_token("Keyword-return"); yylval = strdup(yytext); return (T_RETURN);  }
@@ -147,5 +147,7 @@ int yywrap(void)
 }
 
 void print_token(char *token) {
-	printf("%-20s\t\t\t\t\t%-10s\n", token, yytext);
+	FILE *fptr = fopen("tokens.txt", "a");
+	fprintf(fptr, "%-20s\t\t\t\t\t%-10s\n", token, yytext);
+	fclose(fptr);
 }
