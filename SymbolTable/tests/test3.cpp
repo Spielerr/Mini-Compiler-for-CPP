@@ -4,22 +4,25 @@ using namespace std;
 
 int main()
 {
-    // Unterminating string
-    // char x[] = "sadfjsdlkafjsdalf lskdjfsdlkdjfl
+    for(int i=0;i<10;i++)
+    {
+        for(;;)
+        {
+            cout<<"for test";
+        }
+    }
+    int f;
+    for(;f>0;--f)
+        cout<<f<<"\t";
+    cout<<"\n";
 
-    // Unterminating character
-    // char a = 'd
-
-    // invalid character, continues parsing after detecting it
-    // @
-    // double b = 10.0;
-    // float f = 3.14f;
-
-    // invalid operators
-    // int a = 10;
-    // a+++;
-
-    // invalid identifier names
-    // int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;
-
+    for(int qwe=0;qwe<5;++qwe)
+    {
+        if(qwe%2!=0)
+            cout<<"qwe is odd\n";
+        else
+            cout<<"qwe is even\n";
+        if(qwe+2==5)
+            a = 20;
+    }
 }

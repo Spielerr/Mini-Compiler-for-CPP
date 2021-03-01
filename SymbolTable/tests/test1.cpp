@@ -2,50 +2,38 @@
 
 using namespace std;
 
-void add() { cout << 'H'; }
+/* Note this is a comment to check the correctness of the comment removal code in Lex
+   This comment spans multiple lines.
+*/
+// This is a single comment line.....
 
-int main() {
-    return 0;
-}
-int y(int a, float b);
-int z(int, float);
-int t(int a = 5 + 3, int b = 5, int c);
+int main()
+{
+    // Variable declaration check
+    int a = 5 & 6;
+    int b;
+    int c,d,e,f=5 + 6;
+    int x = 25;
+    int p = 40,q=30;
+    float m,n=3.1415f;
+    a = 5;
 
-float add(int b = 5, int c) {
-    int a = 5 + 6723876 + c;
-    int c = 5;
-    b = 6 + 5;
-    return 5 + 4 == a;
-}
+    char abcdef[1000];
+    char xyz[10] = "compiler";
+    bool boo = true;
+    
+    // // Array Check
+    int arr[10] = {10,20,30,40,40,40};
+    float arr_new[20];
 
-int main() {
-    int a = 5;
-    int b = 4 + 7;
-    int c, d, e = 5, f;
-    if ( (a = b * c) + 5 / 4 + ( 3  - 4 ) )
-        if ( (a = b / c) / 5 + 4 + ( 3  - 4 ) )
-            int z;
-    int x;
-    for(int i = 0; i == 5; i = i + 1) {
-        cout << 5.0F;
-    }
-    int x;
-    for(;;)
-    {
-        if(a==0)
-        {
-            a += a;
-            zjafgjhbsd = 9;
-        }
-    }
+    cout << "Compiler Design Phase\n";
+    int n;
+    cin >> n;
 
-    for(;a==0;a = a - 1 )
-        if (a == 5)
-            for(;a==0;a = a - 1)
-                cout << 5 + (5 +(6 + 4) );
-    int e;
-    cout << a << b == c;
-    if ( (5 + 3) ) { cout << a; }
-    int a = 6, b = 4, c = 6;
-    cout << (a = b == c);
+    // Assignment operators
+    n += 5;
+    n -= 5;
+    n /= 10;
+    n *= 10;
+    n %= 2;
 }
