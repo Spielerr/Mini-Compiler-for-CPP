@@ -9,6 +9,6 @@ gcc lex.yy.c y.tab.c
 rm -f lex.yy.c
 rm -f y.output y.tab.h y.tab.c
 
-./a.out
+./a.out $1
 
 rm a.out

@@ -868,7 +868,7 @@ void yyerror(char *s){
 
 int main(int argc, char *argv[]) {
 
-	yyin = fopen(argv[2],"r");
+	yyin = fopen(argv[1],"r");
 
 	init_symbol_table();
 
