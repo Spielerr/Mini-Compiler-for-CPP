@@ -925,6 +925,8 @@ unsigned int hash_function(char *name)
 symbol_table* lookup(char *name)
 {
     name = strdup(name);
+	// printf("Lookup for %s with scope %d\n",name,current_scope);
+
 	unsigned int hash_value = hash_function(name);
 	node_t *temp = complete_symbol_table[hash_value];
 	// check in parent scope
@@ -935,22 +937,22 @@ symbol_table* lookup(char *name)
 		{
 			if(temp->st->scope==current_scope)
 				return temp->st;
-			int x_scope = temp->st->scope;
+			int x_scope = current_scope;
+			if(x_scope==0)
+			{
+				return temp->st;
+			}
 			while(x_scope!=0)
 			{
 				int par_scope = scopes[x_scope];
-				if(x_scope==scopes[par_scope])
+				if(temp->st->scope==par_scope)
 				{
 					looked_up = temp->st;
 					break;
 				}
 				x_scope = par_scope;
 			}
-			if(x_scope==0)
-				looked_up=temp->st;
 		}
-		if(looked_up!=NULL)
-			break;
 		temp = temp->next;
 	}
 	return looked_up;
