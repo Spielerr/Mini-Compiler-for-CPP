@@ -2,3 +2,37 @@ TOKENS STREAMED
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 Token Type					Token Value
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
+Keyword-int         					int       
+Identifier          					main      
+Single Character Token					(         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-for         					for       
+Single Character Token					(         
+Keyword-int         					int       
+Identifier          					i         
+Single Character Token					=         
+Literal-Number      					0         
+Single Character Token					;         
+Identifier          					i         
+Single Character Token					<         
+Literal-Number      					10        
+Single Character Token					;         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-for         					for       
+Single Character Token					(         
+Keyword-int         					int       
+Identifier          					j         
+Single Character Token					=         
+Literal-Number      					0         
+Single Character Token					;         
+Single Character Token					;         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-int         					int       
+Identifier          					kjsndkbnsdf
+Single Character Token					;         
+Single Character Token					}         
+Single Character Token					}         
+Single Character Token					}         

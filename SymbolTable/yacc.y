@@ -213,14 +213,12 @@ BLOCK
 BLOCK_START
 	: '{' {
         scope_enter();
-        $$ = strdup($1);
     }
 	;
 
 BLOCK_END
 	: '}' {
         scope_leave();
-        $$ = strdup($1);
     }
 	;
 
@@ -232,120 +230,84 @@ STATEMENTS
 SINGLE_LINE_IF
 	: IF_PREFIX LINE_STATEMENT ';' {
 		scope_leave();
-        sprintf($$, "%s %s ;", $1, $2);
-        $$ = strdup($$);
 	}
 	| IF_PREFIX ';' {
 		scope_leave();
-        sprintf($$, "%s ;", $1);
-        $$ = strdup($$);
 	}
 	| IF_PREFIX CONSTRUCT {
 		scope_leave();
-        $$ = strdup($1);
 	}
 	;
 
 BLOCK_IF
-	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK {
-        sprintf($$, "%s ( %s ) %s", $1, $3, $5);
-        $$ = strdup($$);
-    }
+	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK
 	;
 
 IF_PREFIX
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' {
 		scope_enter();
-        sprintf($$, "%s ( %s )", $1, $3);
-        $$ = strdup($$);
 	}
 	;
 
 SINGLE_LINE_ELSE
 	: ELSE_PREFIX LINE_STATEMENT ';'{
 		scope_leave();
-        sprintf($$, "%s %s ;", $1, $2);
-        $$ = strdup($$);
 	}
 	| ELSE_PREFIX ';'{
 		scope_leave();
-        sprintf($$, "%s ;", $1);
-        $$ = strdup($$);
 	}
 	| ELSE_PREFIX CONSTRUCT {
 		scope_leave();
-        sprintf($$, "%s %s", $1, $2);
-        $$ = strdup($$);
 	}
 	;
 
 BLOCK_ELSE
-	: T_CONSTRUCT_ELSE BLOCK {
-        sprintf($$, "%s %s", $1, $2);
-        $$ = strdup($$);
-    }
+	: T_CONSTRUCT_ELSE BLOCK
 	;
 
 ELSE_PREFIX
 	: T_CONSTRUCT_ELSE {
 		scope_enter();
-        $$ = strdup($1);
 	}
 	;
 
 SINGLE_LINE_FOR
 	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'{
 		scope_leave();
-        sprintf($$, "%s %s ; %s ; %s ) %s ;", $1, $2, $4, $6, $8);
-        $$ = strdup($$);
 	}
-	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';'{
+	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';' {
 		scope_leave();
-        sprintf($$, "%s %s ; %s ; %s ) ;", $1, $2, $4, $6);
-        $$ = strdup($$);
 	}
-	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT{
+	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT {
 		scope_leave();
-        sprintf($$, "%s %s ; %s ; %s ) %s", $1, $2, $4, $6, $8);
-        $$ = strdup($$);
 	}
 	;
 
 BLOCK_FOR
 	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'{
 		scope_leave();
-        sprintf($$, "%s %s ; %s ; %s ) { %s }", $1, $2, $4, $6, $9);
-        $$ = strdup($$);
 	}
 	;
 
 FOR_PREFIX
 	: T_CONSTRUCT_FOR '(' {
 		scope_enter();
-        sprintf($$, "%s (", $1);
-        $$ = strdup($$);
 	}
 	;
 
 FOR_INIT_STATEMENT
 	:
-	| LINE_STATEMENT {
-        $$ = strdup($1);
-    }
+	| LINE_STATEMENT
 	;
 
 FOR_CONDITION_STATEMENT
 	:
-	| CONDITIONAL_EXPRESSION {
-        $$ = strdup($1);
-    }
+	| CONDITIONAL_EXPRESSION
 	;
 
 FOR_ACTION_STATEMENT
 	:
-	| LINE_STATEMENT {
-        $$ = strdup($1);
-    }
+	| LINE_STATEMENT
 	;
 
 BITWISE_OPERATOR
@@ -494,85 +456,42 @@ EXPRESSION_F
 	;
 
 CONSTRUCT
-	: SINGLE_LINE_CONSTRUCT {
-        $$ = strdup($1);
-    }
-	| BLOCK_CONSTRUCT {
-        $$ = strdup($1);
-    }
+	: SINGLE_LINE_CONSTRUCT
+	| BLOCK_CONSTRUCT
 	;
 
 BLOCK_CONSTRUCT
-	: BLOCK_FOR {
-        $$ = strdup($1);
-    }
-	| BLOCK_IF {
-        $$ = strdup($1);
-    }
-	| BLOCK_ELSE {
-        $$ = strdup($1);
-    }
+	: BLOCK_FOR
+	| BLOCK_IF
+	| BLOCK_ELSE
 	;
 
 SINGLE_LINE_CONSTRUCT
-	: SINGLE_LINE_FOR {
-        $$ = strdup($1);
-    }
-	| SINGLE_LINE_IF {
-        $$ = strdup($1);
-    }
-	| SINGLE_LINE_ELSE {
-        $$ = strdup($1);
-    }
+	: SINGLE_LINE_FOR
+	| SINGLE_LINE_IF
+	| SINGLE_LINE_ELSE
 	;
 
 STATEMENT
-	: LINE_STATEMENT ';' {
-        sprintf($$, "%s ;", $1);
-        $$ = strdup($$);
-    }
-	| CONSTRUCT {
-        $$ = strdup($1);
-    }
-	| BLOCK {
-        $$ = strdup($1);
-    }
-	| ';' {
-        $$ = strdup($1);
-    }
+	: LINE_STATEMENT ';'
+	| CONSTRUCT
+	| BLOCK
+	| ';'
 	;
 
 JUMP_STATEMENT
-	: T_JUMP_BREAK {
-        $$ = strdup($1);
-    }
-	| T_JUMP_EXIT {
-        $$ = strdup($1);
-    }
-	| T_JUMP_CONTINUE {
-        $$ = strdup($1);
-    }
+	: T_JUMP_BREAK
+	| T_JUMP_EXIT
+	| T_JUMP_CONTINUE
 	;
 
 LINE_STATEMENT
-	: VARIABLE_DECLARATION {
-        $$ = strdup($1);
-    }
-	| EXPRESSION {
-        $$ = strdup($1);
-    }
-	| COUT {
-        $$ = strdup($1);
-    }
-	| CIN {
-        $$ = strdup($1);
-    }
-	| RETURN {
-        $$ = strdup($1);
-    }
-	| JUMP_STATEMENT {
-        $$ = strdup($1);
-    }
+	: VARIABLE_DECLARATION
+	| EXPRESSION
+	| COUT
+	| CIN
+	| RETURN
+	| JUMP_STATEMENT
 	;
 
 VARIABLE_DECLARATION
