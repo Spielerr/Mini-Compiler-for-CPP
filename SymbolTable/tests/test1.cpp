@@ -11,17 +11,16 @@ int y(int a, float b);
 int z(int, float);
 int t(int a = 5 + 3, int b = 5, int c);
 
-float add(int a = 5 + 3, int b = 5, int c) {
-    int a = 5;
+float add(int b = 5, int c) {
+    int a = 5 + 6723876 + c;
     int c = 5;
     b = 6 + 5;
     return 5 + 4 == a;
 }
 
 int main() {
-    bool a = true;
     int a = 5;
-    int b = 4;
+    int b = 4 + 7;
     int c, d, e = 5, f;
     if ( (a = b * c) + 5 / 4 + ( 3  - 4 ) )
         if ( (a = b / c) / 5 + 4 + ( 3  - 4 ) )
