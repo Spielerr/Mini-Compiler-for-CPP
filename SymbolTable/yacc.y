@@ -182,6 +182,8 @@ FUNCTION_PARAMETER_LIST
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
+        symbol_table* element = lookup($2);
+		strcpy(element->value, $4);
 	}
 	| TYPE T_IDENTIFIER {
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
@@ -192,6 +194,8 @@ FUNCTION_PARAMETER_LIST
 		if (insert($2, "Identifier", $1, @2.last_line, NULL) == NULL) {
 			printf("[Error] at line:%d - Function Parameter \"%s\" has already been declared\n", @2.last_line, $2);
 		}
+        symbol_table* element = lookup($2);
+		strcpy(element->value, $4);
 	}
 	;
 
@@ -209,14 +213,14 @@ BLOCK
 BLOCK_START
 	: '{' {
         scope_enter();
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
 BLOCK_END
 	: '}' {
         scope_leave();
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
@@ -285,7 +289,7 @@ BLOCK_ELSE
 ELSE_PREFIX
 	: T_CONSTRUCT_ELSE {
 		scope_enter();
-        $$ = strdup(yylval);
+        $$ = strdup($1);
 	}
 	;
 
@@ -346,13 +350,13 @@ FOR_ACTION_STATEMENT
 
 BITWISE_OPERATOR
 	: '&' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| '|' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| '^' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
@@ -404,22 +408,22 @@ ASSIGNMENT
 
 ASSIGNMENT_OPERATOR
 	: '=' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_OP_ADD_ASSIGNMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_OP_SUBTRACT_ASSIGNMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_OP_MULTIPLY_ASSIGNMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_OP_DIVIDE_ASSIGNMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_OP_MOD_ASSIGNMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
@@ -534,40 +538,40 @@ STATEMENT
         $$ = strdup($1);
     }
 	| ';' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
 JUMP_STATEMENT
 	: T_JUMP_BREAK {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_JUMP_EXIT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_JUMP_CONTINUE {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
 LINE_STATEMENT
 	: VARIABLE_DECLARATION {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| EXPRESSION {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| COUT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| CIN {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| RETURN {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| JUMP_STATEMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
@@ -666,7 +670,7 @@ ARRAY_LIST
         $$ = strdup($$);
     }
 	| T_STRING_LITERAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
@@ -716,7 +720,7 @@ EXTRACTION_LIST
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	;
 
@@ -729,31 +733,31 @@ RETURN
 
 LOGICAL_OPERATOR
 	: T_LOG_OP_AND {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_LOG_OP_OR {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
 RELATIONAL_OPERATOR
 	: T_REL_OP_EQUAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| '>' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_REL_OP_GREATER_THAN_EQUAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| '<' {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_REL_OP_LESS_THAN_EQUAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_REL_OP_NOT_EQUAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
@@ -762,7 +766,7 @@ IDENTIFIER_OR_LITERAL
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared variable \"%s\" \n", @1.last_line, $1);
 		}
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_IDENTIFIER '(' ')' {
 		if (lookup($1) == NULL) {
@@ -814,49 +818,49 @@ IDENTIFIER_OR_LITERAL
         $$ = strdup($$);
 	}
 	| T_CHAR_LITERAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_NUMBER_LITERAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_STRING_LITERAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_BOOL_LITERAL {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
 UNARY_OPERATOR
 	: T_OP_INCREMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	| T_OP_DECREMENT {
-        $$ = strdup(yylval);
+        $$ = strdup($1);
     }
 	;
 
 TYPE
 	: T_TYPE_INT {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_TYPE_DOUBLE {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_TYPE_FLOAT {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_TYPE_CHAR {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_TYPE_STRING {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_TYPE_VOID {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	| T_TYPE_BOOL {
-		$$ = strdup(yylval);
+		$$ = strdup($1);
 	}
 	;
 

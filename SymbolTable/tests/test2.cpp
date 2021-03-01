@@ -8,6 +8,6 @@ void add(int a) {
 
 int main() {
     int a = 10 + 7236 - 783;
-    int b, c;
+    int b, c = a + 60 * 7;
     return 10;
 }

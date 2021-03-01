@@ -5,12 +5,11 @@ Token Type					Token Value
 Keyword-void        					void      
 Identifier          					add       
 Single Character Token					(         
-Keyword-int         					int       
-Identifier          					a         
 Single Character Token					)         
 Single Character Token					{         
-Keyword-return      					return    
-Literal-Number      					0         
+Keyword-cout        					cout      
+Insertion operator  					<<        
+Literal-Character   					'H'       
 Single Character Token					;         
 Single Character Token					}         
 Keyword-int         					int       
@@ -21,18 +20,200 @@ Single Character Token					{
 Keyword-int         					int       
 Identifier          					a         
 Single Character Token					=         
-Literal-Number      					10        
-Single Character Token					+         
-Literal-Number      					7236      
-Single Character Token					-         
-Literal-Number      					783       
+Literal-Number      					5         
 Single Character Token					;         
 Keyword-int         					int       
 Identifier          					b         
+Single Character Token					=         
+Literal-Number      					4         
+Single Character Token					+         
+Literal-Number      					7         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					c         
 Single Character Token					,         
+Identifier          					d         
+Single Character Token					,         
+Identifier          					e         
+Single Character Token					=         
+Literal-Number      					5         
+Single Character Token					,         
+Identifier          					f         
+Single Character Token					;         
+Keyword-if          					if        
+Single Character Token					(         
+Single Character Token					(         
+Identifier          					a         
+Single Character Token					=         
+Identifier          					b         
+Single Character Token					*         
+Identifier          					c         
+Single Character Token					)         
+Single Character Token					+         
+Literal-Number      					5         
+Single Character Token					/         
+Literal-Number      					4         
+Single Character Token					+         
+Single Character Token					(         
+Literal-Number      					3         
+Single Character Token					-         
+Literal-Number      					4         
+Single Character Token					)         
+Single Character Token					)         
+Keyword-if          					if        
+Single Character Token					(         
+Single Character Token					(         
+Identifier          					a         
+Single Character Token					=         
+Identifier          					b         
+Single Character Token					/         
+Identifier          					c         
+Single Character Token					)         
+Single Character Token					/         
+Literal-Number      					5         
+Single Character Token					+         
+Literal-Number      					4         
+Single Character Token					+         
+Single Character Token					(         
+Literal-Number      					3         
+Single Character Token					-         
+Literal-Number      					4         
+Single Character Token					)         
+Single Character Token					)         
+Keyword-int         					int       
+Identifier          					z         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					x         
+Single Character Token					;         
+Keyword-for         					for       
+Single Character Token					(         
+Keyword-int         					int       
+Identifier          					i         
+Single Character Token					=         
+Literal-Number      					0         
+Single Character Token					;         
+Identifier          					i         
+Equal to            					==        
+Literal-Number      					5         
+Single Character Token					;         
+Identifier          					i         
+Single Character Token					=         
+Identifier          					i         
+Single Character Token					+         
+Literal-Number      					1         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-cout        					cout      
+Insertion operator  					<<        
+Literal-Number      					5.0F      
+Single Character Token					;         
+Single Character Token					}         
+Keyword-int         					int       
+Identifier          					x         
+Single Character Token					;         
+Keyword-for         					for       
+Single Character Token					(         
+Single Character Token					;         
+Single Character Token					;         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-if          					if        
+Single Character Token					(         
+Identifier          					a         
+Equal to            					==        
+Literal-Number      					0         
+Single Character Token					)         
+Single Character Token					{         
+Identifier          					a         
+Additive assignment 					+=        
+Identifier          					a         
+Single Character Token					;         
+Identifier          					zjafgjhbsd
+Single Character Token					=         
+Literal-Number      					9         
+Single Character Token					;         
+Single Character Token					}         
+Single Character Token					}         
+Keyword-for         					for       
+Single Character Token					(         
+Single Character Token					;         
+Identifier          					a         
+Equal to            					==        
+Literal-Number      					0         
+Single Character Token					;         
+Identifier          					a         
+Single Character Token					=         
+Identifier          					a         
+Single Character Token					-         
+Literal-Number      					1         
+Single Character Token					)         
+Keyword-if          					if        
+Single Character Token					(         
+Identifier          					a         
+Equal to            					==        
+Literal-Number      					5         
+Single Character Token					)         
+Keyword-for         					for       
+Single Character Token					(         
+Single Character Token					;         
+Identifier          					a         
+Equal to            					==        
+Literal-Number      					0         
+Single Character Token					;         
+Identifier          					a         
+Single Character Token					=         
+Identifier          					a         
+Single Character Token					-         
+Literal-Number      					1         
+Single Character Token					)         
+Keyword-cout        					cout      
+Insertion operator  					<<        
+Literal-Number      					5         
+Single Character Token					+         
+Single Character Token					(         
+Literal-Number      					5         
+Single Character Token					+         
+Single Character Token					(         
+Literal-Number      					6         
+Single Character Token					+         
+Literal-Number      					4         
+Single Character Token					)         
+Single Character Token					)         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					e         
+Single Character Token					;         
+Keyword-cout        					cout      
+Insertion operator  					<<        
+Identifier          					a         
+Insertion operator  					<<        
+Identifier          					b         
+Equal to            					==        
 Identifier          					c         
 Single Character Token					;         
-Keyword-return      					return    
-Literal-Number      					10        
+Keyword-if          					if        
+Single Character Token					(         
+Single Character Token					(         
+Literal-Number      					5         
+Single Character Token					+         
+Literal-Number      					3         
+Single Character Token					)         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-cout        					cout      
+Insertion operator  					<<        
+Identifier          					a         
+Single Character Token					;         
+Single Character Token					}         
+Keyword-cout        					cout      
+Insertion operator  					<<        
+Single Character Token					(         
+Identifier          					a         
+Single Character Token					=         
+Identifier          					b         
+Equal to            					==        
+Identifier          					c         
+Single Character Token					)         
 Single Character Token					;         
 Single Character Token					}         
