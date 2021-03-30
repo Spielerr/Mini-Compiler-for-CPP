@@ -16,10 +16,12 @@ int main()
     int x = 25;
     int p = 40,q=30;
     float m,n=3.1415f;
+    double exp = 10.3411e2;
     a = 5;
 
     char abcdef[1000];
     char xyz[10] = "compiler";
+    cout << xyz[8] << "\n";
     bool boo = true;
     
     // // Array Check
@@ -27,13 +29,13 @@ int main()
     float arr_new[20];
 
     cout << "Compiler Design Phase\n";
-    int n;
-    cin >> n;
+    int s;
+    cin >> s;
 
     // Assignment operators
-    n += 5;
-    n -= 5;
-    n /= 10;
-    n *= 10;
-    n %= 2;
+    s += 5;
+    s -= 5;
+    s /= 10;
+    s *= 10;
+    s %= 2;
 }

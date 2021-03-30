@@ -5,6 +5,17 @@ using namespace std;
 int main() {
     // // Construct if check
     // //Nested if check
+
+    int a = 5;
+    int b;
+    int c,d,e,f=5 + 6;
+    int x = 25;
+    int p = 40,q=30;
+    float m,n=3.1415f;
+    char abcdef[1000];
+    char xyz[10] = "compiler";
+    a = 5;
+
     if(true)
     {
         if(1)
@@ -18,6 +29,7 @@ int main() {
             }
         }
     }
+
     if((a==b)&&(b==c)&&(d>=f)&&(p<q)||(boo))
     {
         cout<<"checking if multiple condiitons in if block works\n";
@@ -25,7 +37,7 @@ int main() {
 
     int sbdgjbsdjf;
     int xjhbfgjhbdfvzsdkf = 7823663;
-    
+
     // If else test
     if(m)
     {

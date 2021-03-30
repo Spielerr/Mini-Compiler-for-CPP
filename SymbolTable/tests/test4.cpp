@@ -4,7 +4,7 @@ using namespace std;
 
 int main()
 {
-    // Unterminating string
+    //Unterminating string
     // char x[] = "sadfjsdlkafjsdalf lskdjfsdlkdjfl
 
     // Unterminating character
@@ -20,6 +20,10 @@ int main()
     // a+++;
 
     // invalid identifier names
-    // int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;
+    int longnameidontknowwhattowritesimplyiamwritinghopeitsenough = 200;;
+
+    // int a=10
+
+
 
 }
