@@ -7,6 +7,7 @@ lex lex.l
 yacc -d yacc.y
 gcc lex.yy.c y.tab.c
 
+rm -f *.o
 rm -f lex.yy.c
 rm -f y.output y.tab.h y.tab.c
 
