@@ -1,0 +1,191 @@
+TOKENS STREAMED
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Token Type					Token Value
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Keyword-int         					int       
+Identifier          					main      
+Single Character Token					(         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-int         					int       
+Identifier          					a         
+Single Character Token					=         
+Literal-Number      					5         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					b         
+Single Character Token					=         
+Literal-Number      					6         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					c         
+Single Character Token					=         
+Identifier          					a         
+Single Character Token					*         
+Identifier          					b         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					d         
+Single Character Token					=         
+Identifier          					c         
+Single Character Token					+         
+Identifier          					b         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					e         
+Single Character Token					=         
+Identifier          					a         
+Single Character Token					*         
+Identifier          					b         
+Single Character Token					+         
+Identifier          					d         
+Single Character Token					-         
+Identifier          					b         
+Single Character Token					+         
+Identifier          					a         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					f         
+Single Character Token					=         
+Identifier          					a         
+Single Character Token					*         
+Literal-Number      					5         
+Single Character Token					+         
+Literal-Number      					8         
+Single Character Token					-         
+Literal-Number      					4         
+Single Character Token					+         
+Literal-Number      					7         
+Single Character Token					*         
+Literal-Number      					3         
+Single Character Token					+         
+Identifier          					d         
+Single Character Token					*         
+Identifier          					e         
+Single Character Token					/         
+Literal-Number      					1         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					g         
+Single Character Token					=         
+Single Character Token					(         
+Literal-Number      					4         
+Single Character Token					+         
+Literal-Number      					5         
+Single Character Token					)         
+Single Character Token					*         
+Identifier          					f         
+Single Character Token					+         
+Identifier          					e         
+Single Character Token					-         
+Identifier          					d         
+Single Character Token					/         
+Identifier          					c         
+Single Character Token					+         
+Identifier          					b         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					k         
+Single Character Token					=         
+Identifier          					c         
+Single Character Token					+         
+Literal-Number      					4         
+Single Character Token					;         
+Identifier          					g         
+Single Character Token					=         
+Identifier          					d         
+Single Character Token					+         
+Literal-Number      					4         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					sum       
+Single Character Token					=         
+Literal-Number      					0         
+Single Character Token					;         
+Keyword-for         					for       
+Single Character Token					(         
+Keyword-int         					int       
+Identifier          					i         
+Single Character Token					=         
+Literal-Number      					0         
+Single Character Token					;         
+Identifier          					i         
+Single Character Token					<         
+Literal-Number      					10        
+Single Character Token					;         
+Identifier          					i         
+Increment operator  					++        
+Single Character Token					)         
+Single Character Token					{         
+Identifier          					sum       
+Single Character Token					=         
+Identifier          					sum       
+Single Character Token					+         
+Literal-Number      					1         
+Single Character Token					;         
+Single Character Token					}         
+Keyword-if          					if        
+Single Character Token					(         
+Identifier          					a         
+Single Character Token					>         
+Identifier          					b         
+Single Character Token					)         
+Single Character Token					{         
+Identifier          					g         
+Single Character Token					=         
+Identifier          					c         
+Single Character Token					+         
+Literal-Number      					4         
+Single Character Token					;         
+Single Character Token					}         
+Keyword-if          					if        
+Single Character Token					(         
+Identifier          					sum       
+Equal to            					==        
+Literal-Number      					55        
+Single Character Token					)         
+Single Character Token					{         
+Keyword-int         					int       
+Identifier          					k         
+Single Character Token					=         
+Literal-Number      					2         
+Single Character Token					;         
+Single Character Token					}         
+Keyword-if          					if        
+Single Character Token					(         
+Identifier          					a         
+Single Character Token					+         
+Identifier          					b         
+Equal to            					==        
+Identifier          					c         
+Single Character Token					)         
+Single Character Token					{         
+Identifier          					b         
+Single Character Token					=         
+Identifier          					g         
+Single Character Token					+         
+Literal-Number      					1         
+Single Character Token					;         
+Identifier          					e         
+Single Character Token					=         
+Identifier          					f         
+Single Character Token					-         
+Literal-Number      					1         
+Single Character Token					;         
+Single Character Token					}         
+Keyword-else        					else      
+Single Character Token					{         
+Identifier          					a         
+Single Character Token					=         
+Identifier          					g         
+Single Character Token					-         
+Literal-Number      					1         
+Single Character Token					;         
+Identifier          					b         
+Single Character Token					=         
+Identifier          					f         
+Single Character Token					*         
+Literal-Number      					2         
+Single Character Token					;         
+Single Character Token					}         
+Single Character Token					}         
