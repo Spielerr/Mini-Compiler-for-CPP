@@ -919,7 +919,7 @@ void for_condition()
 {
 	//******Note: using temp_id-1 might not be a good idea********
 	char label_temp[10];
-	sprintf(label_temp,"t%d",label_id);
+	sprintf(label_temp,"L%d",label_id);
 
 	printf("if t%d goto L%d\n",temp_id-1,label_id);
 	
@@ -935,7 +935,7 @@ void for_condition()
 	label_match[++label_top] = label_id;
 	printf("goto L%d\n",label_id);
 
-	sprintf(label_temp,"t%d",label_id);
+	sprintf(label_temp,"L%d",label_id);
 	create_quad("","",label_temp,"goto");
 
 	label_match[++label_top] = ++label_id;
@@ -947,7 +947,7 @@ void for_condition()
 void for_action()
 {
 	char label_temp[10];
-	sprintf(label_temp,"t%d",label_match[label_top-3]);
+	sprintf(label_temp,"L%d",label_match[label_top-3]);
 
 	printf("goto L%d\n",label_match[label_top-3]);
 	create_quad("","",label_temp,"goto");
@@ -957,7 +957,7 @@ void for_action()
 void for_after()
 {
 	char label_temp[10];
-	sprintf(label_temp,"t%d",label_match[label_top-3]);
+	sprintf(label_temp,"L%d",label_match[label_top-3]);
 
 	printf("goto L%d\n",label_match[label_top]);
 	create_quad("","",label_temp,"goto");
@@ -999,7 +999,7 @@ void if_cond()
 	label_match[++label_top] = label_id;
 	
 	char label_temp[10];
-	sprintf(label_temp,"t%d",label_id);
+	sprintf(label_temp,"L%d",label_id);
 	
 	printf("goto L%d\n",label_id);
 	create_quad("","",label_temp,"goto");
