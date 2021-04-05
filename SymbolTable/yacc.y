@@ -47,10 +47,7 @@
 	int scope_counter = 0;
 
 	char variable_declaration_type[20] = "\0";
-	int is_declaration_assignment = 0;
-
-	int construct_nesting_level = 0;
-	int encountered_construct_nesting_level = 0;
+	int is_in_construct = 0;
 
 %}
 
@@ -114,6 +111,10 @@
 %left '*' '/'
 
 %left '&' '|' '^'
+
+%nonassoc IF_PREC
+
+%nonassoc T_CONSTRUCT_ELSE
 
 %%
 
@@ -237,10 +238,14 @@ SINGLE_LINE_IF
 	| IF_PREFIX CONSTRUCT {
 		scope_leave();
 	}
+	| SINGLE_LINE_IF SINGLE_LINE_ELSE
+	| SINGLE_LINE_IF BLOCK_ELSE
 	;
 
 BLOCK_IF
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' BLOCK
+	| BLOCK_IF SINGLE_LINE_ELSE
+	| BLOCK_IF BLOCK_ELSE
 	;
 
 IF_PREFIX
@@ -274,24 +279,29 @@ ELSE_PREFIX
 SINGLE_LINE_FOR
 	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' LINE_STATEMENT ';'{
 		scope_leave();
+		is_in_construct -= 1;
 	}
 	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' ';' {
 		scope_leave();
+		is_in_construct -= 1;
 	}
 	| FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' CONSTRUCT {
 		scope_leave();
+		is_in_construct -= 1;
 	}
 	;
 
 BLOCK_FOR
 	: FOR_PREFIX FOR_INIT_STATEMENT ';' FOR_CONDITION_STATEMENT ';' FOR_ACTION_STATEMENT ')' '{' STATEMENTS '}'{
 		scope_leave();
+		is_in_construct -= 1;
 	}
 	;
 
 FOR_PREFIX
 	: T_CONSTRUCT_FOR '(' {
 		scope_enter();
+		is_in_construct += 1;
 	}
 	;
 
@@ -462,14 +472,12 @@ CONSTRUCT
 
 BLOCK_CONSTRUCT
 	: BLOCK_FOR
-	| BLOCK_IF
-	| BLOCK_ELSE
+	| BLOCK_IF %prec IF_PREC
 	;
 
 SINGLE_LINE_CONSTRUCT
 	: SINGLE_LINE_FOR
-	| SINGLE_LINE_IF
-	| SINGLE_LINE_ELSE
+	| SINGLE_LINE_IF %prec IF_PREC
 	;
 
 STATEMENT
@@ -480,7 +488,10 @@ STATEMENT
 	;
 
 JUMP_STATEMENT
-	: T_JUMP_BREAK
+	: T_JUMP_BREAK {
+		if (is_in_construct == 0)
+			printf("[Error] at line:%d - \"break\" statement not within loop or switch\n", @1.last_line);
+	}
 	| T_JUMP_EXIT
 	| T_JUMP_CONTINUE
 	;
