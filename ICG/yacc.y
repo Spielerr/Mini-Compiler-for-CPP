@@ -859,6 +859,9 @@ char stack[1000][1000];
 int top = 0;
 int label_top = -1;
 int label_match[100];
+int if_label_top = -1;
+int if_label_stack[100];
+int if_label = -1;
 void create_quad(char *arg1,char *arg2, char* res,char *op)
 {
 	strcpy(q[q_len].op,op);
@@ -957,13 +960,23 @@ void for_action()
 void for_after()
 {
 	char label_temp[10];
-	sprintf(label_temp,"L%d",label_match[label_top-3]);
-
+	sprintf(label_temp,"L%d",label_match[label_top]);
+	if(DEBUG)
+	{
+		int x = label_top;
+		printf("label stack contents: \n");
+		while(x!=-1)
+		{
+			printf("top: %d val: %d ",x,label_match[x]);
+			x-=1;
+		}
+		printf("\n");
+	}
 	printf("goto L%d\n",label_match[label_top]);
 	create_quad("","",label_temp,"goto");
 	label_top-=1;
 	printf("L%d:\n",label_match[label_top]);
-	label_top-=2;
+	label_top-=3;
 }
 void unary_code_gen(char *op)
 {
@@ -1002,6 +1015,9 @@ void if_cond()
 	sprintf(label_temp,"L%d",label_id);
 	
 	printf("goto L%d\n",label_id);
+	if_label_stack[++if_label_top] = label_id;
+	// if_label = label_id;
+
 	create_quad("","",label_temp,"goto");
 	
 	printf("L%d:\n",label_id-1);
@@ -1010,7 +1026,26 @@ void if_cond()
 }
 void after_if()
 {
-	printf("L%d:\n",label_match[label_top]);
+	// printf("after if :%d\n",if_label);
+
+	// if(label_match[label_top]==if_label)
+	// {
+	// 	printf("L%d:\n",label_match[label_top]);
+	// 	label_top-=1;
+
+	// }
+	
+	int temp = if_label_stack[if_label_top];
+	printf("L%d:\n",if_label_stack[if_label_top]);
+	if_label_top--;	
+	label_top--;
+	// while(label_top!=-1&&label_match[label_top]!=temp)
+	// {
+	// 	printf("L%d:\n",label_match[label_top]);
+	// 	label_top-=1;
+	// }
+	// label_top--;
+
 	// top-=1;
 }
 void yyerror(char *s){
