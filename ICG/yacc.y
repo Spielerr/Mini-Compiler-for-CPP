@@ -75,6 +75,7 @@
 	void if_cond();
 	void after_if();
 	void code_reassign();
+	void after_control_block();
 
 %}
 
@@ -519,7 +520,7 @@ CONSTRUCT
 
 BLOCK_CONSTRUCT
 	: BLOCK_FOR
-	| BLOCK_IF %prec IF_PREC
+	| BLOCK_IF %prec IF_PREC { after_control_block();}
 	;
 
 SINGLE_LINE_CONSTRUCT
@@ -1016,37 +1017,26 @@ void if_cond()
 	
 	printf("goto L%d\n",label_id);
 	if_label_stack[++if_label_top] = label_id;
-	// if_label = label_id;
 
 	create_quad("","",label_temp,"goto");
 	
 	printf("L%d:\n",label_id-1);
 	label_id+=1;
-	// top-=2;
 }
 void after_if()
 {
-	// printf("after if :%d\n",if_label);
-
-	// if(label_match[label_top]==if_label)
-	// {
-	// 	printf("L%d:\n",label_match[label_top]);
-	// 	label_top-=1;
-
-	// }
-	
-	int temp = if_label_stack[if_label_top];
+	printf("goto L%d\n",label_id);
+	label_id+=1;
 	printf("L%d:\n",if_label_stack[if_label_top]);
 	if_label_top--;	
 	label_top--;
-	// while(label_top!=-1&&label_match[label_top]!=temp)
-	// {
-	// 	printf("L%d:\n",label_match[label_top]);
-	// 	label_top-=1;
-	// }
-	// label_top--;
-
-	// top-=1;
+	if_label_stack[++if_label_top] = label_id-1;
+}
+void after_control_block()
+{
+	printf("L%d:\n",if_label_stack[if_label_top]);
+	if_label_top--;
+	label_top-=1;
 }
 void yyerror(char *s){
 	printf("\n[Error] at line:%d, column:%d\n", yylloc.last_line, yylloc.last_column);
