@@ -719,77 +719,77 @@ VARIABLE_LIST
         sprintf($$, "%s = %s", $1, $3);
         $$ = strdup($$);
 		code_assign();
-		if(se)
-		{
-			remove_entry_st(element -> name);
-			se = 0;
-		}
-		if(sflag)
-		{
-			if(strcmp(element->type, "string"))
-			{
-				printf("[Semantic Error] at line:%d - Assigning string to %s \n", @1.last_line, element->type);
-				// remove entry from symbol 
-				remove_entry_st(element -> name);
-			}
-			sflag = 0;
-		}
-		if(nflag)
-		{
-			if(!strcmp(element->type, "bool"))
-			{
-				// element->value = (bool)(atof())
-				if(atof(element -> value))
-				{
-					sprintf(element->value, "%s", "true");
-				}
-				else
-				{
-					sprintf(element->value, "%s", "false");
-				}
-			}
-			if(!strcmp(element->type, "int"))
-			{
-				// element->value = (bool)(atof())
-				// sprintf(element->value, "%s", (int)(atof($3)));
-				int temp = (int)(atof(element->value));
-				sprintf(element->value, "%d", temp);
-			}
-			nflag = 0;
-		}
-		if(cflag)
-		{
-			if(!strcmp(element->type, "bool"))
-			{
-				sprintf(element->value, "%s", "true");
-			}
-			if(!strcmp(element->type, "int"))
-			{
-				// element->value = (bool)(atof())
-				// sprintf(element->value, "%s", (int)(atof($3)));
-				int temp = (int)(element->value[1]);
-				sprintf(element->value, "%d", temp);
-			}
-			cflag = 0;
-		}
-		if(bflag)
-		{
-			if(!strcmp(element->type, "int") || !strcmp(element->type, "float") || !strcmp(element->type, "double"))
-			{
-				if(!strcmp(element -> value, "true"))
-					sprintf(element->value, "%d", 1);
-				else
-					sprintf(element->value, "%d", 0);
-			}
-			if(!strcmp(element->type, "char"))
-			{
-				if(!strcmp(element -> value, "true"))
-					sprintf(element->value, "%s", "\'1\'");
-				else
-					sprintf(element->value, "%s", "\'0\'");
-			}
-			bflag = 0;
-		}
+		// if(se)
+		// {
+		// 	remove_entry_st(element -> name);
+		// 	se = 0;
+		// }
+		// if(sflag)
+		// {
+		// 	if(strcmp(element->type, "string"))
+		// 	{
+		// 		printf("[Semantic Error] at line:%d - Assigning string to %s \n", @1.last_line, element->type);
+		// 		// remove entry from symbol 
+		// 		remove_entry_st(element -> name);
+		// 	}
+		// 	sflag = 0;
+		// }
+		// if(nflag)
+		// {
+		// 	if(!strcmp(element->type, "bool"))
+		// 	{
+		// 		// element->value = (bool)(atof())
+		// 		if(atof(element -> value))
+		// 		{
+		// 			sprintf(element->value, "%s", "true");
+		// 		}
+		// 		else
+		// 		{
+		// 			sprintf(element->value, "%s", "false");
+		// 		}
+		// 	}
+		// 	if(!strcmp(element->type, "int"))
+		// 	{
+		// 		// element->value = (bool)(atof())
+		// 		// sprintf(element->value, "%s", (int)(atof($3)));
+		// 		int temp = (int)(atof(element->value));
+		// 		sprintf(element->value, "%d", temp);
+		// 	}
+		// 	nflag = 0;
+		// }
+		// if(cflag)
+		// {
+		// 	if(!strcmp(element->type, "bool"))
+		// 	{
+		// 		sprintf(element->value, "%s", "true");
+		// 	}
+		// 	if(!strcmp(element->type, "int"))
+		// 	{
+		// 		// element->value = (bool)(atof())
+		// 		// sprintf(element->value, "%s", (int)(atof($3)));
+		// 		int temp = (int)(element->value[1]);
+		// 		sprintf(element->value, "%d", temp);
+		// 	}
+		// 	cflag = 0;
+		// }
+		// if(bflag)
+		// {
+		// 	if(!strcmp(element->type, "int") || !strcmp(element->type, "float") || !strcmp(element->type, "double"))
+		// 	{
+		// 		if(!strcmp(element -> value, "true"))
+		// 			sprintf(element->value, "%d", 1);
+		// 		else
+		// 			sprintf(element->value, "%d", 0);
+		// 	}
+		// 	if(!strcmp(element->type, "char"))
+		// 	{
+		// 		if(!strcmp(element -> value, "true"))
+		// 			sprintf(element->value, "%s", "\'1\'");
+		// 		else
+		// 			sprintf(element->value, "%s", "\'0\'");
+		// 	}
+		// 	bflag = 0;
+		// }
 	}
 
 	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST {
@@ -1182,6 +1182,9 @@ void expr_code_gen(char *op)
 	sprintf(temp_var,"t%d",temp_id);
 	temp_id+=1;
 	printf("%s = %s %s %s\n",temp_var,stack[top-1],op,stack[top]);
+	char value_temp[20000];
+	sprintf(value_temp,"%s %s %s",stack[top-1],op,stack[top]);
+	insert(temp_var,"temporary","", 0, value_temp);
 	//quadruple add
 	create_quad(stack[top-1],stack[top],temp_var,op);
 
@@ -1203,8 +1206,15 @@ void code_reassign(char *op)
 		op[1]='\0';
 		create_quad(stack[top],stack[top-1],temp_var,op);
 
+		char value_temp[20000];
+		sprintf(value_temp,"%s %c %s",stack[top],op[0],stack[top-1]);
+		insert(temp_var,"temporary","", 0, value_temp);
+
 		printf("%s = %s\n",stack[top],temp_var);
 		create_quad(stack[top],"",temp_var,"=");
+		symbol_table* temp_variable_st = lookup(stack[top]);
+		strcpy(temp_variable_st->value,temp_var);
+		
 		top-=1;
 		return;
 	}
@@ -1213,7 +1223,6 @@ void code_reassign(char *op)
 	printf("%s = %s\n",stack[top],stack[top-1]);
 	
 	create_quad(stack[top-1],"",stack[top],"=");
-	
 	top-=1;
 }
 void code_assign()
@@ -1223,6 +1232,9 @@ void code_assign()
 	printf("%s = %s\n",stack[top-1],stack[top]);
 
 	create_quad(stack[top],"",stack[top-1],"=");
+
+	symbol_table* temp_variable_st = lookup(stack[top-1]);
+	strcpy(temp_variable_st->value,stack[top]);
 
 	top-=1;
 }
@@ -1314,7 +1326,16 @@ void unary_code_gen(char op)
 	char temp_var[10];
 	sprintf(temp_var,"t%d",temp_id);
 	temp_id+=1;
+	char temp_op[5];
+	temp_op[0] = op;
+	temp_op[1] = '\0';
 	printf("%s = %c %s\n",temp_var,op,stack[top]);
+	create_quad(stack[top],"",temp_op,temp_var);
+	
+	char value_temp[20000];
+	sprintf(value_temp,"%c %s",op,stack[top]);
+	insert(temp_var,"temporary","", 0, value_temp);
+	
 	top-=1;
 	strcpy(stack[top],temp_var);
 }
