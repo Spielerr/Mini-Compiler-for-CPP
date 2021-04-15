@@ -4,7 +4,7 @@ rm -f lex.yy.c
 rm -f y.output y.tab.h y.tab.c
 
 lex lex.l
-yacc -d yacc.y
+yacc -d yacc_integrated.y
 gcc lex.yy.c y.tab.c
 
 rm -f *.o
