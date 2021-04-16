@@ -408,21 +408,30 @@ ASSIGNMENT
 	: T_IDENTIFIER ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
+			sprintf($$, "%s %s %s", $1, $2, $3);
+        	$$ = strdup($$);
 		}
-		push($1);
-        sprintf($$, "%s %s %s", $1, $2, $3);
-        $$ = strdup($$);
-		code_reassign($2);
-
+		else
+		{
+			push($1);
+			sprintf($$, "%s %s %s", $1, $2, $3);
+			$$ = strdup($$);
+			code_reassign($2);
+		}
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
 		if (lookup($1) == NULL) {
 			printf("[Error] at line:%d - Undeclared Variable \"%s\" \n", @1.last_line, $1);
+			sprintf($$, "%s %s %s", $1, $2, $3);
+        	$$ = strdup($$);
 		}
-		push($1);
-        sprintf($$, "%s %s %s", $1, $2, $3);
-        $$ = strdup($$);
-		code_reassign($2);
+		else
+		{
+			push($1);
+			sprintf($$, "%s %s %s", $1, $2, $3);
+			$$ = strdup($$);
+			code_reassign($2);
+		}
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
 		if (lookup($1) == NULL) {
@@ -475,7 +484,21 @@ EXPRESSION
 
 EXPRESSION_GRAMMAR
 	: EXPRESSION_GRAMMAR '+' EXPRESSION_TERM {
-        sprintf($$, "%s + %s", $1, $3);
+		// if(sflag)
+		// {
+		// 	sprintf($$, "%s + %s", $1, $3);
+        // 	$$ = strdup($$);
+		// 	printf("[Semantic Error] at line:%d - invalid operation on operator +\n", @1.last_line);
+		// 	sflag = 0;
+		// 	se = 1;
+		// }
+		// else
+		// {
+		// 	expr_code_gen($2);
+		// 	sprintf($$, "%s + %s", $1, $3);
+		// 	$$ = strdup($$);
+		// }
+		sprintf($$, "%s + %s", $1, $3);
         $$ = strdup($$);
 		expr_code_gen($2);
 		if(sflag)
@@ -486,7 +509,21 @@ EXPRESSION_GRAMMAR
 		}
     }
 	| EXPRESSION_GRAMMAR '-' EXPRESSION_TERM {
-        sprintf($$, "%s - %s", $1, $3);
+		// if(sflag)
+		// {
+		// 	sprintf($$, "%s - %s", $1, $3);
+        // 	$$ = strdup($$);
+		// 	printf("[Semantic Error] at line:%d - invalid operation on operator -\n", @1.last_line);
+		// 	sflag = 0;
+		// 	se = 1;
+		// }
+		// else
+		// {
+		// 	expr_code_gen($2);
+		// 	sprintf($$, "%s - %s", $1, $3);
+		// 	$$ = strdup($$);
+		// }
+		sprintf($$, "%s - %s", $1, $3);
         $$ = strdup($$);
 		expr_code_gen($2);
 		if(sflag)
@@ -503,6 +540,20 @@ EXPRESSION_GRAMMAR
 
 EXPRESSION_TERM
 	: EXPRESSION_TERM '*' EXPRESSION_F {
+		// if(sflag)
+		// {
+		// 	sprintf($$, "%s * %s", $1, $3);
+        // 	$$ = strdup($$);
+		// 	printf("[Semantic Error] at line:%d - invalid operation on operator *\n", @1.last_line);
+		// 	sflag = 0;
+		// 	se = 1;
+		// }
+		// else
+		// {
+		// 	// expr_code_gen($2);
+		// 	sprintf($$, "%s * %s", $1, $3);
+		// 	$$ = strdup($$);
+		// }
 		expr_code_gen($2);
         sprintf($$, "%s * %s", $1, $3);
         $$ = strdup($$);
@@ -514,6 +565,20 @@ EXPRESSION_TERM
 		}
     }
 	| EXPRESSION_TERM '/' EXPRESSION_F {
+		// if(sflag)
+		// {
+		// 	sprintf($$, "%s / %s", $1, $3);
+        // 	$$ = strdup($$);
+		// 	printf("[Semantic Error] at line:%d - invalid operation on operator /\n", @1.last_line);
+		// 	sflag = 0;
+		// 	se = 1;
+		// }
+		// else
+		// {
+		// 	expr_code_gen($2);
+		// 	sprintf($$, "%s / %s", $1, $3);
+		// 	$$ = strdup($$);
+		// }
 		expr_code_gen($2);
         sprintf($$, "%s / %s", $1, $3);
         $$ = strdup($$);
@@ -525,12 +590,26 @@ EXPRESSION_TERM
 		}
     }
 	| EXPRESSION_TERM '%' EXPRESSION_F {
+		// if(sflag)
+		// {
+		// 	sprintf($$, "%s %% %s", $1, $3);
+        // 	$$ = strdup($$);
+		// 	printf("[Semantic Error] at line:%d - invalid operation on operator %%\n", @1.last_line);
+		// 	sflag = 0;
+		// 	se = 1;
+		// }
+		// else
+		// {
+		// 	expr_code_gen($2);
+		// 	sprintf($$, "%s %% %s", $1, $3);
+		// 	$$ = strdup($$);
+		// }
 		expr_code_gen($2);
         sprintf($$, "%s %% %s", $1, $3);
         $$ = strdup($$);
 		if(sflag)
 		{
-			printf("[Semantic Error] at line:%d - invalid operation on operator %% \n", @1.last_line);
+			printf("[Semantic Error] at line:%d - invalid operation on operator %%\n", @1.last_line);
 			sflag = 0;
 			se = 1;
 		}
