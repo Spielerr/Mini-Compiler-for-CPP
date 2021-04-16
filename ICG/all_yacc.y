@@ -1354,10 +1354,14 @@ void new_label()
 void for_condition()
 {
 	char label_temp[10];
+	sprintf(label_temp,"L%d",label_id);
 
 	printf("if t%d goto L%d\n",temp_id-1,label_id);
 	
-	create_quad(stack[top],"",label_temp,"if");
+	char temp_var[10];
+	sprintf(temp_var,"t%d",temp_id-1);
+
+	create_quad(temp_var,"",label_temp,"if");
 	
 	top-=1;
 	if(DEBUG)
