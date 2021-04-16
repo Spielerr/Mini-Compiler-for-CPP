@@ -1,0 +1,36 @@
+TOKENS STREAMED
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Token Type					Token Value
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Keyword-int         					int       
+Identifier          					main      
+Single Character Token					(         
+Single Character Token					)         
+Single Character Token					{         
+Keyword-int         					int       
+Identifier          					a         
+Single Character Token					=         
+Literal-Number      					4         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					b         
+Single Character Token					=         
+Identifier          					a         
+Single Character Token					*         
+Literal-Number      					8         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					c         
+Single Character Token					=         
+Literal-Number      					11        
+Single Character Token					/         
+Literal-Number      					8         
+Single Character Token					;         
+Keyword-int         					int       
+Identifier          					d         
+Single Character Token					=         
+Literal-Number      					5         
+Single Character Token					/         
+Literal-Number      					16        
+Single Character Token					;         
+Single Character Token					}         
