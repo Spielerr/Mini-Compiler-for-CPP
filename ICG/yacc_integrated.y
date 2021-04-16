@@ -72,12 +72,12 @@
 	void for_action();
 	void for_after();
 	void incr_decr(char);
-	void unary_code_gen(char *op);
+	void unary_code_gen(char);
 	void if_cond();
 	void after_if();
-	void code_reassign();
+	void code_reassign(char *);
 	void after_control_block();
-
+	void shorthand_op(char);
 
 	int nflag = 0;
 	int sflag = 0;
@@ -277,12 +277,14 @@ STATEMENTS
 
 SINGLE_LINE_IF
 	: IF_PREFIX LINE_STATEMENT ';' {
+		after_if();
 		scope_leave();
 	}
 	| IF_PREFIX ';' {
 		scope_leave();
 	}
 	| IF_PREFIX CONSTRUCT {
+		after_if();
 		scope_leave();
 	}
 	| SINGLE_LINE_IF SINGLE_LINE_ELSE
@@ -297,6 +299,7 @@ BLOCK_IF
 
 IF_PREFIX
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' {
+		if_cond();
 		scope_enter();
 	}
 	;
@@ -409,7 +412,7 @@ ASSIGNMENT
 		push($1);
         sprintf($$, "%s %s %s", $1, $2, $3);
         $$ = strdup($$);
-		code_reassign();
+		code_reassign($2);
 
 	}
 	| T_IDENTIFIER ASSIGNMENT_OPERATOR ASSIGNMENT {
@@ -419,7 +422,7 @@ ASSIGNMENT
 		push($1);
         sprintf($$, "%s %s %s", $1, $2, $3);
         $$ = strdup($$);
-		code_reassign();
+		code_reassign($2);
 	}
 	| T_IDENTIFIER '[' EXPRESSION ']' ASSIGNMENT_OPERATOR EXPRESSION_GRAMMAR {
 		if (lookup($1) == NULL) {
@@ -558,12 +561,12 @@ EXPRESSION_F
 	| '+' EXPRESSION_F {
         sprintf($$, "+ %s", $2);
         $$ = strdup($$);
-		unary_code_gen($1);
+		unary_code_gen('+');
     }
 	| '-' EXPRESSION_F {
         sprintf($$, "- %s", $2);
         $$ = strdup($$);
-		unary_code_gen($1);
+		unary_code_gen('-');
 
     }
 	;
@@ -580,7 +583,7 @@ BLOCK_CONSTRUCT
 
 SINGLE_LINE_CONSTRUCT
 	: SINGLE_LINE_FOR
-	| SINGLE_LINE_IF %prec IF_PREC
+	| SINGLE_LINE_IF %prec IF_PREC {after_control_block();}
 	;
 
 STATEMENT
@@ -716,77 +719,77 @@ VARIABLE_LIST
         sprintf($$, "%s = %s", $1, $3);
         $$ = strdup($$);
 		code_assign();
-		if(se)
-		{
-			remove_entry_st(element -> name);
-			se = 0;
-		}
-		if(sflag)
-		{
-			if(strcmp(element->type, "string"))
-			{
-				printf("[Semantic Error] at line:%d - Assigning string to %s \n", @1.last_line, element->type);
-				// remove entry from symbol 
-				remove_entry_st(element -> name);
-			}
-			sflag = 0;
-		}
-		if(nflag)
-		{
-			if(!strcmp(element->type, "bool"))
-			{
-				// element->value = (bool)(atof())
-				if(atof(element -> value))
-				{
-					sprintf(element->value, "%s", "true");
-				}
-				else
-				{
-					sprintf(element->value, "%s", "false");
-				}
-			}
-			if(!strcmp(element->type, "int"))
-			{
-				// element->value = (bool)(atof())
-				// sprintf(element->value, "%s", (int)(atof($3)));
-				int temp = (int)(atof(element->value));
-				sprintf(element->value, "%d", temp);
-			}
-			nflag = 0;
-		}
-		if(cflag)
-		{
-			if(!strcmp(element->type, "bool"))
-			{
-				sprintf(element->value, "%s", "true");
-			}
-			if(!strcmp(element->type, "int"))
-			{
-				// element->value = (bool)(atof())
-				// sprintf(element->value, "%s", (int)(atof($3)));
-				int temp = (int)(element->value[1]);
-				sprintf(element->value, "%d", temp);
-			}
-			cflag = 0;
-		}
-		if(bflag)
-		{
-			if(!strcmp(element->type, "int") || !strcmp(element->type, "float") || !strcmp(element->type, "double"))
-			{
-				if(!strcmp(element -> value, "true"))
-					sprintf(element->value, "%d", 1);
-				else
-					sprintf(element->value, "%d", 0);
-			}
-			if(!strcmp(element->type, "char"))
-			{
-				if(!strcmp(element -> value, "true"))
-					sprintf(element->value, "%s", "\'1\'");
-				else
-					sprintf(element->value, "%s", "\'0\'");
-			}
-			bflag = 0;
-		}
+		// if(se)
+		// {
+		// 	remove_entry_st(element -> name);
+		// 	se = 0;
+		// }
+		// if(sflag)
+		// {
+		// 	if(strcmp(element->type, "string"))
+		// 	{
+		// 		printf("[Semantic Error] at line:%d - Assigning string to %s \n", @1.last_line, element->type);
+		// 		// remove entry from symbol 
+		// 		remove_entry_st(element -> name);
+		// 	}
+		// 	sflag = 0;
+		// }
+		// if(nflag)
+		// {
+		// 	if(!strcmp(element->type, "bool"))
+		// 	{
+		// 		// element->value = (bool)(atof())
+		// 		if(atof(element -> value))
+		// 		{
+		// 			sprintf(element->value, "%s", "true");
+		// 		}
+		// 		else
+		// 		{
+		// 			sprintf(element->value, "%s", "false");
+		// 		}
+		// 	}
+		// 	if(!strcmp(element->type, "int"))
+		// 	{
+		// 		// element->value = (bool)(atof())
+		// 		// sprintf(element->value, "%s", (int)(atof($3)));
+		// 		int temp = (int)(atof(element->value));
+		// 		sprintf(element->value, "%d", temp);
+		// 	}
+		// 	nflag = 0;
+		// }
+		// if(cflag)
+		// {
+		// 	if(!strcmp(element->type, "bool"))
+		// 	{
+		// 		sprintf(element->value, "%s", "true");
+		// 	}
+		// 	if(!strcmp(element->type, "int"))
+		// 	{
+		// 		// element->value = (bool)(atof())
+		// 		// sprintf(element->value, "%s", (int)(atof($3)));
+		// 		int temp = (int)(element->value[1]);
+		// 		sprintf(element->value, "%d", temp);
+		// 	}
+		// 	cflag = 0;
+		// }
+		// if(bflag)
+		// {
+		// 	if(!strcmp(element->type, "int") || !strcmp(element->type, "float") || !strcmp(element->type, "double"))
+		// 	{
+		// 		if(!strcmp(element -> value, "true"))
+		// 			sprintf(element->value, "%d", 1);
+		// 		else
+		// 			sprintf(element->value, "%d", 0);
+		// 	}
+		// 	if(!strcmp(element->type, "char"))
+		// 	{
+		// 		if(!strcmp(element -> value, "true"))
+		// 			sprintf(element->value, "%s", "\'1\'");
+		// 		else
+		// 			sprintf(element->value, "%s", "\'0\'");
+		// 	}
+		// 	bflag = 0;
+		// }
 	}
 
 	| ARRAY_VARIABLE_DECLARATION_IDENTIFIER_WITH_SIZE ',' VARIABLE_LIST {
@@ -1179,6 +1182,9 @@ void expr_code_gen(char *op)
 	sprintf(temp_var,"t%d",temp_id);
 	temp_id+=1;
 	printf("%s = %s %s %s\n",temp_var,stack[top-1],op,stack[top]);
+	char value_temp[20000];
+	sprintf(value_temp,"%s %s %s",stack[top-1],op,stack[top]);
+	insert(temp_var,"temporary","", 0, value_temp);
 	//quadruple add
 	create_quad(stack[top-1],stack[top],temp_var,op);
 
@@ -1186,14 +1192,37 @@ void expr_code_gen(char *op)
     strcpy(stack[top],temp_var);
 
 }
-void code_reassign()
+void code_reassign(char *op)
 {
+	if(strlen(op)==2)
+	{
+		// printf("shorthand op\n");
+		char temp_var[10];
+		sprintf(temp_var,"t%d",temp_id);
+		temp_id+=1;
+
+		printf("%s = %s %c %s\n",temp_var,stack[top],op[0],stack[top-1]);
+		//quadruple add
+		op[1]='\0';
+		create_quad(stack[top],stack[top-1],temp_var,op);
+
+		char value_temp[20000];
+		sprintf(value_temp,"%s %c %s",stack[top],op[0],stack[top-1]);
+		insert(temp_var,"temporary","", 0, value_temp);
+
+		printf("%s = %s\n",stack[top],temp_var);
+		create_quad(stack[top],"",temp_var,"=");
+		symbol_table* temp_variable_st = lookup(stack[top]);
+		strcpy(temp_variable_st->value,temp_var);
+		
+		top-=1;
+		return;
+	}
 	if(DEBUG)
 		printf("topa :%d\n",top);
 	printf("%s = %s\n",stack[top],stack[top-1]);
 	
 	create_quad(stack[top-1],"",stack[top],"=");
-	
 	top-=1;
 }
 void code_assign()
@@ -1203,6 +1232,9 @@ void code_assign()
 	printf("%s = %s\n",stack[top-1],stack[top]);
 
 	create_quad(stack[top],"",stack[top-1],"=");
+
+	symbol_table* temp_variable_st = lookup(stack[top-1]);
+	strcpy(temp_variable_st->value,stack[top]);
 
 	top-=1;
 }
@@ -1215,14 +1247,17 @@ void push(char *x)
 void new_label()
 {
 	printf("L%d:\n",label_id);
+	
+	char label_temp[10];
+	sprintf(label_temp,"L%d",label_id);
+	create_quad("","","label",label_temp);
+
 	label_match[++label_top] = label_id;
 	label_id+=1;
 }
 void for_condition()
 {
-	//******Note: using temp_id-1 might not be a good idea********
 	char label_temp[10];
-	sprintf(label_temp,"L%d",label_id);
 
 	printf("if t%d goto L%d\n",temp_id-1,label_id);
 	
@@ -1243,6 +1278,8 @@ void for_condition()
 
 	label_match[++label_top] = ++label_id;
 	printf("L%d:\n",label_id);
+	sprintf(label_temp,"L%d",label_id);
+	create_quad("","","label",label_temp);
 	label_id+=1;
 
 
@@ -1255,6 +1292,8 @@ void for_action()
 	printf("goto L%d\n",label_match[label_top-3]);
 	create_quad("","",label_temp,"goto");
 	printf("L%d:\n",label_match[label_top-2]);
+	sprintf(label_temp,"L%d",label_match[label_top-3]);
+	create_quad("","","label",label_temp);
 	top-=1;
 }
 void for_after()
@@ -1275,16 +1314,30 @@ void for_after()
 	printf("goto L%d\n",label_match[label_top]);
 	create_quad("","",label_temp,"goto");
 	label_top-=1;
+	
 	printf("L%d:\n",label_match[label_top]);
+	sprintf(label_temp,"L%d",label_match[label_top]);
+	create_quad("","","label",label_temp);
+
 	label_top-=3;
 }
-void unary_code_gen(char *op)
+void unary_code_gen(char op)
 {
 	char temp_var[10];
 	sprintf(temp_var,"t%d",temp_id);
 	temp_id+=1;
-	printf("%s = %s %s\n",stack[top-1],op,stack[top]);
+	char temp_op[5];
+	temp_op[0] = op;
+	temp_op[1] = '\0';
+	printf("%s = %c %s\n",temp_var,op,stack[top]);
+	create_quad(stack[top],"",temp_op,temp_var);
+	
+	char value_temp[20000];
+	sprintf(value_temp,"%c %s",op,stack[top]);
+	insert(temp_var,"temporary","", 0, value_temp);
+	
 	top-=1;
+	strcpy(stack[top],temp_var);
 }
 void incr_decr(char op)
 {
@@ -1306,12 +1359,18 @@ void incr_decr(char op)
 }
 void if_cond()
 {
-	//******Note: using temp_id-1 might not be a good idea********
+	char temp_var[10];
+	sprintf(temp_var,"t%d",temp_id-1);
+
+	char label_temp[10];
+	sprintf(label_temp,"L%d",label_id);
+
 	printf("if t%d goto L%d\n",temp_id-1,label_id); 
+	create_quad(temp_var,"","if",label_temp);
+
 	label_id+=1;
 	label_match[++label_top] = label_id;
 	
-	char label_temp[10];
 	sprintf(label_temp,"L%d",label_id);
 	
 	printf("goto L%d\n",label_id);
@@ -1320,13 +1379,26 @@ void if_cond()
 	create_quad("","",label_temp,"goto");
 	
 	printf("L%d:\n",label_id-1);
+
+	sprintf(label_temp,"L%d",label_id-1);	
+	create_quad("","","label",label_temp);
+	
 	label_id+=1;
 }
 void after_if()
 {
+	char label_temp[10];
+	sprintf(label_temp,"L%d",label_id);
+
 	printf("goto L%d\n",label_id);
+	create_quad("","",label_temp,"goto");
+
 	label_id+=1;
 	printf("L%d:\n",if_label_stack[if_label_top]);
+
+	sprintf(label_temp,"L%d",if_label_stack[if_label_top]);	
+	create_quad("","","label",label_temp);
+
 	if_label_top--;	
 	label_top--;
 	if_label_stack[++if_label_top] = label_id-1;
@@ -1334,6 +1406,12 @@ void after_if()
 void after_control_block()
 {
 	printf("L%d:\n",if_label_stack[if_label_top]);
+
+	char label_temp[10];
+	sprintf(label_temp,"L%d",if_label_stack[if_label_top]);
+	
+	create_quad("","","label",label_temp);
+	
 	if_label_top--;
 	label_top-=1;
 }
@@ -1509,12 +1587,15 @@ void display_symbol_table()
 }
 void display_quadruples()
 {
+	FILE *fptr = fopen("quad.txt","w");
 	printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	printf("QUADRUPLES\n");
 	printf("Op\targ1\targ2\tres\n");
 	for(int i=0;i<q_len;++i)
 	{
+		fprintf(fptr,"%s\t%s\t%s\t%s\n",q[i].op,q[i].arg1,q[i].arg2,q[i].res);
 		printf("%s\t%s\t%s\t%s\n",q[i].op,q[i].arg1,q[i].arg2,q[i].res);
+
 	}
 	printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 }
