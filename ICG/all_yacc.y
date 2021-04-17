@@ -79,6 +79,8 @@
 	void after_control_block();
 	void shorthand_op(char);
 	void gen_break();
+	void empty_for_condition();
+
 
 	int nflag = 0;
 	int sflag = 0;
@@ -363,17 +365,17 @@ FOR_PREFIX
 	;
 
 FOR_INIT_STATEMENT
-	:
+	: {new_label();}
 	| LINE_STATEMENT {new_label();}
 	;
 
 FOR_CONDITION_STATEMENT
-	:
+	: {empty_for_condition();}
 	| CONDITIONAL_EXPRESSION { for_condition();}
 	;
 
 FOR_ACTION_STATEMENT
-	:
+	: {for_action();}
 	| LINE_STATEMENT {for_action();}
 	;
 
@@ -1398,6 +1400,34 @@ void for_condition()
 		printf("goto L%d\n",label_id);
 
 		sprintf(label_temp,"L%d",label_id);
+		create_quad("","",label_temp,"goto");
+
+		label_match[++label_top] = ++label_id;
+		printf("L%d:\n",label_id);
+		sprintf(label_temp,"L%d",label_id);
+		create_quad("","","label",label_temp);
+		label_id+=1;
+	}
+}
+void empty_for_condition()
+{
+	if(TAC)
+	{
+		/* printf("empty for\n"); */
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_id);
+		
+		top-=1;
+		if(DEBUG)
+		{
+			printf("topx: %d\n",top);
+		}
+		label_match[++label_top] = label_id;
+		label_id+=1;
+		label_match[++label_top] = label_id;
+		printf("goto L%d\n",label_id-1);
+
+		sprintf(label_temp,"L%d",label_id-1);
 		create_quad("","",label_temp,"goto");
 
 		label_match[++label_top] = ++label_id;
