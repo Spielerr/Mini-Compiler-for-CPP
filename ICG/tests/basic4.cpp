@@ -85,67 +85,42 @@ int main()
     int mx = 4+5-3;
     mx = -mx;
     mx = +5;
+
+    if(1+2)
+        k = 1;
+
+    for(int j=1;j<10;j++)
+    {
+        if(a+b>c)
+        {
+            k = 1+2;
+        }
+        if(1)
+            x = 1;
+        else
+            x = -1;
+    }
+    if((a+b>x)&&(c+d>b))
+    {
+        a =100; 
+    }
+    for(int q=10;q>0;--q)
+    {
+        for(int p=0;p<5;++p)
+        {
+            sum+=p+q;
+            if(p+q>10)
+            {
+                a = a - 1;
+            }
+        }
+    }
+    if(a)
+    {
+        a =20;
+    }
+    // for(;;)
+    // {
+    //     sum +=1;
+    // }
 }
-//List of things that doesn't work:
-// if(1)
-// if(a)
-
-//if else
-// t21 = a + b
-// t22 = t21 == c  
-// if t22 goto L0      
-// goto L1
-// L0:
-// t23 = g + 1
-// b = t23
-// t24 = f - 1
-// e = t24
-// goto L2
-// L1:
-// t25 = g - 2
-// a = t25
-// L2:
-
-// //if:
-// if t22 goto L0
-// goto L1
-// L0:
-// t23 = g + 1
-// b = t23
-// t24 = f - 1
-// e = t24
-// goto L2
-// L2:
-// L1:
-
-// //now - if else
-// t21 = a + b
-// t22 = t21 == c  
-// if t22 goto L0      
-// goto L1
-// L0:
-// t23 = g + 1
-// b = t23
-// t24 = f - 1
-// e = t24
-// goto L2 -> after ifthis can be done
-// L1: -> after if
-// t25 = g - 2
-// a = t25
-// L2: -> block construct grammar
-
-
-
-// //now - if only
-// t21 = a + b
-// t22 = t21 == c  
-// if t22 goto L0      
-// goto L1
-// L0:
-// t23 = g + 1
-// b = t23
-// t24 = f - 1
-// e = t24
-// goto L2 -> after ifthis can be done
-// L1: -> after if
-// L2: -> block construct grammar

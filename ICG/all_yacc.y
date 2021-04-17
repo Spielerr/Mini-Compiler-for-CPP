@@ -78,6 +78,7 @@
 	void code_reassign(char *);
 	void after_control_block();
 	void shorthand_op(char);
+	void gen_break();
 
 	int nflag = 0;
 	int sflag = 0;
@@ -86,6 +87,8 @@
 	int id_used = 0;
 	int se = 0;
 	char var_name[50];
+
+	#define TAC 1
 %}
 
 %union {
@@ -676,6 +679,10 @@ JUMP_STATEMENT
 	: T_JUMP_BREAK {
 		if (is_in_construct == 0)
 			printf("[Error] at line:%d - \"break\" statement not within loop or switch\n", @1.last_line);
+		else
+		{
+			gen_break();
+		}
 	}
 	| T_JUMP_EXIT
 	| T_JUMP_CONTINUE
@@ -1272,248 +1279,302 @@ void create_quad(char *arg1,char *arg2, char* res,char *op)
 void expr_code_gen(char *op)
 {
 	// create temp
-	if(DEBUG)
-		printf("top :%d\n",top);
-	char temp_var[10];
-	sprintf(temp_var,"t%d",temp_id);
-	temp_id+=1;
-	printf("%s = %s %s %s\n",temp_var,stack[top-1],op,stack[top]);
-	char value_temp[20000];
-	sprintf(value_temp,"%s %s %s",stack[top-1],op,stack[top]);
-	insert(temp_var,"temporary","", 0, value_temp);
-	//quadruple add
-	create_quad(stack[top-1],stack[top],temp_var,op);
+	if(TAC)
+	{
+		if(DEBUG)
+			printf("top :%d\n",top);
+		char temp_var[20];
+		sprintf(temp_var,"t%d",temp_id);
+		temp_id+=1;
+		printf("%s = %s %s %s\n",temp_var,stack[top-1],op,stack[top]);
+		char value_temp[40000];
+		sprintf(value_temp,"%s %s %s",stack[top-1],op,stack[top]);
+		insert(temp_var,"temporary","", 0, value_temp);
+		//quadruple add
+		create_quad(stack[top-1],stack[top],temp_var,op);
 
-	top-=1;
-    strcpy(stack[top],temp_var);
+		top-=1;
+		strcpy(stack[top],temp_var);
+	}
 
 }
 void code_reassign(char *op)
 {
-	if(strlen(op)==2)
+	if(TAC)
 	{
-		// printf("shorthand op\n");
+		if(strlen(op)==2)
+		{
+			// printf("shorthand op\n");
+			char temp_var[10];
+			sprintf(temp_var,"t%d",temp_id);
+			temp_id+=1;
+
+			printf("%s = %s %c %s\n",temp_var,stack[top],op[0],stack[top-1]);
+			//quadruple add
+			op[1]='\0';
+			create_quad(stack[top],stack[top-1],temp_var,op);
+
+			char value_temp[20000];
+			sprintf(value_temp,"%s %c %s",stack[top],op[0],stack[top-1]);
+			insert(temp_var,"temporary","", 0, value_temp);
+
+			printf("%s = %s\n",stack[top],temp_var);
+			create_quad(stack[top],"",temp_var,"=");
+			symbol_table* temp_variable_st = lookup(stack[top]);
+			strcpy(temp_variable_st->value,temp_var);
+			
+			top-=1;
+			return;
+		}
+		if(DEBUG)
+			printf("topa :%d\n",top);
+		printf("%s = %s\n",stack[top],stack[top-1]);
+		
+		create_quad(stack[top-1],"",stack[top],"=");
+		top-=1;
+	}
+}
+void code_assign()
+{
+	if(TAC)
+	{
+		if(DEBUG)
+			printf("topa :%d\n",top);
+		printf("%s = %s\n",stack[top-1],stack[top]);
+
+		create_quad(stack[top],"",stack[top-1],"=");
+
+		symbol_table* temp_variable_st = lookup(stack[top-1]);
+		strcpy(temp_variable_st->value,stack[top]);
+
+		top-=1;
+	}
+}
+void push(char *x)
+{
+	if(TAC)
+	{
+		strcpy(stack[++top], x);
+		if(DEBUG)
+			printf("Pushed %s\n",x);
+	}
+}
+void new_label()
+{
+	if(TAC)
+	{
+		printf("L%d:\n",label_id);
+		
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_id);
+		create_quad("","","label",label_temp);
+
+		label_match[++label_top] = label_id;
+		label_id+=1;
+	}
+}
+void for_condition()
+{
+	if(TAC)
+	{
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_id);
+
+		printf("if t%d goto L%d\n",temp_id-1,label_id);
+		
+		char temp_var[10];
+		sprintf(temp_var,"t%d",temp_id-1);
+
+		create_quad(temp_var,"",label_temp,"if");
+		
+		top-=1;
+		if(DEBUG)
+		{
+			printf("topx: %d\n",top);
+		}
+		label_match[++label_top] = label_id;
+		label_id+=1;
+		label_match[++label_top] = label_id;
+		printf("goto L%d\n",label_id);
+
+		sprintf(label_temp,"L%d",label_id);
+		create_quad("","",label_temp,"goto");
+
+		label_match[++label_top] = ++label_id;
+		printf("L%d:\n",label_id);
+		sprintf(label_temp,"L%d",label_id);
+		create_quad("","","label",label_temp);
+		label_id+=1;
+	}
+}
+void for_action()
+{
+	if(TAC)
+	{
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_match[label_top-3]);
+
+		printf("goto L%d\n",label_match[label_top-3]);
+		create_quad("","",label_temp,"goto");
+		printf("L%d:\n",label_match[label_top-2]);
+		sprintf(label_temp,"L%d",label_match[label_top-3]);
+		create_quad("","","label",label_temp);
+		top-=1;
+	}
+}
+void for_after()
+{
+	if(TAC)
+	{
+		/* printf("for after\n"); */
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_match[label_top]);
+		if(DEBUG)
+		{
+			int x = label_top;
+			printf("label stack contents: \n");
+			while(x!=-1)
+			{
+				printf("top: %d val: %d ",x,label_match[x]);
+				x-=1;
+			}
+			printf("\n");
+		}
+		printf("goto L%d\n",label_match[label_top]);
+		create_quad("","",label_temp,"goto");
+		label_top-=1;
+		
+		printf("L%d:\n",label_match[label_top]);
+		sprintf(label_temp,"L%d",label_match[label_top]);
+		create_quad("","","label",label_temp);
+
+		label_top-=3;
+	}
+}
+void unary_code_gen(char op)
+{
+	if(TAC)
+	{
+		char temp_var[10];
+		sprintf(temp_var,"t%d",temp_id);
+		temp_id+=1;
+		char temp_op[5];
+		temp_op[0] = op;
+		temp_op[1] = '\0';
+		printf("%s = %c %s\n",temp_var,op,stack[top]);
+		create_quad(stack[top],"",temp_op,temp_var);
+		
+		char value_temp[20000];
+		sprintf(value_temp,"%c %s",op,stack[top]);
+		insert(temp_var,"temporary","", 0, value_temp);
+		
+		top-=1;
+		strcpy(stack[top],temp_var);
+	}
+}
+void incr_decr(char op)
+{
+	if(TAC)
+	{
 		char temp_var[10];
 		sprintf(temp_var,"t%d",temp_id);
 		temp_id+=1;
 
-		printf("%s = %s %c %s\n",temp_var,stack[top],op[0],stack[top-1]);
-		//quadruple add
-		op[1]='\0';
-		create_quad(stack[top],stack[top-1],temp_var,op);
-
-		char value_temp[20000];
-		sprintf(value_temp,"%s %c %s",stack[top],op[0],stack[top-1]);
-		insert(temp_var,"temporary","", 0, value_temp);
-
-		printf("%s = %s\n",stack[top],temp_var);
-		create_quad(stack[top],"",temp_var,"=");
-		symbol_table* temp_variable_st = lookup(stack[top]);
-		strcpy(temp_variable_st->value,temp_var);
+		char temp_op[5];
+		temp_op[0] = op;
+		temp_op[1] = '\0';
 		
+		printf("%s = %s %c %d\n",temp_var,stack[top],op,1);
+		create_quad(stack[top],"1",temp_var,temp_op);
+		
+		printf("%s = %s\n",stack[top],temp_var);
+		create_quad(temp_var,"",stack[top],"=");
 		top-=1;
-		return;
 	}
-	if(DEBUG)
-		printf("topa :%d\n",top);
-	printf("%s = %s\n",stack[top],stack[top-1]);
-	
-	create_quad(stack[top-1],"",stack[top],"=");
-	top-=1;
-}
-void code_assign()
-{
-	if(DEBUG)
-		printf("topa :%d\n",top);
-	printf("%s = %s\n",stack[top-1],stack[top]);
-
-	create_quad(stack[top],"",stack[top-1],"=");
-
-	symbol_table* temp_variable_st = lookup(stack[top-1]);
-	strcpy(temp_variable_st->value,stack[top]);
-
-	top-=1;
-}
-void push(char *x)
-{
-	strcpy(stack[++top], x);
-	if(DEBUG)
-		printf("Pushed %s\n",x);
-}
-void new_label()
-{
-	printf("L%d:\n",label_id);
-	
-	char label_temp[10];
-	sprintf(label_temp,"L%d",label_id);
-	create_quad("","","label",label_temp);
-
-	label_match[++label_top] = label_id;
-	label_id+=1;
-}
-void for_condition()
-{
-	char label_temp[10];
-	sprintf(label_temp,"L%d",label_id);
-
-	printf("if t%d goto L%d\n",temp_id-1,label_id);
-	
-	char temp_var[10];
-	sprintf(temp_var,"t%d",temp_id-1);
-
-	create_quad(temp_var,"",label_temp,"if");
-	
-	top-=1;
-	if(DEBUG)
-	{
-		printf("topx: %d\n",top);
-	}
-	label_match[++label_top] = label_id;
-	label_id+=1;
-	label_match[++label_top] = label_id;
-	printf("goto L%d\n",label_id);
-
-	sprintf(label_temp,"L%d",label_id);
-	create_quad("","",label_temp,"goto");
-
-	label_match[++label_top] = ++label_id;
-	printf("L%d:\n",label_id);
-	sprintf(label_temp,"L%d",label_id);
-	create_quad("","","label",label_temp);
-	label_id+=1;
-
-
-}
-void for_action()
-{
-	char label_temp[10];
-	sprintf(label_temp,"L%d",label_match[label_top-3]);
-
-	printf("goto L%d\n",label_match[label_top-3]);
-	create_quad("","",label_temp,"goto");
-	printf("L%d:\n",label_match[label_top-2]);
-	sprintf(label_temp,"L%d",label_match[label_top-3]);
-	create_quad("","","label",label_temp);
-	top-=1;
-}
-void for_after()
-{
-	char label_temp[10];
-	sprintf(label_temp,"L%d",label_match[label_top]);
-	if(DEBUG)
-	{
-		int x = label_top;
-		printf("label stack contents: \n");
-		while(x!=-1)
-		{
-			printf("top: %d val: %d ",x,label_match[x]);
-			x-=1;
-		}
-		printf("\n");
-	}
-	printf("goto L%d\n",label_match[label_top]);
-	create_quad("","",label_temp,"goto");
-	label_top-=1;
-	
-	printf("L%d:\n",label_match[label_top]);
-	sprintf(label_temp,"L%d",label_match[label_top]);
-	create_quad("","","label",label_temp);
-
-	label_top-=3;
-}
-void unary_code_gen(char op)
-{
-	char temp_var[10];
-	sprintf(temp_var,"t%d",temp_id);
-	temp_id+=1;
-	char temp_op[5];
-	temp_op[0] = op;
-	temp_op[1] = '\0';
-	printf("%s = %c %s\n",temp_var,op,stack[top]);
-	create_quad(stack[top],"",temp_op,temp_var);
-	
-	char value_temp[20000];
-	sprintf(value_temp,"%c %s",op,stack[top]);
-	insert(temp_var,"temporary","", 0, value_temp);
-	
-	top-=1;
-	strcpy(stack[top],temp_var);
-}
-void incr_decr(char op)
-{
-	char temp_var[10];
-	sprintf(temp_var,"t%d",temp_id);
-	temp_id+=1;
-
-	char temp_op[5];
-	temp_op[0] = op;
-	temp_op[1] = '\0';
-	
-	printf("%s = %s %c %d\n",temp_var,stack[top],op,1);
-	create_quad(stack[top],"1",temp_var,temp_op);
-	
-	printf("%s = %s\n",stack[top],temp_var);
-	create_quad(temp_var,"",stack[top],"=");
-	top-=1;
 	// strcpy(stack[top],temp_var);
 }
 void if_cond()
 {
-	char temp_var[10];
-	sprintf(temp_var,"t%d",temp_id-1);
+	if(TAC)
+	{
+		char temp_var[10];
+		sprintf(temp_var,"t%d",temp_id-1);
 
-	char label_temp[10];
-	sprintf(label_temp,"L%d",label_id);
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_id);
 
-	printf("if t%d goto L%d\n",temp_id-1,label_id); 
-	create_quad(temp_var,"","if",label_temp);
+		/* printf("if t%d goto L%d\n",temp_id-1,label_id);  */
+		printf("if %s goto L%d\n",stack[top],label_id); 
+		create_quad(stack[top],"","if",label_temp);
 
-	label_id+=1;
-	label_match[++label_top] = label_id;
-	
-	sprintf(label_temp,"L%d",label_id);
-	
-	printf("goto L%d\n",label_id);
-	if_label_stack[++if_label_top] = label_id;
+		label_id+=1;
+		label_match[++label_top] = label_id;
+		
+		sprintf(label_temp,"L%d",label_id);
+		
+		printf("goto L%d\n",label_id);
+		if_label_stack[++if_label_top] = label_id;
 
-	create_quad("","",label_temp,"goto");
-	
-	printf("L%d:\n",label_id-1);
+		create_quad("","",label_temp,"goto");
+		
+		printf("L%d:\n",label_id-1);
 
-	sprintf(label_temp,"L%d",label_id-1);	
-	create_quad("","","label",label_temp);
-	
-	label_id+=1;
+		sprintf(label_temp,"L%d",label_id-1);	
+		create_quad("","","label",label_temp);
+		
+		label_id+=1;
+	}
 }
 void after_if()
 {
-	char label_temp[10];
-	sprintf(label_temp,"L%d",label_id);
+	if(TAC)
+	{
+		char label_temp[10];
+		sprintf(label_temp,"L%d",label_id);
 
-	printf("goto L%d\n",label_id);
-	create_quad("","",label_temp,"goto");
+		printf("goto L%d\n",label_id);
+		create_quad("","",label_temp,"goto");
 
-	label_id+=1;
-	printf("L%d:\n",if_label_stack[if_label_top]);
+		label_id+=1;
+		printf("L%d:\n",if_label_stack[if_label_top]);
 
-	sprintf(label_temp,"L%d",if_label_stack[if_label_top]);	
-	create_quad("","","label",label_temp);
+		sprintf(label_temp,"L%d",if_label_stack[if_label_top]);	
+		create_quad("","","label",label_temp);
 
-	if_label_top--;	
-	label_top--;
-	if_label_stack[++if_label_top] = label_id-1;
+		if_label_top--;	
+		label_top--;
+		if_label_stack[++if_label_top] = label_id-1;
+	}
 }
 void after_control_block()
 {
-	printf("L%d:\n",if_label_stack[if_label_top]);
+	if(TAC)
+	{
+		printf("L%d:\n",if_label_stack[if_label_top]);
 
-	char label_temp[10];
-	sprintf(label_temp,"L%d",if_label_stack[if_label_top]);
-	
-	create_quad("","","label",label_temp);
-	
-	if_label_top--;
-	label_top-=1;
+		char label_temp[10];
+		sprintf(label_temp,"L%d",if_label_stack[if_label_top]);
+		
+		create_quad("","","label",label_temp);
+		
+		if_label_top--;
+		/* label_top-=1; */
+
+	}
+}
+void gen_break()
+{
+	if(TAC)
+	{
+		;
+		/* printf("break\n");  */
+		/* printf("goto L%d\n",label_match[label_top]); */
+		/* label_top-=1; */
+		/* printf("goto L%d\n",label_match[label_top]); */
+		/* label_top-=1; */
+		/* printf("goto L%d\n",label_match[label_top]); */
+
+	}
 }
 void yyerror(char *s){
 	printf("\n[Error] at line:%d, column:%d\n", yylloc.last_line, yylloc.last_column);
