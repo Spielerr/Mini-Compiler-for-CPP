@@ -147,7 +147,7 @@ def cse():
                             quads[z][2] = replacement
                         if(quads[z][3] == replacee):
                             quads[z][3] = replacement
-                    display_quads()
+                    # display_quads()
             j = j + 1
             
         i = i + 1
@@ -184,16 +184,14 @@ if __name__ == "__main__":
         quads.append(line.split(','))
     
     # constant_folding()
-    # display_quads(quads)
+    # display_quads()
     # constant_propagation()
-    # display_quads(quads)
-
-    # constant_fold_propagate_opt()
-
-    # cse()
     # display_quads()
 
-    # strength_reduction()
+    # constant_fold_propagate_opt()
+    # display_quads()
+
+    # cse()
     # display_quads()
 
     # strength_reduction()
