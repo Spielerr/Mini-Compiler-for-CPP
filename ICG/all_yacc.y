@@ -298,12 +298,17 @@ SINGLE_LINE_IF
 
 BLOCK_IF
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' {if_cond();} BLOCK {after_if();}
+	| T_CONSTRUCT_IF '(' VARIABLE_DECLARATION ')' {if_cond();} BLOCK {after_if();}
 	| BLOCK_IF SINGLE_LINE_ELSE
 	| BLOCK_IF BLOCK_ELSE
 	;
 
 IF_PREFIX
 	: T_CONSTRUCT_IF '(' EXPRESSION ')' {
+		if_cond();
+		scope_enter();
+	}
+	| T_CONSTRUCT_IF '(' VARIABLE_DECLARATION ')' {
 		if_cond();
 		scope_enter();
 	}
