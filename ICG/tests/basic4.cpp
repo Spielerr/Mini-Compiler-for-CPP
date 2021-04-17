@@ -119,6 +119,18 @@ int main()
     {
         a =20;
     }
+    if((a+b>c))
+    {
+        for(int z=0;z<6;z=z+5)
+        {
+            if(z)
+            {
+                a-=1;
+            }
+            else
+                a+=1;
+        }
+    }
     // for(;;)
     // {
     //     sum +=1;
